@@ -1,1 +1,158 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 @import "tailwindcss";
+@import "tailwindcss/preflight.css" layer(base);
+
+/* ==========================================================================
+   1. ROOT — giá trị "sống", có thể đổi theo theme (light/dark)
+   ========================================================================== */
+:root {
+  /* ---- Brand colors ---- */
+  --brand-orange: #DA3400;   /* action chính */
+  --brand-rust: #C44426;     /* hover/secondary */
+  --brand-wine: #7C253B;     /* accent/heading nhấn */
+  --brand-maroon: #500D1E;   /* hấn mạnh, dark surface */
+
+
+  /* ---- Semantic colors — light mode ---- */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-surface: #FDF9F7;
+  --color-bg-muted: #F2ECE9;
+
+  --color-text-primary: #1A1210;
+  --color-text-secondary: #5C4E49;
+  --color-text-muted: #8C7C76;
+  --color-text-on-brand: #FFFFFF;
+
+  --color-border-default: #E6DAD5;
+  --color-border-strong: #C9B6AF;
+
+  --color-action-primary: var(--brand-orange);
+  --color-action-primary-hover: var(--brand-rust);
+  --color-action-primary-active: var(--brand-wine);
+
+  --color-accent: var(--brand-wine);
+  --color-accent-strong: var(--brand-maroon);
+
+  --color-danger: #D92D20;
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+}
+
+/* ---- Semantic colors — dark mode ---- */
+[data-theme="dark"] {
+  --color-bg-primary: #16100E;
+  --color-bg-surface: #201613;
+  --color-bg-muted: #2B1E1A;
+
+  --color-text-primary: #F5EBE8;
+  --color-text-secondary: #C9B6AF;
+  --color-text-muted: #8C7C76;
+  --color-text-on-brand: #FFFFFF;
+
+  --color-border-default: #3A2A25;
+  --color-border-strong: #513A33;
+
+  --color-action-primary: var(--brand-orange);
+  --color-action-primary-hover: #F0522A;
+  --color-action-primary-active: var(--brand-rust);
+
+  --color-accent: #B23A57;
+  --color-accent-strong: #7C253B;
+}
+
+/* ==========================================================================
+   2. THEME — map sang token Tailwind (sinh utility class: bg-*, text-*, rounded-*)
+   ========================================================================== */
+@theme inline {
+  /* ---- Colors: brand scale (dùng trực tiếp khi cần đúng 1 trong 4 màu) ---- */
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-rust: var(--brand-rust);
+  --color-brand-wine: var(--brand-wine);
+  --color-brand-maroon: var(--brand-maroon);
+
+  /* ---- Colors: semantic (dùng cho phần lớn UI) ---- */
+  --color-bg-primary: var(--color-bg-primary);
+  --color-bg-surface: var(--color-bg-surface);
+  --color-bg-muted: var(--color-bg-muted);
+
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-on-brand: var(--color-text-on-brand);
+
+  --color-border-default: var(--color-border-default);
+  --color-border-strong: var(--color-border-strong);
+
+  --color-action-primary: var(--color-action-primary);
+  --color-action-primary-hover: var(--color-action-primary-hover);
+  --color-action-primary-active: var(--color-action-primary-active);
+
+  --color-accent: var(--color-accent);
+  --color-accent-strong: var(--color-accent-strong);
+
+  --color-danger: var(--color-danger);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+}
+
+@theme {
+  /* ==========================================================================
+     3. FONT SIZE 
+     ========================================================================== */
+  --font-sans: "Inter", "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
+
+  --text-xs: clamp(0.72rem, 0.69rem + 0.14vw, 0.75rem);     /* 11.5 -> 12px  */
+  --text-xs--line-height: 1rem;
+
+  --text-sm: clamp(0.82rem, 0.79rem + 0.16vw, 0.875rem);    /* 13.1 -> 14px  */
+  --text-sm--line-height: 1.25rem;
+
+  --text-base: clamp(0.94rem, 0.9rem + 0.2vw, 1rem);        /* 15   -> 16px  */
+  --text-base--line-height: 1.6rem;
+
+  --text-lg: clamp(1.05rem, 1rem + 0.25vw, 1.125rem);       /* 16.8 -> 18px  */
+  --text-lg--line-height: 1.7rem;
+
+  --text-xl: clamp(1.18rem, 1.1rem + 0.4vw, 1.25rem);       /* 18.9 -> 20px  */
+  --text-xl--line-height: 1.8rem;
+
+  --text-2xl: clamp(1.35rem, 1.2rem + 0.75vw, 1.5rem);      /* 21.6 -> 24px  */
+  --text-2xl--line-height: 2rem;
+
+  --text-3xl: clamp(1.6rem, 1.35rem + 1.25vw, 1.875rem);    /* 25.6 -> 30px  */
+  --text-3xl--line-height: 2.25rem;
+
+  --text-4xl: clamp(1.9rem, 1.5rem + 2vw, 2.25rem);         /* 30.4 -> 36px  */
+  --text-4xl--line-height: 2.5rem;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ==========================================================================
+     4. BORDER RADIUS 
+     ========================================================================== */
+  --radius-xs: 0.25rem;   /* 4px  — badge, tag nhỏ */
+  --radius-sm: 0.375rem;  /* 6px  — input, checkbox */
+  --radius-md: 0.5rem;    /* 8px  — button, card nhỏ */
+  --radius-lg: 0.75rem;   /* 12px — card, modal */
+  --radius-xl: 1rem;      /* 16px — card lớn, panel */
+  --radius-2xl: 1.5rem;   /* 24px — hero section, banner */
+  --radius-full: 9999px;  /* pill, avatar */
+}
+
+/* ==========================================================================
+   5. BASE STYLES
+   ========================================================================== */
+@layer base {
+  body {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: Oswald, var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    margin: 0;
+    border-sizing: border-box;
+  }
+}
