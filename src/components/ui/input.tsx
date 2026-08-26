@@ -19,7 +19,8 @@ const inputVariants = cva(
       size: {
         default: 'pl-10 pr-10 py-2.5',
         sm: 'pl-11 pr-11 py-2.7',
-        lg: 'pl-13 pr-13 py-2.9'
+        lg: 'pl-13 pr-13 py-2.9',
+        basic: 'px-3 py-2'
       }
     },
     defaultVariants: {
@@ -29,7 +30,7 @@ const inputVariants = cva(
   }
 )
 
-type InputProps = React.ComponentProps<'input'> & VariantProps<typeof inputVariants> & {
+type InputProps = Omit<React.ComponentProps<'input'>, 'size'> & VariantProps<typeof inputVariants> & {
     icon?: React.ComponentType<{ className?:string }>
   }
 
