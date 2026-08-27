@@ -1,4 +1,5 @@
 import AdminLayout from '@/layouts/admin/AdminLayout'
+import LecturerLayout from '@/layouts/lecture/LecturerLayout'
 import { createBrowserRouter } from 'react-router'
 export const router = createBrowserRouter([
       {
@@ -40,7 +41,7 @@ export const router = createBrowserRouter([
                               Component: async() => (await import('@/pages/admin/AdminSemesterPage')).default
                         }
                   },
-                                    {
+                  {
                         path: '/admin/examination',
                         lazy: {
                               Component: async() => (await import('@/pages/admin/AdminExaminationPage')).default
@@ -50,13 +51,26 @@ export const router = createBrowserRouter([
       },
       {
             path: '/lecture',
+            Component: LecturerLayout,
             children: [
                   {
                         index: true,
                         lazy: {
                               Component: async() => (await import('@/pages/lecture/LectureMainPage')).default
                         }
-                  }
+                  },
+                                    {
+                        path: '/lecture/examination',
+                        lazy: {
+                              Component: async() => (await import('@/pages/lecture/ExaminationMaterialManagementPage')).default
+                        }
+                  },
+                                    {
+                        path: '/lecture/grading',
+                        lazy: {
+                              Component: async() => (await import('@/pages/lecture/GradingPage')).default
+                        }
+                  },
             ]
       }
 ])
