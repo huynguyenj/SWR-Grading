@@ -3,7 +3,7 @@ import { cn } from '@/utils/cn'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 const buttonVariants = cva(
-  'group w-full flex items-center justify-center gap-2 rounded-md py-2.5 text-sm font-medium transition-colors',
+  'group flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors shrink-0',
   {
     variants: {
       variant: {
@@ -17,9 +17,9 @@ const buttonVariants = cva(
       },
       size: {
         basic: 'p-2',
-        default: 'py-2.5',
-        sm: 'py-2.7',
-        lg: 'py-2.9'
+        default: 'py-2 px-3',
+        sm: 'py-2 px-4',
+        lg: 'py-2.5 px-6'
       }
     },
     defaultVariants: {
