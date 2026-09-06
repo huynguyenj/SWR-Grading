@@ -1,6 +1,6 @@
 import SemesterStatusBadge from '@/features/admin/management/semester/components/SemesterBadge'
 import type { Semester } from '@/features/admin/management/semester/types/semester'
-import { FiCalendar, FiBookOpen, FiFileText, FiUploadCloud } from 'react-icons/fi'
+import { FiCalendar, FiFileText, FiUploadCloud } from 'react-icons/fi'
 
 interface LecturerSemestersTableProps {
   semesters: Semester[]
@@ -32,7 +32,7 @@ export default function LecturerSemestersTable({
             <th className="px-4 py-3 font-medium text-text-secondary">Học kỳ</th>
             <th className="px-4 py-3 font-medium text-text-secondary">Mã</th>
             <th className="px-4 py-3 font-medium text-text-secondary">Thời gian</th>
-            <th className="px-4 py-3 font-medium text-text-secondary">Môn học</th>
+            {/* <th className="px-4 py-3 font-medium text-text-secondary">Môn học</th> */}
             <th className="px-4 py-3 font-medium text-text-secondary">Kỳ thi</th>
             <th className="px-4 py-3 font-medium text-text-secondary">Trạng thái</th>
             <th className="px-4 py-3 font-medium text-text-secondary text-right">Tài liệu</th>
@@ -52,12 +52,12 @@ export default function LecturerSemestersTable({
                   {formatDate(semester.startDate)} – {formatDate(semester.endDate)}
                 </div>
               </td>
-              <td className="px-4 py-3 text-text-secondary">
+              {/* <td className="px-4 py-3 text-text-secondary">
                 <div className="flex items-center gap-1.5">
                   <FiBookOpen className="w-3.5 h-3.5 text-text-muted" />
                   {semester.courseCount}
                 </div>
-              </td>
+              </td> */}
               <td className="px-4 py-3 text-text-secondary">
                 <div className="flex items-center gap-1.5">
                   <FiFileText className="w-3.5 h-3.5 text-text-muted" />
@@ -68,13 +68,15 @@ export default function LecturerSemestersTable({
                 <SemesterStatusBadge status={semester.status} />
               </td>
               <td className="px-4 py-3 text-right">
-                <button
-                  onClick={() => onSelect(semester)}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-border-default px-3 py-1.5 text-xs font-medium text-text-secondary hover:border-brand-orange hover:text-brand-orange transition-colors"
-                >
-                  <FiUploadCloud className="w-3.5 h-3.5" />
-                  Tài liệu
-                </button>
+                {semester.status !== 'completed' &&
+                  <button
+                    onClick={() => onSelect(semester)}
+                    className="inline-flex items-center gap-1.5 rounded-md border border-border-default px-3 py-1.5 text-xs font-medium text-text-secondary hover:border-brand-orange hover:text-brand-orange transition-colors"
+                  >
+                    <FiUploadCloud className="w-3.5 h-3.5" />
+                    Tài liệu
+                  </button>
+                }
               </td>
             </tr>
           ))}
