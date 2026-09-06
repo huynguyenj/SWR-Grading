@@ -1,4 +1,4 @@
-import { FiCalendar, FiBookOpen, FiFileText } from 'react-icons/fi'
+import { FiCalendar } from 'react-icons/fi'
 import Modal from '@/components/ui/modal'
 import type { Semester } from '@/features/admin/management/semester/types/semester'
 import SemesterStatusBadge from '@/features/admin/management/semester/components/SemesterBadge'
@@ -35,14 +35,14 @@ export default function UploadDocumentsModal({
               <FiCalendar className="w-3.5 h-3.5 text-text-muted" />
               {formatDate(semester.startDate)} – {formatDate(semester.endDate)}
             </span>
-            <span className="flex items-center gap-1.5">
+            {/* <span className="flex items-center gap-1.5">
               <FiBookOpen className="w-3.5 h-3.5 text-text-muted" />
               {semester.courseCount} môn học
-            </span>
-            <span className="flex items-center gap-1.5">
+            </span> */}
+            {/* <span className="flex items-center gap-1.5">
               <FiFileText className="w-3.5 h-3.5 text-text-muted" />
               {semester.examCount} kỳ thi
-            </span>
+            </span> */}
             <SemesterStatusBadge status={semester.status} />
           </div>
 
