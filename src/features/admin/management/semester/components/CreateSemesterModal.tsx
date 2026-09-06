@@ -19,28 +19,48 @@ export default function CreateSemesterModal({
   const [code, setCode] = useState('')
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
-
+  const [errors, setErrors] = useState<Partial<Record<'name' | 'code', string>>>()
   if (!open) return null
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    onCreate({
-      id: crypto.randomUUID(),
-      name: name || 'Học kỳ chưa đặt tên',
-      code: code || '—',
-      startDate: startDate || new Date().toISOString().slice(0, 10),
-      endDate: endDate || new Date().toISOString().slice(0, 10),
-      status: 'draft',
-      courseCount: 0,
-      examCount: 0,
-    })
-    onClose()
-    setName('')
-    setCode('')
-    setStartDate('')
-    setEndDate('')
-  }
+    const newErrors: Partial<Record<'name' | 'code', string>> = {}
 
+    if (!name.trim()) {
+      newErrors.name = 'Vui lòng nhập tên'
+    }
+
+    if (!code.trim()) {
+      newErrors.code = 'Vui lòng nhập mã'
+    } else if (!/^(FA|SU|SP)\d{2}$/.test(code)) {
+      newErrors.code =
+        'Vui lòng nhập mã đúng định dạng kỳ + năm. Ex: FA26'
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+    if (name && code) {
+      onCreate({
+        id: crypto.randomUUID(),
+        name: name || 'Học kỳ chưa đặt tên',
+        code: code || '—',
+        startDate: startDate || new Date().toISOString().slice(0, 10),
+        endDate: endDate || new Date().toISOString().slice(0, 10),
+        status: 'draft',
+        courseCount: 0,
+        examCount: 0,
+      })
+      onClose()
+      setName('')
+      setCode('')
+      setStartDate('')
+      setEndDate('')
+    }
+  }
+  console.log(errors);
+  
   return (
     <Modal open={open} onClose={onClose} title="Tạo học kỳ mới">
       <form onSubmit={handleSubmit} className="px-5 py-4 space-y-4">
@@ -53,6 +73,7 @@ export default function CreateSemesterModal({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="VD: Học kỳ Fall 2026"
+            error={errors?.name}
           />
         </div>
  
@@ -65,6 +86,7 @@ export default function CreateSemesterModal({
             value={code}
             onChange={(e) => setCode(e.target.value.toUpperCase())}
             placeholder="VD: FA26"
+            error={errors?.code}
           />
         </div>
  
@@ -75,6 +97,7 @@ export default function CreateSemesterModal({
             </label>
             <input
               type="date"
+              min={new Date().toISOString().split("T")[0]}
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               className="w-full rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15"
@@ -85,6 +108,7 @@ export default function CreateSemesterModal({
               Ngày kết thúc
             </label>
             <input
+              min={new Date().toISOString().split("T")[0]}
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
