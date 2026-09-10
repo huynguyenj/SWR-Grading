@@ -6,7 +6,7 @@ export interface ModalProps {
   onClose: () => void
   title?: string
   children: React.ReactNode
-  maxWidth?: 'sm' | 'md' | 'lg' | 'xl'
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl'|'full'
 }
 
 const maxWidthClasses: Record<NonNullable<ModalProps['maxWidth']>, string> = {
@@ -14,6 +14,7 @@ const maxWidthClasses: Record<NonNullable<ModalProps['maxWidth']>, string> = {
   md: 'max-w-md',
   lg: 'max-w-lg',
   xl: 'max-w-xl',
+  full: 'w-full'
 }
 
 
