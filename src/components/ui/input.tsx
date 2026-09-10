@@ -43,6 +43,7 @@ export default function Input({ className, variant = 'default', size = 'default'
       { type != 'password' && 
       <input  
         className={cn(inputVariants({variant, size}), className)}
+        type={type}
         {...props}
       />
       }
