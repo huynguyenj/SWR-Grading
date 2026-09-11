@@ -4,18 +4,17 @@ import type { Semester } from '@/features/admin/management/semester/types/semest
 import SemesterStatusBadge from '@/features/admin/management/semester/components/SemesterBadge'
 import type { UploadedFile } from '@/components/ui/FileUploadZone'
 import FileUploadDropzone from '@/components/ui/FileUploadZone'
+import Input from '@/components/ui/input'
+import { formatDate } from '@/utils/format'
+import TextArea from '@/components/ui/textarea'
 
 interface UploadDocumentsModalProps {
   semester: Semester | null
   onClose: () => void
+  isOpen: boolean
   files: UploadedFile[]
   onFilesAdded: (files: UploadedFile[]) => void
   onRemoveFile: (id: string) => void
-}
-
-function formatDate(iso: string) {
-  const d = new Date(iso)
-  return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
 }
 
 export default function UploadDocumentsModal({
@@ -24,11 +23,12 @@ export default function UploadDocumentsModal({
   files,
   onFilesAdded,
   onRemoveFile,
+  isOpen
 }: UploadDocumentsModalProps) {
   return (
-    <Modal open={semester !== null} onClose={onClose} title={semester?.name} maxWidth="lg">
+    <Modal open={isOpen} onClose={onClose} title={semester?.name} maxWidth="xl">
       {semester && (
-        <div className="px-5 py-4 space-y-5">
+        <div className="px-5 py-4 space-y-5 max-h-[80vh] overflow-y-auto">
           {/* Thông tin tóm tắt học kỳ — chỉ xem, không sửa được */}
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-md bg-bg-muted/50 px-4 py-3 text-sm text-text-secondary">
             <span className="flex items-center gap-1.5">
@@ -45,7 +45,36 @@ export default function UploadDocumentsModal({
             </span> */}
             <SemesterStatusBadge status={semester.status} />
           </div>
-
+          {/* Thông tin chung bài thi */}
+          <div>
+            <label className="block text-sm font-medium text-text-primary mb-1.5">
+              Tiêu đề
+            </label>
+            <Input
+              size='basic'
+              placeholder="Bài thi SWR308x"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-text-primary mb-1.5">
+              Nội dung
+            </label>
+            <TextArea
+              placeholder="VD: Đề thi bao gồm các câu hỏi về diagram và quy trình..."
+              rows={3}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-text-primary mb-1.5">
+              Tổng số câu hỏi
+            </label>
+            <Input
+              type='number'
+              size='basic'
+              min={1}
+              placeholder="1"
+            />
+          </div>
           {/* Upload tài liệu */}
           <div>
             <h3 className="mb-2 text-sm font-semibold text-text-primary">
