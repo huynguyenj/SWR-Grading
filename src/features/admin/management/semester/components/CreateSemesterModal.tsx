@@ -14,9 +14,8 @@ export default function CreateSemesterModal({
   open,
   onClose,
 }: CreateSemesterModalProps) {
-  const { handleSubmit, onSubmit, register } = useCreateSemester()
+  const { handleSubmit, onSubmit, register, errors } = useCreateSemester()
   if (!open) return null
-
 
   return (
     <Modal open={open} onClose={onClose} title="Tạo học kỳ mới">
@@ -29,7 +28,7 @@ export default function CreateSemesterModal({
             {...register('name')}
             size='basic'
             placeholder="VD: Học kỳ Fall 2026"
-            
+            error={errors.name?.message}
           />
         </div>
  
@@ -41,6 +40,7 @@ export default function CreateSemesterModal({
             {...register('semesterCode')}
             size='basic'
             placeholder="VD: FA26"
+            error={errors?.semesterCode?.message}
           />
         </div>
  

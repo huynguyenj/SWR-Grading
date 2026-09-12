@@ -4,6 +4,7 @@ import LecturerSemestersTable from '@/features/lecturer/examination_materials/co
 import type { SortDirection, SortField } from '@/features/lecturer/examination_materials/components/LecturerSemestertoolbar'
 import LecturerSemestersToolbar from '@/features/lecturer/examination_materials/components/LecturerSemestertoolbar'
 import UploadDocumentsModal from '@/features/lecturer/examination_materials/components/UploadDocumentModal'
+import ViewExamMaterialDetailModal from '@/features/lecturer/examination_materials/components/ViewExamMaterialDetail'
 import { useMemo, useState } from 'react'
 
 
@@ -18,6 +19,8 @@ export default function LecturerSemestersPage() {
   const [selectedSemester, setSelectedSemester] = useState<Semester | null>(null)
   // Lưu file đã upload theo từng học kỳ (key = semester.id) để khi mở lại vẫn còn
   const [filesBySemester, setFilesBySemester] = useState<Record<string, UploadedFile[]>>({})
+  const [selectedDetail, setSelectedDetail] = useState(false)
+  const [uploadOpen, setUploadOpen] = useState(false)
 
   const filteredSemesters = useMemo(() => {
     let result = semesters.filter((semester) => {
@@ -57,8 +60,22 @@ export default function LecturerSemestersPage() {
       [selectedSemester.id]: (prev[selectedSemester.id] ?? []).filter((f) => f.id !== id),
     }))
   }
-  console.log(filesBySemester);
-  
+  function handleOpenDetail (semester: Semester) {
+    setSelectedSemester(semester)
+    setSelectedDetail(true)
+  }
+  function handleCloseDetail () {
+    setSelectedSemester(null)
+    setSelectedDetail(false)
+  }
+  function handleOpenUpload (semester: Semester) {
+    setSelectedSemester(semester)
+    setUploadOpen(true)
+  }
+  function handleCloseUpload () {
+    setSelectedSemester(null)
+    setUploadOpen(false)
+  }
   return (
     <div className="space-y-5">
       <div>
@@ -87,12 +104,23 @@ export default function LecturerSemestersPage() {
 
       <LecturerSemestersTable
         semesters={filteredSemesters}
-        onSelect={(semester) => setSelectedSemester(semester)}
+        onOpenUpload={handleOpenUpload}
+        onOpenDetail={handleOpenDetail}
       />
 
       <UploadDocumentsModal
         semester={selectedSemester}
-        onClose={() => setSelectedSemester(null)}
+        onClose={handleCloseUpload}
+        isOpen={uploadOpen}
+        files={currentFiles}
+        onFilesAdded={handleFilesAdded}
+        onRemoveFile={handleRemoveFile}
+      />
+
+      <ViewExamMaterialDetailModal
+        semester={selectedSemester}
+        onOpen={selectedDetail}
+        onClose={handleCloseDetail}
         files={currentFiles}
         onFilesAdded={handleFilesAdded}
         onRemoveFile={handleRemoveFile}

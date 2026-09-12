@@ -1,20 +1,20 @@
+import Button from '@/components/ui/button'
 import SemesterStatusBadge from '@/features/admin/management/semester/components/SemesterBadge'
 import type { Semester } from '@/features/admin/management/semester/types/semester'
-import { FiCalendar, FiBookOpen, FiFileText, FiUploadCloud } from 'react-icons/fi'
+import { formatDate } from '@/utils/format'
+import { FiCalendar, FiEye, FiFileText, FiUploadCloud } from 'react-icons/fi'
 
 interface LecturerSemestersTableProps {
   semesters: Semester[]
-  onSelect: (semester: Semester) => void
+  onOpenUpload: (semester: Semester) => void
+  onOpenDetail: (semester: Semester) => void
 }
 
-function formatDate(iso: string) {
-  const d = new Date(iso)
-  return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
-}
 
 export default function LecturerSemestersTable({
   semesters,
-  onSelect,
+  onOpenUpload,
+  onOpenDetail
 }: LecturerSemestersTableProps) {
   if (semesters.length === 0) {
     return (
@@ -32,7 +32,7 @@ export default function LecturerSemestersTable({
             <th className="px-4 py-3 font-medium text-text-secondary">Học kỳ</th>
             <th className="px-4 py-3 font-medium text-text-secondary">Mã</th>
             <th className="px-4 py-3 font-medium text-text-secondary">Thời gian</th>
-            <th className="px-4 py-3 font-medium text-text-secondary">Môn học</th>
+            {/* <th className="px-4 py-3 font-medium text-text-secondary">Môn học</th> */}
             <th className="px-4 py-3 font-medium text-text-secondary">Kỳ thi</th>
             <th className="px-4 py-3 font-medium text-text-secondary">Trạng thái</th>
             <th className="px-4 py-3 font-medium text-text-secondary text-right">Tài liệu</th>
@@ -52,12 +52,12 @@ export default function LecturerSemestersTable({
                   {formatDate(semester.startDate)} – {formatDate(semester.endDate)}
                 </div>
               </td>
-              <td className="px-4 py-3 text-text-secondary">
+              {/* <td className="px-4 py-3 text-text-secondary">
                 <div className="flex items-center gap-1.5">
                   <FiBookOpen className="w-3.5 h-3.5 text-text-muted" />
                   {semester.courseCount}
                 </div>
-              </td>
+              </td> */}
               <td className="px-4 py-3 text-text-secondary">
                 <div className="flex items-center gap-1.5">
                   <FiFileText className="w-3.5 h-3.5 text-text-muted" />
@@ -68,13 +68,25 @@ export default function LecturerSemestersTable({
                 <SemesterStatusBadge status={semester.status} />
               </td>
               <td className="px-4 py-3 text-right">
-                <button
-                  onClick={() => onSelect(semester)}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-border-default px-3 py-1.5 text-xs font-medium text-text-secondary hover:border-brand-orange hover:text-brand-orange transition-colors"
-                >
-                  <FiUploadCloud className="w-3.5 h-3.5" />
-                  Tài liệu
-                </button>
+                <div className='flex items-center justify-end gap-2'>
+                  {semester.status !== 'completed' &&
+                    <button
+                      onClick={() => onOpenUpload(semester)}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-border-default px-3 py-1.5 text-xs font-medium text-text-secondary hover:border-brand-orange hover:text-brand-orange transition-colors"
+                    >
+                      <FiUploadCloud className="w-3.5 h-3.5" />
+                      Tài liệu
+                    </button>
+                  }
+                    <Button
+                      variant='basic'
+                      onClick={() => onOpenDetail(semester)}
+                      className="rounded-md p-1.5 text-text-muted hover:bg-bhover:text-text-primary transition-colors"
+                      aria-label="Xem chi tiết"
+                    >
+                      <FiEye className="w-4 h-4" />
+                    </Button>
+                </div>
               </td>
             </tr>
           ))}
