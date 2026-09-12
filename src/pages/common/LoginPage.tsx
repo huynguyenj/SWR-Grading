@@ -1,10 +1,9 @@
-import { FiMail, FiLock, FiArrowRight, FiMessageCircle } from 'react-icons/fi'
-import { FcGoogle } from 'react-icons/fc'
+import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi'
 import FPTLogo from '@/assets/fptulogo.jpg'
 import Input from '@/components/ui/input'
 import useLogin from '@/features/authentication/hooks/useLogin'
 export default function LoginPage() {
- const { handleSubmit, onSubmit, register } = useLogin()
+ const { handleSubmit, onSubmit, register, loading } = useLogin()
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-5 bg-bg-primary">
       {/* ============ LEFT — Branding panel ============ */}
@@ -56,10 +55,10 @@ export default function LoginPage() {
           {/* Mobile-only logo */}
           <div className="lg:hidden flex items-center gap-2.5 mb-10">
             <div className="flex items-center justify-center w-9 h-9 rounded-md bg-brand-orange">
-              <FiMessageCircle className="w-5 h-5 text-white" strokeWidth={2.25} />
+              <img src={FPTLogo} alt='Logo' className='w-[90%] aspect-square rounded-full'/>
             </div>
             <span className="text-lg font-semibold text-text-primary tracking-tight">
-              OmniChat
+              FPT University
             </span>
           </div>
 
@@ -81,7 +80,7 @@ export default function LoginPage() {
               >
                 Email
               </label>
-              <Input {...register('username')} icon={FiMail} id="email" type="text" placeholder="you@company.com"/>
+              <Input {...register('email')} icon={FiMail} id="email" type="text" placeholder="you@company.com"/>
             </div>
 
             {/* Password */}
@@ -118,29 +117,33 @@ export default function LoginPage() {
             {/* Submit */}
             <button
               type="submit"
-              className="group w-full flex items-center justify-center gap-2 rounded-md bg-brand-orange py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-rust active:bg-brand-wine"
+              disabled={loading}
+              className="group w-full flex items-center justify-center gap-2 rounded-md bg-brand-orange py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-rust active:bg-brand-wine disabled:bg-gray-300 disabled:text-black"
             >
-              Đăng nhập
-              <FiArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+              {loading ? '...':
+              <>
+               Đăng nhập
+               <FiArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+              </>}
             </button>
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 my-6">
+          {/* <div className="flex items-center gap-3 my-6">
             <div className="h-px flex-1 bg-border-default" />
             <span className="text-xs text-text-muted">hoặc tiếp tục với</span>
             <div className="h-px flex-1 bg-border-default" />
-          </div>
+          </div> */}
 
           {/* Social login */}
           <div className="grid grid-cols-1 gap-3">
-            <button
+            {/* <button
               type="button"
               className="flex items-center justify-center gap-2 rounded-md border border-border-default py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-bg-muted"
             >
               <FcGoogle className="w-4 h-4" />
               Google
-            </button>
+            </button> */}
             {/* <button
               type="button"
               className="flex items-center justify-center gap-2 rounded-md border border-border-default py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-bg-muted"
