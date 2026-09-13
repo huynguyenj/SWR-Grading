@@ -4,7 +4,7 @@ import type { SortDirection, SortField } from '@/features/admin/management/exami
 import ExamSessionsToolbar from '@/features/admin/management/examination/components/Examinationtoolbar'
 import ViewExamSessionModal from '@/features/admin/management/examination/components/ViewExamSessionModal'
 import { mockExamSessions, type ExamSession, type ExamSessionStatus } from '@/features/admin/management/examination/types/examination.type'
-import { mockSemesters } from '@/features/admin/management/semester/types/semester'
+import useGetSemester from '@/features/admin/management/semester/hooks/useGetSemester'
 import { useMemo, useState } from 'react'
 
 export default function AdminExamSessionsPage() {
@@ -16,7 +16,8 @@ export default function AdminExamSessionsPage() {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
   const [modalOpen, setModalOpen] = useState(false)
   const [viewingSession, setViewingSession] = useState<ExamSession | null>(null)
-
+  const { semesterDataList } = useGetSemester()
+  
   const filteredSessions = useMemo(() => {
     let result = sessions.filter((session) => {
       const matchesSearch = session.name.toLowerCase().includes(search.toLowerCase())
@@ -36,7 +37,7 @@ export default function AdminExamSessionsPage() {
 
     return result
   }, [sessions, search, semesterFilter, statusFilter, sortField, sortDirection])
-
+  
   return (
     <div className="space-y-5">
       <div>
@@ -46,46 +47,52 @@ export default function AdminExamSessionsPage() {
           định khi thi.
         </p>
       </div>
-
-      <ExamSessionsToolbar
-        search={search}
-        onSearchChange={setSearch}
-        semesterFilter={semesterFilter}
-        onSemesterFilterChange={setSemesterFilter}
-        statusFilter={statusFilter}
-        onStatusFilterChange={setStatusFilter}
-        sortField={sortField}
-        sortDirection={sortDirection}
-        onSortFieldChange={setSortField}
-        onToggleSortDirection={() =>
-          setSortDirection((d) => (d === 'asc' ? 'desc' : 'asc'))
-        }
-        semesters={mockSemesters}
-        onCreateClick={() => setModalOpen(true)}
-      />
-
-      <p className="text-xs text-text-muted">
-        Hiển thị {filteredSessions.length} / {sessions.length} đợt thi
-      </p>
-
-      <ExamSessionsTable
-        sessions={filteredSessions}
-        semesters={mockSemesters}
-        onView={setViewingSession}
-      />
-
-      <CreateExamSessionModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onCreate={(session) => setSessions((prev) => [session, ...prev])}
-        semesters={mockSemesters}
-      />
-
-      <ViewExamSessionModal
-        session={viewingSession}
-        onClose={() => setViewingSession(null)}
-        semesters={mockSemesters}
-      />
+      { semesterDataList?.items ?
+        <>
+          <ExamSessionsToolbar
+            search={search}
+            onSearchChange={setSearch}
+            semesterFilter={semesterFilter}
+            onSemesterFilterChange={setSemesterFilter}
+            statusFilter={statusFilter}
+            onStatusFilterChange={setStatusFilter}
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSortFieldChange={setSortField}
+            onToggleSortDirection={() =>
+              setSortDirection((d) => (d === 'asc' ? 'desc' : 'asc'))
+            }
+            semesters={semesterDataList?.items}
+            onCreateClick={() => setModalOpen(true)}
+          />
+    
+          <p className="text-xs text-text-muted">
+            Hiển thị {filteredSessions.length} / {sessions.length} đợt thi
+          </p>
+    
+          <ExamSessionsTable
+            sessions={filteredSessions}
+            semesters={semesterDataList?.items}
+            onView={setViewingSession}
+          />
+    
+          <CreateExamSessionModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            onCreate={(session) => setSessions((prev) => [session, ...prev])}
+            semesters={semesterDataList?.items}
+          />
+    
+          <ViewExamSessionModal
+            session={viewingSession}
+            onClose={() => setViewingSession(null)}
+            semesters={semesterDataList?.items}
+          />
+        
+        </>
+        :
+        <p>Chưa có dữ liệu học kì</p>
+      }
     </div>
   )
 }
