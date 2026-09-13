@@ -1,18 +1,18 @@
 import { useMemo, useState } from "react"
-import type { Semester } from "../../semester/types/semester"
 import { mockExamPapers, type ExamRuleKey, type ExamSession, type PaperSelectionMode } from "../types/examination.type"
 import Modal from "@/components/ui/modal"
 import ExamPaperSelector from "./ExamPaperSelector"
 import ExamRulesSection from "./ExamRuleSession"
 import Input from "@/components/ui/input"
 import Button from "@/components/ui/button"
+import type { SemesterType } from "../../semester/types/semester"
 
 
 interface CreateExamSessionModalProps {
   open: boolean
   onClose: () => void
   onCreate: (session: ExamSession) => void
-  semesters: Semester[]
+  semesters: SemesterType[]
 }
 
 export default function CreateExamSessionModal({
@@ -108,7 +108,7 @@ export default function CreateExamSessionModal({
             >
               <option value="">-- Chọn học kỳ --</option>
               {semesters.map((s) => (
-                <option key={s.id} value={s.id}>
+                <option key={s.semesterId} value={s.semesterId}>
                   {s.name}
                 </option>
               ))}
