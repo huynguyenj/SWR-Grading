@@ -12,7 +12,7 @@ const buttonVariants = cva(
       //   success: 'bg-green-accent text-white hover:bg-green-hover',
       //   outline: 'border bg-white text-secondary border-secondary hover:bg-blue/90 hover:text-black',
       //   basic: 'border bg-white text-black border-gray-300 hover:bg-gray-100',
-        danger: 'border-[#FF5B5B]'
+        danger: 'bg-[#FF5B5B] text-text-on-brand'
 
       },
       size: {

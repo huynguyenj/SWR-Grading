@@ -16,23 +16,19 @@ type UseApiCallType = {
 
 export default function useApiCall<T>() {
   const [loading, setLoading] = useState(false)
-  const apiMethodSelect = ({ apiUrl, method, type='public', body }: UseApiCallType): Promise<object> => {
+  const apiMethodSelect = ({ apiUrl, method, type='public', body }: UseApiCallType) => {
+    const api = type === 'private' ? apiPrivate : apiPublic
     switch (method) {
     case 'post':
-      if (type === 'private') return apiPrivate.post(apiUrl, body)
-      else return apiPublic.post(apiUrl, body)
+      return api.post(apiUrl, body)
     case 'get':
-      if (type === 'private') return apiPrivate.get(apiUrl)
-      else return apiPublic.get(apiUrl)
+      return api.get(apiUrl)
     case 'put':
-      if (type === 'private') return apiPrivate.put(apiUrl, body)
-      else return apiPublic.put(apiUrl, body)
+      return api.put(apiUrl, body)
     case 'patch':
-      if (type === 'private') return apiPrivate.patch(apiUrl, body)
-      else return apiPublic.patch(apiUrl, body)
+      return api.patch(apiUrl, body)
     case 'del':
-      if (type === 'private') return apiPrivate.delete(apiUrl)
-      else return apiPublic.delete(apiUrl)
+      return api.delete(apiUrl)
     }
   }
 
@@ -43,7 +39,7 @@ export default function useApiCall<T>() {
     try {
       setLoading(true)
       const response = await apiMethodSelect({ apiUrl, type, method, body })
-      data = response as object
+      data = response as T      
       success = true
       errorResponse = null
     } catch (error) {

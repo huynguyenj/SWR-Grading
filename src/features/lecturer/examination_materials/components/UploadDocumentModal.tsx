@@ -1,15 +1,15 @@
 import { FiCalendar } from 'react-icons/fi'
 import Modal from '@/components/ui/modal'
-import type { Semester } from '@/features/admin/management/semester/types/semester'
 import SemesterStatusBadge from '@/features/admin/management/semester/components/SemesterBadge'
 import type { UploadedFile } from '@/components/ui/FileUploadZone'
 import FileUploadDropzone from '@/components/ui/FileUploadZone'
 import Input from '@/components/ui/input'
 import { formatDate } from '@/utils/format'
 import TextArea from '@/components/ui/textarea'
+import type { SemesterType } from '@/features/admin/management/semester/types/semester'
 
 interface UploadDocumentsModalProps {
-  semester: Semester | null
+  semester: SemesterType | null
   onClose: () => void
   isOpen: boolean
   files: UploadedFile[]

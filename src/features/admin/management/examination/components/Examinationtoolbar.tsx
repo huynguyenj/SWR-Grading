@@ -1,8 +1,8 @@
 import { FiSearch, FiArrowUp, FiArrowDown, FiPlus } from 'react-icons/fi'
 import type { ExamSessionStatus } from '../types/examination.type'
-import type { Semester } from '../../semester/types/semester'
 import Input from '@/components/ui/input'
 import Button from '@/components/ui/button'
+import type { SemesterType } from '../../semester/types/semester'
 
 export type SortField = 'examDate' | 'name'
 export type SortDirection = 'asc' | 'desc'
@@ -18,7 +18,7 @@ interface ExamSessionsToolbarProps {
   sortDirection: SortDirection
   onSortFieldChange: (v: SortField) => void
   onToggleSortDirection: () => void
-  semesters: Semester[]
+  semesters: SemesterType[]
   onCreateClick: () => void
 }
 
@@ -70,7 +70,7 @@ export default function ExamSessionsToolbar({
         >
           <option value="all">Tất cả học kỳ</option>
           {semesters.map((s) => (
-            <option key={s.id} value={s.id}>
+            <option key={s.semesterId} value={s.semesterId}>
               {s.name}
             </option>
           ))}

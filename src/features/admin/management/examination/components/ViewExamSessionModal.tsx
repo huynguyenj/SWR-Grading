@@ -1,14 +1,14 @@
 import { FiCalendar, FiClock, FiFileText, FiShuffle, FiUser } from 'react-icons/fi'
 import { examRuleOptions, mockExamPapers, type ExamSession } from '../types/examination.type'
-import type { Semester } from '../../semester/types/semester'
 import Modal from '@/components/ui/modal'
 import ExamSessionStatusBadge from './ExaminationBadge'
 import { formatDate } from '@/utils/format'
 import Button from '@/components/ui/button'
+import type { SemesterType } from '../../semester/types/semester'
 interface ViewExamSessionModalProps {
   session: ExamSession | null
   onClose: () => void
-  semesters: Semester[]
+  semesters: SemesterType[]
 }
 
 export default function ViewExamSessionModal({
@@ -17,7 +17,7 @@ export default function ViewExamSessionModal({
   semesters,
 }: ViewExamSessionModalProps) {
   const semesterName = session
-    ? semesters.find((s) => s.id === session.semesterId)?.name ?? '—'
+    ? semesters.find((s) => s.semesterId === session.semesterId)?.name ?? '—'
     : ''
   const assignedPaper = session?.assignedPaperId
     ? mockExamPapers.find((p) => p.id === session.assignedPaperId)

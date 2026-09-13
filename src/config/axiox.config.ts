@@ -1,11 +1,11 @@
-import type { AxiosError, AxiosInstance } from "axios"
+import type { AxiosError } from "axios"
 import axios from "axios"
 const BASE_API_URL= import.meta.env.VITE_BASE_API_URL
 
-export const apiPrivate: AxiosInstance = axios.create({
+export const apiPrivate = axios.create({
       baseURL: BASE_API_URL
 })
-export const apiPublic: AxiosInstance = axios.create({
+export const apiPublic = axios.create({
       baseURL: BASE_API_URL
 })
 

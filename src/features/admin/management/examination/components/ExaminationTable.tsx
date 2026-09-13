@@ -1,19 +1,19 @@
 import { FiCalendar, FiClock, FiFileText, FiShuffle, FiEye } from 'react-icons/fi'
 import type { ExamSession } from '../types/examination.type'
-import type { Semester } from '../../semester/types/semester'
 import { formatDate } from '@/utils/format'
 import ExamSessionStatusBadge from './ExaminationBadge'
+import type { SemesterType } from '../../semester/types/semester'
 
 interface ExamSessionsTableProps {
   sessions: ExamSession[]
-  semesters: Semester[]
+  semesters: SemesterType[]
   onView: (session: ExamSession) => void
 }
 
 
 export default function ExamSessionsTable({ sessions, semesters, onView }: ExamSessionsTableProps) {
   function semesterName(id: string) {
-    return semesters.find((s) => s.id === id)?.name ?? '—'
+    return semesters.find((s) => s.semesterId === id)?.name ?? '—'
   }
 
   if (sessions.length === 0) {
