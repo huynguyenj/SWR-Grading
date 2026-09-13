@@ -16,7 +16,7 @@ const semesterSchema = z.object({
 type CreateSemesterInput = z.input<typeof semesterSchema>
 type CreateSemesterType = z.output<typeof semesterSchema>
 
-export default function useCreateSemester() {
+export default function useCreateSemester({ onRefresh }: { onRefresh: () => void }) {
   const { execute, loading } = useApiCall()
   const { register, handleSubmit, formState: { errors } } = useForm<CreateSemesterInput, unknown, CreateSemesterType>({ resolver: zodResolver(semesterSchema) })
   const onSubmit = async (createSemesterForm: CreateSemesterType) => {
@@ -24,15 +24,19 @@ export default function useCreateSemester() {
             semesterCode: createSemesterForm.semesterCode,
             name: createSemesterForm.name,
             startDate: createSemesterForm.startDate.toISOString().split('T')[0],
-            endDate: createSemesterForm.endDate.toISOString().split('T')[0]
+            endDate: createSemesterForm.endDate.toISOString().split('T')[0],
+            status: 0
       }
+      console.log(body);
+      
       const data = await execute({
-            apiUrl: '/semester',
+            apiUrl: '/semesters',
             method: 'post',
             type: 'private',
             body: body
       })
       console.log(data);
+      onRefresh()
       toast.success('Tạo học kì thành công')
   }
   return { register, handleSubmit, errors, loading, onSubmit }

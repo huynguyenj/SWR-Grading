@@ -20,10 +20,9 @@ interface SemestersToolbarProps {
 
 const statusOptions: { value: SemesterStatus | 'all'; label: string }[] = [
   { value: 'all', label: 'Tất cả trạng thái' },
-  { value: 'draft', label: 'Nháp' },
-  { value: 'upcoming', label: 'Sắp diễn ra' },
-  { value: 'ongoing', label: 'Đang diễn ra' },
-  { value: 'completed', label: 'Đã kết thúc' },
+  { value: 0, label: 'Sắp diễn ra' },
+  { value: 1, label: 'Đang hoạt động' },
+  { value: 2, label: 'Đã kết thúc' },
 ]
 
 const sortFieldLabels: Record<SortField, string> = {

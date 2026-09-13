@@ -1,22 +1,48 @@
 import Modal from '@/components/ui/modal'
 import Button from '@/components/ui/button'
 import Input from '@/components/ui/input'
-import useCreateSemester from '../hooks/useCreateSemester'
+import useUpdateSemester from '../hooks/useUpdateSemester'
+import type { SemesterStatus, SemesterType } from '../types/semester'
+import { useEffect } from 'react'
+import { Controller } from 'react-hook-form'
 
-interface CreateSemesterModalProps {
+interface UpdateSemesterModalProps {
   open: boolean
   onClose: () => void
   onRefresh: () => void
+  semester?: SemesterType
 }
 
-export default function CreateSemesterModal({
+const statusOptions: { value: SemesterStatus | 'all'; label: string }[] = [
+  { value: 0, label: 'Sắp diễn ra' },
+  { value: 1, label: 'Đang hoạt động' },
+  { value: 2, label: 'Đã kết thúc' },
+]
+
+
+export default function UpdateSemesterModal({
   open,
   onClose,
-  onRefresh
-}: CreateSemesterModalProps) {
-  const { handleSubmit, onSubmit, register, errors, loading } = useCreateSemester({ onRefresh: onRefresh })
-  if (!open) return null
+  onRefresh,
+  semester
+}: UpdateSemesterModalProps) {
+  const { handleSubmit, onSubmit, updateRegister, errors, reset, control, setSelectedSemesterId, loading } = useUpdateSemester({ onRefresh: onRefresh })
 
+  useEffect(() => {
+    if (!open) return
+
+    if (semester) {
+      reset({
+        name: semester.name,
+        semesterCode: semester.semesterCode,
+        startDate: semester.startDate,
+        endDate: semester.endDate
+      })
+      setSelectedSemesterId(semester.semesterId)
+    }
+  }, [open, semester])
+
+  if (!open) return null
   return (
     <Modal open={open} onClose={onClose} title="Tạo học kỳ mới">
       <form onSubmit={handleSubmit(onSubmit)} className="px-5 py-4 space-y-4">
@@ -25,7 +51,7 @@ export default function CreateSemesterModal({
             Tên học kỳ
           </label>
           <Input
-            {...register('name')}
+            {...updateRegister('name')}
             size='basic'
             placeholder="VD: Học kỳ Fall 2026"
             error={errors.name?.message}
@@ -37,7 +63,7 @@ export default function CreateSemesterModal({
             Mã học kỳ
           </label>
           <Input
-            {...register('semesterCode')}
+            {...updateRegister('semesterCode')}
             size='basic'
             placeholder="VD: FA26"
             error={errors?.semesterCode?.message}
@@ -50,7 +76,7 @@ export default function CreateSemesterModal({
               Ngày bắt đầu
             </label>
             <input
-              {...register('startDate')}
+              {...updateRegister('startDate')}
               type="date"
               className="w-full rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15"
             />
@@ -60,13 +86,32 @@ export default function CreateSemesterModal({
               Ngày kết thúc
             </label>
             <input
-              {...register('endDate')}
+              {...updateRegister('endDate')}
               type="date"
               className="w-full rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15"
             />
           </div>
         </div>
- 
+            {/* Status filter */}
+        <label className="block text-sm font-medium text-text-primary mb-1.5">
+              Trạng thái
+        </label>
+        <Controller
+            control={control}
+            name='status'
+            render={({ field }) => (
+            <select
+                  onChange={field.onChange}
+                  className="rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15"
+            >
+                  {statusOptions.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                        </option>
+            ))}
+            </select>
+            )}
+        />
         <div className="flex items-center justify-end gap-2 pt-2">
           <Button
             type="button"
@@ -78,10 +123,9 @@ export default function CreateSemesterModal({
           <Button
             type="submit"
             variant='default'
-            disabled={loading}
             className='disabled:bg-bg-muted text-text-primary'
           >
-            {loading ? 'Đang tạo...' : 'Tạo học kỳ'}
+            {loading ? 'Đang cập nhật...' : 'Cập nhật'}
           </Button>
         </div>
       </form>
