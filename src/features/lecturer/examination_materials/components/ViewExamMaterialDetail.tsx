@@ -1,12 +1,12 @@
 import type { UploadedFile } from "@/components/ui/FileUploadZone"
 import Modal from "@/components/ui/modal"
 import SemesterStatusBadge from "@/features/admin/management/semester/components/SemesterBadge"
-import type { Semester } from "@/features/admin/management/semester/types/semester"
+import type { SemesterType } from "@/features/admin/management/semester/types/semester"
 import { formatDate } from "@/utils/format"
 import { FiCalendar } from "react-icons/fi"
 
 interface ViewExamMaterialDetailModalModalProps {
-  semester: Semester | null
+  semester: SemesterType | null
   onClose: () => void
   onOpen: boolean
   files: UploadedFile[]

@@ -1,5 +1,7 @@
 import type { UploadedFile } from '@/components/ui/FileUploadZone'
-import { mockSemesters, type Semester, type SemesterStatus } from '@/features/admin/management/semester/types/semester'
+import Pagination from '@/components/ui/pagination'
+import useGetSemester from '@/features/admin/management/semester/hooks/useGetSemester'
+import type { SemesterStatus, SemesterType } from '@/features/admin/management/semester/types/semester'
 import LecturerSemestersTable from '@/features/lecturer/examination_materials/components/LecturerSemesterTable'
 import type { SortDirection, SortField } from '@/features/lecturer/examination_materials/components/LecturerSemestertoolbar'
 import LecturerSemestersToolbar from '@/features/lecturer/examination_materials/components/LecturerSemestertoolbar'
@@ -9,30 +11,30 @@ import { useMemo, useState } from 'react'
 
 
 export default function LecturerSemestersPage() {
-  const semesters = mockSemesters
+  const { currentSemesterPage, pageSemesterSize, semesterDataList, setCurrentSemesterPage, setPageSemesterSize } = useGetSemester()
 
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<SemesterStatus | 'all'>('all')
   const [sortField, setSortField] = useState<SortField>('startDate')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
 
-  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(null)
+  const [selectedSemester, setSelectedSemester] = useState<SemesterType | null>(null)
   // Lưu file đã upload theo từng học kỳ (key = semester.id) để khi mở lại vẫn còn
   const [filesBySemester, setFilesBySemester] = useState<Record<string, UploadedFile[]>>({})
   const [selectedDetail, setSelectedDetail] = useState(false)
   const [uploadOpen, setUploadOpen] = useState(false)
 
   const filteredSemesters = useMemo(() => {
-    let result = semesters.filter((semester) => {
+    let result = semesterDataList?.items.filter((semester) => {
       const query = search.toLowerCase()
       const matchesSearch =
         semester.name.toLowerCase().includes(query) ||
-        semester.code.toLowerCase().includes(query)
-      const matchesStatus = statusFilter === 'all' || semester.status === statusFilter
+        semester.semesterCode.toLowerCase().includes(query)
+      const matchesStatus = statusFilter === 'all' || semester.status == statusFilter
       return matchesSearch && matchesStatus
     })
 
-    result = [...result].sort((a, b) => {
+    result = [...(result ?? [])].sort((a, b) => {
       const comparison =
         sortField === 'startDate'
           ? new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
@@ -41,15 +43,15 @@ export default function LecturerSemestersPage() {
     })
 
     return result
-  }, [semesters, search, statusFilter, sortField, sortDirection])
+  }, [semesterDataList, search, statusFilter, sortField, sortDirection])
 
-  const currentFiles = selectedSemester ? filesBySemester[selectedSemester.id] ?? [] : []
+  const currentFiles = selectedSemester ? filesBySemester[selectedSemester.semesterId] ?? [] : []
 
   function handleFilesAdded(newFiles: UploadedFile[]) {
     if (!selectedSemester) return
     setFilesBySemester((prev) => ({
       ...prev,
-      [selectedSemester.id]: [...(prev[selectedSemester.id] ?? []), ...newFiles],
+      [selectedSemester.semesterId]: [...(prev[selectedSemester.semesterId] ?? []), ...newFiles],
     }))
   }
 
@@ -57,10 +59,10 @@ export default function LecturerSemestersPage() {
     if (!selectedSemester) return
     setFilesBySemester((prev) => ({
       ...prev,
-      [selectedSemester.id]: (prev[selectedSemester.id] ?? []).filter((f) => f.id !== id),
+      [selectedSemester.semesterId]: (prev[selectedSemester.semesterId] ?? []).filter((f) => f.id !== id),
     }))
   }
-  function handleOpenDetail (semester: Semester) {
+  function handleOpenDetail (semester: SemesterType) {
     setSelectedSemester(semester)
     setSelectedDetail(true)
   }
@@ -68,7 +70,7 @@ export default function LecturerSemestersPage() {
     setSelectedSemester(null)
     setSelectedDetail(false)
   }
-  function handleOpenUpload (semester: Semester) {
+  function handleOpenUpload (semester: SemesterType) {
     setSelectedSemester(semester)
     setUploadOpen(true)
   }
@@ -98,16 +100,24 @@ export default function LecturerSemestersPage() {
         }
       />
 
-      <p className="text-xs text-text-muted">
+      {/* <p className="text-xs text-text-muted">
         Hiển thị {filteredSemesters.length} / {semesters.length} học kỳ
-      </p>
+      </p> */}
 
       <LecturerSemestersTable
         semesters={filteredSemesters}
         onOpenUpload={handleOpenUpload}
         onOpenDetail={handleOpenDetail}
       />
-
+      
+      <Pagination
+        currentPage={currentSemesterPage}
+        onPageChange={setCurrentSemesterPage}
+        totalPages={semesterDataList?.totalPages}
+        onPageSizeChange={setPageSemesterSize}
+        pageSize={pageSemesterSize}
+      />
+      
       <UploadDocumentsModal
         semester={selectedSemester}
         onClose={handleCloseUpload}
