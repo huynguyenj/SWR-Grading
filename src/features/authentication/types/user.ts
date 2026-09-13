@@ -1,8 +1,10 @@
 export type UserType = {
    id: string
-   createAt: Date
-   name: string
-   avatar: string
-   password: string
+   fullname: string
    role: string
+}
+
+export interface LoginType {
+   accessToken: string
+   user: UserType
 }
