@@ -1,6 +1,13 @@
 export type GradingLogStatus = 'draft' | 'in_progress' | 'completed'
 export type FolderGradingStatus = 'not_graded' | 'grading' | 'graded'
 
+/** 1 trong 3 file tham chiếu của nhật ký: đề thi / rubric / đáp án */
+export interface ReferenceFile {
+  fileName: string
+  fileUrl?: string
+  /** Nội dung để hiển thị trong modal xem trước — dữ liệu giả lập, chưa đọc file thật */
+  content: string
+}
 export interface SubmissionFolder {
   id: string
   fileName: string
@@ -18,6 +25,9 @@ export interface GradingLog {
   createdAt: string
   status: GradingLogStatus
   folders: SubmissionFolder[]
+  examPaperFile?: ReferenceFile
+  rubricFile?: ReferenceFile
+  answerFile?: ReferenceFile
 }
 
 const sampleAiLogs = [
@@ -35,9 +45,48 @@ export const mockGradingLogs: GradingLog[] = [
   {
     id: '1',
     name: 'Chấm bài giữa kỳ SWR301 - Ca 1',
-    examSessionName: 'Đợt thi thực hành giữa kỳ - Ca 1',
+    examSessionName: 'FA26 - Đợt 1',
     createdAt: '2026-09-02',
     status: 'completed',
+    examPaperFile: {
+      fileName: 'De_thi_SWR301_ca1.docx',
+      content:
+        'ĐỀ THI THỰC HÀNH GIỮA KỲ - SWR301\n\n' +
+        'Câu 1 (4 điểm): Viết đặc tả yêu cầu phần mềm (SRS) cho hệ thống đặt vé xem phim trực tuyến. ' +
+        'Yêu cầu bao gồm tối thiểu 5 chức năng chính, ràng buộc phi chức năng và giả định.\n\n' +
+        'Câu 2 (3 điểm): Vẽ sơ đồ Use Case mô tả tương tác giữa các actor (Khách hàng, Quản trị viên, ' +
+        'Cổng thanh toán) với hệ thống.\n\n' +
+        'Câu 3 (3 điểm): Trình bày quy trình quản lý thay đổi yêu cầu (Requirement Change Management) ' +
+        'áp dụng cho dự án trên.',
+    },
+    rubricFile: {
+      fileName: 'Rubric_cham_diem_SWR301.xlsx',
+      content:
+        'RUBRIC CHẤM ĐIỂM\n\n' +
+        'Tiêu chí 1 — Đặc tả yêu cầu (4đ)\n' +
+        '  • Đầy đủ chức năng chính: 2đ\n' +
+        '  • Ràng buộc phi chức năng hợp lý: 1đ\n' +
+        '  • Trình bày rõ ràng, đúng chuẩn SRS: 1đ\n\n' +
+        'Tiêu chí 2 — Use Case Diagram (3đ)\n' +
+        '  • Xác định đúng actor: 1đ\n' +
+        '  • Quan hệ include/extend hợp lý: 1đ\n' +
+        '  • Ký hiệu UML chuẩn: 1đ\n\n' +
+        'Tiêu chí 3 — Quy trình quản lý thay đổi (3đ)\n' +
+        '  • Nêu đúng các bước quy trình: 2đ\n' +
+        '  • Ví dụ minh họa phù hợp: 1đ',
+    },
+    answerFile: {
+      fileName: 'Dap_an_SWR301_ca1.docx',
+      content:
+        'ĐÁP ÁN THAM KHẢO\n\n' +
+        'Câu 1: SRS cần có các mục Chức năng đặt vé, Thanh toán, Quản lý suất chiếu, ' +
+        'Thông báo, Đánh giá phim. Ràng buộc phi chức năng: thời gian phản hồi < 2s, ' +
+        'hỗ trợ 1000 người dùng đồng thời.\n\n' +
+        'Câu 2: Use case tối thiểu gồm Đặt vé, Hủy vé, Thanh toán (include), ' +
+        'Áp dụng mã giảm giá (extend Đặt vé), Quản lý suất chiếu (actor Quản trị viên).\n\n' +
+        'Câu 3: Quy trình gồm 5 bước: Ghi nhận yêu cầu thay đổi -> Phân tích tác động -> ' +
+        'Phê duyệt -> Triển khai -> Cập nhật tài liệu.',
+    },
     folders: [
       {
         id: 'f1',
@@ -75,9 +124,54 @@ export const mockGradingLogs: GradingLog[] = [
   {
     id: '2',
     name: 'Chấm bài cuối kỳ SWR302',
-    examSessionName: 'Đợt thi cuối kỳ Spring 2026',
+    examSessionName: 'FA26 - Đợt 2',
     createdAt: '2026-08-20',
     status: 'draft',
     folders: [],
+  },
+]
+
+export type QuizStatus = 'draft' | 'published' | 'archived'
+export interface QuizPaper {
+  id: string
+  title: string
+  totalQuestions: number
+  fileDocs: string
+  createDate: string
+  status: QuizStatus
+}
+ 
+export const mockQuizPapers: QuizPaper[] = [
+  {
+    id: 'q1',
+    title: 'Kiểm tra thực hành - Đặc tả yêu cầu phần mềm',
+    totalQuestions: 20,
+    fileDocs: 'De_kiem_tra_SWR301_v1.docx',
+    createDate: '2026-08-25',
+    status: 'published',
+  },
+  {
+    id: 'q2',
+    title: 'Kiểm tra thực hành - Mô hình hóa Use Case',
+    totalQuestions: 15,
+    fileDocs: 'De_kiem_tra_SWR301_v2.docx',
+    createDate: '2026-08-28',
+    status: 'published',
+  },
+  {
+    id: 'q3',
+    title: 'Kiểm tra cuối kỳ - Thiết kế phần mềm',
+    totalQuestions: 25,
+    fileDocs: 'De_cuoi_ky_SWR302.docx',
+    createDate: '2026-08-10',
+    status: 'draft',
+  },
+  {
+    id: 'q4',
+    title: 'Kiểm tra 15 phút - Sơ đồ tuần tự',
+    totalQuestions: 10,
+    fileDocs: 'De_15p_sequence_diagram.docx',
+    createDate: '2026-07-15',
+    status: 'archived',
   },
 ]
