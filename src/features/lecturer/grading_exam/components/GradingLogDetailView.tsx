@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { FiArrowLeft, FiCpu, FiDownload } from 'react-icons/fi'
 import FilePreviewModal from './FilePreviewModal'
 import type { ParsedSubmission } from './SubmissionFilesZone'
