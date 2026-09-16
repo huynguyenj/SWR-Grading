@@ -1,4 +1,5 @@
 import { apiPrivate, apiPublic } from '@/config/axiox.config'
+import type { ApiResponseType } from '@/types/api.type'
 import { useState } from 'react'
 
 type UseApiCallType = {
@@ -16,7 +17,7 @@ type UseApiCallType = {
 
 export default function useApiCall<T>() {
   const [loading, setLoading] = useState(false)
-  const apiMethodSelect = ({ apiUrl, method, type='public', body }: UseApiCallType) => {
+  const apiMethodSelect = ({ apiUrl, method, type='public', body }: UseApiCallType): Promise<ApiResponseType<T>> => {
     const api = type === 'private' ? apiPrivate : apiPublic
     switch (method) {
     case 'post':
@@ -39,10 +40,11 @@ export default function useApiCall<T>() {
     try {
       setLoading(true)
       const response = await apiMethodSelect({ apiUrl, type, method, body })
-      data = response as T      
+      data = response.data as T            
       success = true
       errorResponse = null
     } catch (error) {
+      console.log(error);
       data = null as unknown as T
       success = false
       errorResponse = error as string
