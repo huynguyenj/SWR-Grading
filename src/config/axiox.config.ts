@@ -11,7 +11,7 @@ export const apiPublic = axios.create({
 
 apiPrivate.interceptors.request.use((config) => {
 //    const accessToken = authStore.getState().accessToken
-//    if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
+   config.headers.Authorization = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzM2FjOGM2Zi01ODhjLTRkMTgtYWM5My1jMmQyYTc2MGYwNTUiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMzYWM4YzZmLTU4OGMtNGQxOC1hYzkzLWMyZDJhNzYwZjA1NSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJOZ3V5ZW4gSHV5IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiMSIsImRpc2NyaW1pbmF0b3IiOiJMZWN0dXJlciIsImV4cCI6MTc4OTU2MzU1NywiaXNzIjoiU3dyQWlHcmFkaW5nQXBpIiwiYXVkIjoiU3dyQWlHcmFkaW5nQ2xpZW50In0.RclE8I2Srq3mwcBOuSkhJUAy4pyyM9fiFrdZEVmfw4s`
    return config
 }, error => Promise.reject(error))
 

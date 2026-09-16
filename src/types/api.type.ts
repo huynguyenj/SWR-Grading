@@ -1,5 +1,6 @@
 export interface ApiResponseType<T> {
       data: T
-      error: unknown
-      success: boolean
+      message: string
+      status: string
+      code: number
 }

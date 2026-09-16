@@ -1,3 +1,5 @@
+import type { ExamMaterialType } from "@/features/lecturer/examination_materials/types/exam_material.type"
+
 export type SemesterStatus = 0 | 1 | 2
 // export const SemesterTranslate: Record<number, SemesterStatus> = {
 //   0: 'Sắp diễn ra',
@@ -12,4 +14,8 @@ export interface SemesterType {
   endDate: string // ISO date
   status: SemesterStatus
   examCount: number
+}
+
+export interface SemesterDetailType extends SemesterType {
+  examMaterials: ExamMaterialType[]
 }
