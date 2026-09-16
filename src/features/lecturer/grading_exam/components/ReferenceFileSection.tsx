@@ -5,16 +5,16 @@ interface ReferenceFilesSectionProps {
   examPaperFile?: ReferenceFile
   rubricFile?: ReferenceFile
   answerFile?: ReferenceFile
-  onFileClick: (label: string, file: ReferenceFile) => void
+  // onFileClick: (label: string, file: ReferenceFile) => void
 }
 
 interface FileSlotProps {
   label: string
   file?: ReferenceFile
-  onClick: () => void
+  // onClick: () => void
 }
 
-function FileSlot({ label, file, onClick }: FileSlotProps) {
+function FileSlot({ label, file }: FileSlotProps) {
   if (!file) {
     return (
       <div className="flex items-center gap-3 rounded-md border border-dashed border-border-default px-4 py-3 opacity-60">
@@ -29,7 +29,7 @@ function FileSlot({ label, file, onClick }: FileSlotProps) {
 
   return (
     <button
-      onClick={onClick}
+      // onClick={onClick}
       className="flex items-center gap-3 rounded-md border border-border-default bg-bg-primary px-4 py-3 text-left transition-colors hover:border-brand-orange hover:bg-brand-orange/5"
     >
       <FiFileText className="w-5 h-5 text-brand-orange shrink-0" />
@@ -45,24 +45,24 @@ export default function ReferenceFilesSection({
   examPaperFile,
   rubricFile,
   answerFile,
-  onFileClick,
+  // onFileClick,
 }: ReferenceFilesSectionProps) {
   return (
     <div className="grid grid-cols-3 gap-3 sm:grid-cols-3">
       <FileSlot
         label="Đề thi"
         file={examPaperFile}
-        onClick={() => examPaperFile && onFileClick('Đề thi', examPaperFile)}
+        // onClick={() => examPaperFile && onFileClick('Đề thi', examPaperFile)}
       />
       <FileSlot
         label="Rubric chấm điểm"
         file={rubricFile}
-        onClick={() => rubricFile && onFileClick('Rubric chấm điểm', rubricFile)}
+        // onClick={() => rubricFile && onFileClick('Rubric chấm điểm', rubricFile)}
       />
       <FileSlot
         label="Đáp án"
         file={answerFile}
-        onClick={() => answerFile && onFileClick('Đáp án', answerFile)}
+        // onClick={() => answerFile && onFileClick('Đáp án', answerFile)}
       />
     </div>
   )

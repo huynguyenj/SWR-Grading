@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { FiArrowLeft, FiCpu, FiDownload } from 'react-icons/fi'
 import FilePreviewModal from './FilePreviewModal'
 import type { ParsedSubmission } from './SubmissionFilesZone'
-import type { GradingLog, ReferenceFile, SubmissionFolder } from '../types/grading-exam.type'
+import type { GradingLog, SubmissionFolder } from '../types/grading-exam.type'
 import GradingLogStatusBadge from './GradingLogStatusBadge'
 import ReferenceFilesSection from './ReferenceFileSection'
 import SubmissionUploadDropzone from './SubmissionFilesZone'
@@ -46,7 +46,7 @@ export default function GradingLogDetailView({
   onUpdateLog,
 }: GradingLogDetailViewProps) {
   const [viewingFolder, setViewingFolder] = useState<SubmissionFolder | null>(null)
-  const [previewFile, setPreviewFile] = useState<{ label: string; file: ReferenceFile } | null>(
+  const [previewFile, setPreviewFile] = useState<{ label: string; objectKey: string } | null>(
     null,
   )
   const [isGrading, setIsGrading] = useState(false)
@@ -125,7 +125,7 @@ export default function GradingLogDetailView({
           </div>
           {log.examSessionName && (
             <p className="mt-1 text-sm text-text-secondary">
-              Đợt thi liên quan: {log.examSessionName}
+              Học kì {log.examSessionName}
             </p>
           )}
         </div>
@@ -181,7 +181,7 @@ export default function GradingLogDetailView({
                         examPaperFile={log.examPaperFile}
                         rubricFile={log.rubricFile}
                         answerFile={log.answerFile}
-                        onFileClick={(label, file) => setPreviewFile({ label, file })}
+                        // onFileClick={(label, file) => setPreviewFile({ label, objectKey })}
                   />
             </div>
 
