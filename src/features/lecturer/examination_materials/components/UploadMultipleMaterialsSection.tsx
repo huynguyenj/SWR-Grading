@@ -44,13 +44,7 @@ export default function UploadMultipleMaterialSection({
         Materials: [
           {
             Description: "",
-            Questions: [
-              {
-                title: "",
-                content: "",
-                point: "",
-              },
-            ],
+            Questions: [],
             Question: undefined as unknown as File,
             AnswerRubric: undefined as unknown as File,
             AnswerTemplate: undefined as unknown as File,
@@ -66,7 +60,7 @@ export default function UploadMultipleMaterialSection({
     e.preventDefault()
     await onSubmit()
     onUploaded?.()
-//     onClose()
+    onClose()
   }
 
   return (
@@ -127,6 +121,7 @@ export default function UploadMultipleMaterialSection({
             <MaterialFormItem
               key={field.id}
               control={control}
+              reset={reset}
               register={register}
               errors={errors}
               materialIndex={materialIndex}

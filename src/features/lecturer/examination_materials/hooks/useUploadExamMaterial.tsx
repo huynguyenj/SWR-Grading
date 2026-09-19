@@ -56,13 +56,13 @@ export default function useUploadExamMaterial() {
       }
 
     const response = await execute({
-      apiUrl: 'exam-materials',
+      apiUrl: 'paper-sets',
       method: 'post',
       type: 'private',
       body: formData,
     })
     if (response.error) {
-      toast.error(response.error)
+      toast.error(response.error.message)
       return
     }
     toast.success('Upload thành công')

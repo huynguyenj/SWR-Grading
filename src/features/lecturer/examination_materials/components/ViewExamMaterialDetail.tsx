@@ -5,9 +5,9 @@ import SemesterStatusBadge from '@/features/admin/management/semester/components
 import type { SemesterType } from '@/features/admin/management/semester/types/semester'
 import { formatDate } from '@/utils/format'
 import useGetExamMaterialBySemester from '../hooks/useGetExamMaterialBySemester'
-import ExamMaterialCard from './ExamMaterialCard'
 import FilePreviewModal from '../../grading_exam/components/FilePreviewModal'
 import Button from '@/components/ui/button'
+import PaperSetCard from './ExamMaterialCard'
 
 interface ViewExamMaterialDetailModalProps {
   semester: SemesterType | null
@@ -30,7 +30,7 @@ export default function ViewExamMaterialDetailModal({
 
   if (!semester) return null
 
-  const examMaterials = lecturerSemesterDetail?.examMaterials ?? []
+  const examMaterials = lecturerSemesterDetail?.paperSets ?? []
 
   return (
     <Modal open={onOpen} onClose={onClose} title={semester.name} maxWidth="lg">
@@ -61,8 +61,8 @@ export default function ViewExamMaterialDetailModal({
           {!loading && examMaterials.length > 0 && (
             <div className="max-h-[55vh] space-y-2.5 overflow-y-auto pr-1">
               {examMaterials.map((material) => (
-                <ExamMaterialCard
-                  key={material.examMaterialId}
+                <PaperSetCard
+                  key={material.paperSetId}
                   material={material}
                   // onFileClick={(label, objectKey) => setPreviewFile({ label, objectKey })}
                   onRefresh={onRefresh}

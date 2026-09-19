@@ -25,6 +25,10 @@ export default function useLogin() {
         type: 'public',
         body: loginFormData
       })
+      if (data.error) {
+        toast.error(data.error.message)
+        return
+      }
       toast.success('Đăng nhập thành công')
       if (data.data.user.role == 'Admin') navigate('/admin')
       if (data.data.user.role == 'Lecturer') navigate('/lecture')

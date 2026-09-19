@@ -1,19 +1,19 @@
 import Modal from '@/components/ui/modal'
 import Button from '@/components/ui/button'
 
-interface DeleteExamMaterialModalProps {
+interface DeletePaperSetModalProps {
   open: boolean
   onDelete: () => void
   onClose: () => void
   loading: boolean
 }
 
-export default function DeleteExamMaterialModal({
+export default function DeletePaperSetModal({
   open,
   onClose,
   onDelete,
   loading
-}: DeleteExamMaterialModalProps) {
+}: DeletePaperSetModalProps) {
   return (
     <Modal open={open} onClose={onClose} title="Xác nhận">
       <div className="px-5 py-4 space-y-4">
