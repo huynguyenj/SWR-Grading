@@ -47,7 +47,7 @@ export default function useApiCall<T>() {
       console.log(error);
       data = null as unknown as T
       success = false
-      errorResponse = error as string
+      errorResponse = error as ApiResponseType<null>
     } finally {
       setLoading(false)
     }

@@ -26,13 +26,7 @@ export type MultipleExamMaterialFormType = z.infer<
 
 const emptyMaterial = {
   Description: "",
-  Questions: [
-    {
-      title: "",
-      content: "",
-      point: "",
-    },
-  ],
+  Questions: [],
   Question: undefined as unknown as File,
   AnswerRubric: undefined as unknown as File,
   AnswerTemplate: undefined as unknown as File,
@@ -109,14 +103,14 @@ export default function useUploadMultipleExamMaterials() {
       },
       )
       const response = await execute({
-        apiUrl: "exam-materials/batch",
+        apiUrl: "paper-sets/batch",
         method: "post",
         type: "private",
         body: formData,
       })
 
       if (response.error) {
-        toast.error(response.error)
+        toast.error(response.error.message)
         return
       }
       toast.success(

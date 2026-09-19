@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 export default function useDownloadExamFiles({ examMaterialId, examMaterialCode }:{ examMaterialId: string, examMaterialCode: string }) {
   const handleDownloadFiles = async () => {
       const response: Blob = await apiPrivate.get(
-      `/exam-materials/${examMaterialId}/content`,
+      `/paper-sets/${examMaterialId}/content`,
       {
             responseType: "blob",
       },

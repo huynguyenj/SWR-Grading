@@ -1,10 +1,10 @@
-export type ExamMaterialStatus = 0 | 1 | 2
-export type ExamMaterialType = {
-  examMaterialId: string
-  examMaterialCode: string
+export type PaperSetStatus = 0 | 1 | 2
+export type PaperSetType = {
+  paperSetId: string
+  paperSetCode: string
   description: string
   totalQuestions: number
-  status: ExamMaterialStatus
+  status: PaperSetStatus
   examinationId: string | null
   createdDate: string
   updatedDate: string
@@ -13,3 +13,8 @@ export type ExamMaterialType = {
   fileAnswerTemplate: string
 }
 
+export type PreviewQuestionType = {
+  title: string
+  content: string
+  point: number
+}

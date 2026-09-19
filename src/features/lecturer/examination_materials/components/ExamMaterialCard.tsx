@@ -1,15 +1,15 @@
 import { FiDownload, FiFile, FiHelpCircle, FiTrash } from 'react-icons/fi'
-import type { ExamMaterialType } from '../types/exam_material.type'
-import ExamMaterialStatusBadge from './ExamMaterialStatusBadge'
 import { toFileDisplayName } from '@/utils/file'
-import useDeleteExamMaterial from '../hooks/useDeleteExamMaterial'
 import { useState } from 'react'
 import Button from '@/components/ui/button'
-import DeleteExamMaterialModal from './DeleteExamMaterialModal'
 import useDownloadExamFiles from '../hooks/useDownloadExamFiles'
+import type { PaperSetType } from '../types/exam_material.type'
+import PaperSetStatusBadge from './PaperSetStatusBadge'
+import useDeletePaperSet from '../hooks/useDeletePaperSet'
+import DeletePaperSetModal from './DeletePaperSetModal'
 
-interface ExamMaterialCardProps {
-  material: ExamMaterialType
+interface PaperSetCardProps {
+  material: PaperSetType
   // onFileClick: (label: string, objectKey: string) => void
   onRefresh: () => void
 }
@@ -41,10 +41,10 @@ function FileChip({ label, objectKey }: FileChipProps) {
   )
 }
 
-export default function ExamMaterialCard({ material, onRefresh }: ExamMaterialCardProps) {
-  const { loading, onDelete } = useDeleteExamMaterial({ selectedExamMaterialId: material.examMaterialId, onRefresh: onRefresh })
+export default function PaperSetCard({ material, onRefresh }: PaperSetCardProps) {
+  const { loading, onDelete } = useDeletePaperSet({ selectedPaperSetId: material.paperSetId, onRefresh: onRefresh })
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const { handleDownloadFiles } = useDownloadExamFiles({ examMaterialId: material.examMaterialId, examMaterialCode: material.examMaterialCode })
+  const { handleDownloadFiles } = useDownloadExamFiles({ examMaterialId: material.paperSetId, examMaterialCode: material.paperSetCode })
   const handleOpenDeleteModal = () => {
       setIsDeleteModalOpen(prev => !prev)
   }
@@ -52,10 +52,10 @@ export default function ExamMaterialCard({ material, onRefresh }: ExamMaterialCa
     <div className="rounded-md border border-border-default p-3 space-y-2.5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-4">
-          <p className="text-xs font-medium text-text-muted">Mã đề: {material.examMaterialCode}</p>
+          <p className="text-xs font-medium text-text-muted">Mã đề: {material.paperSetCode}</p>
           <p className="text-sm font-medium text-text-primary">{material.description}</p>
         </div>
-        <ExamMaterialStatusBadge status={material.status} />
+        <PaperSetStatusBadge status={material.status} />
       </div>
 
       <div className="flex items-center gap-1.5 text-xs text-text-muted">
@@ -95,7 +95,7 @@ export default function ExamMaterialCard({ material, onRefresh }: ExamMaterialCa
         <FiDownload/>
         Tải file về
       </Button>
-      <DeleteExamMaterialModal
+      <DeletePaperSetModal
                   loading={loading}
                   onClose={() => setIsDeleteModalOpen(false)}
                   onDelete={onDelete}

@@ -1,6 +1,5 @@
 import {
   FiFileText,
-  FiPlus,
   FiTrash2,
 } from "react-icons/fi"
 import {
@@ -9,17 +8,22 @@ import {
   type Control,
   type FieldErrors,
   type UseFormRegister,
+  type UseFormReset,
 } from "react-hook-form"
 import Input from "@/components/ui/input"
 import TextArea from "@/components/ui/textarea"
 import SingleFileUploadField from "@/components/ui/SingleFileUpload"
 import { DOCX_ACCEPT } from "./UploadDocumentModal"
 import type { MultipleExamMaterialFormType } from "../hooks/useUploadMultipleExamMaterials"
+import useReadFile from "../hooks/useReadFile"
+import { useEffect } from "react"
+import Button from "@/components/ui/button"
 
 interface MaterialFormItemProps {
   control: Control<MultipleExamMaterialFormType>
   register: UseFormRegister<MultipleExamMaterialFormType>
   errors: FieldErrors<MultipleExamMaterialFormType>
+  reset: UseFormReset<MultipleExamMaterialFormType>
   materialIndex: number
   canRemove: boolean
   onRemove: () => void
@@ -56,13 +60,21 @@ export default function MaterialFormItem({
     control,
     name: `Materials.${materialIndex}.Questions`,
   })
-
+  const { handlePreviewFile, questionList } = useReadFile()
   const materialErrors = errors.Materials?.[materialIndex]
   const material = useWatch({
     control,
     name: `Materials.${materialIndex}`,
   })
-
+  useEffect(() => {
+    const updateQuestionField = () => {
+      if (questionList.length === 0) return
+      questionList.forEach((q) => {
+        append({ title: q.title, content: q.content, point: String(q.point) })
+      })
+    }
+    updateQuestionField()
+  }, [questionList])
   return (
     <div
       className=" rounded-lg border border-border-default bg-bg-primary p-4 space-y-5"
@@ -118,6 +130,70 @@ export default function MaterialFormItem({
         )}
       </div>
 
+      {/* Files */}
+      <div>
+        <h4 className="mb-2 text-sm font-semibold text-text-primary">
+          Tài liệu bài thi
+        </h4>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-1">
+          <div className="flex items-start justify-between">
+            <SingleFileUploadField
+              label="File đề (.docx)"
+              file={material.Question}
+              onChange={(file) =>
+                setQuestionFile(
+                  materialIndex,
+                  file,
+                )
+              }
+              accept={DOCX_ACCEPT}
+              error={
+                materialErrors?.Question?.message
+              }
+            />
+            <Button
+              type="button"
+              onClick={() => handlePreviewFile(material.Question)}
+              disabled={material.Question == null}
+            >
+               Kiểm tra nội dung file
+            </Button>
+          </div>
+          <div className="flex flex-col gap-3">
+            <SingleFileUploadField
+              label="File rubric (.xlsx)"
+              file={material.AnswerRubric}
+              onChange={(file) =>
+                setRubricFile(
+                  materialIndex,
+                  file,
+                )
+              }
+              accept=".pdf,.doc,.docx,.xlsx"
+              error={
+                materialErrors?.AnswerRubric?.message
+              }
+            />
+            <SingleFileUploadField
+              label="File đáp án (.docx)"
+              file={material.AnswerTemplate}
+              onChange={(file) =>
+                setAnswerTemplateFile(
+                  materialIndex,
+                  file,
+                )
+              }
+              accept={DOCX_ACCEPT}
+              error={
+                materialErrors?.AnswerTemplate?.message
+              }
+            />
+
+          </div>
+        </div>
+      </div>
+      { questionList.length > 0 && 
+        <>
       {/* Questions */}
       <div>
         <div className="mb-2 flex items-center justify-between">
@@ -133,7 +209,7 @@ export default function MaterialFormItem({
             )}
           </div>
 
-          <button
+          {/* <button
             type="button"
             onClick={() =>
               append({
@@ -146,7 +222,7 @@ export default function MaterialFormItem({
           >
             <FiPlus className="h-4 w-4" />
             Thêm câu hỏi
-          </button>
+          </button> */}
         </div>
 
         <div className="space-y-3">
@@ -219,57 +295,8 @@ export default function MaterialFormItem({
           )}
         </div>
       </div>
-
-      {/* Files */}
-      <div>
-        <h4 className="mb-2 text-sm font-semibold text-text-primary">
-          Tài liệu bài thi
-        </h4>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <SingleFileUploadField
-            label="File đề (.docx)"
-            file={material.Question}
-            onChange={(file) =>
-              setQuestionFile(
-                materialIndex,
-                file,
-              )
-            }
-            accept={DOCX_ACCEPT}
-            error={
-              materialErrors?.Question?.message
-            }
-          />
-          <SingleFileUploadField
-            label="File rubric"
-            file={material.AnswerRubric}
-            onChange={(file) =>
-              setRubricFile(
-                materialIndex,
-                file,
-              )
-            }
-            accept=".pdf,.doc,.docx,.xlsx"
-            error={
-              materialErrors?.AnswerRubric?.message
-            }
-          />
-          <SingleFileUploadField
-            label="File đáp án (.docx)"
-            file={material.AnswerTemplate}
-            onChange={(file) =>
-              setAnswerTemplateFile(
-                materialIndex,
-                file,
-              )
-            }
-            accept={DOCX_ACCEPT}
-            error={
-              materialErrors?.AnswerTemplate?.message
-            }
-          />
-        </div>
-      </div>
+        </>
+      }
     </div>
   )
 }
