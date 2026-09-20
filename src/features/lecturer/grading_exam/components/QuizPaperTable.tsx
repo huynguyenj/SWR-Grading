@@ -1,14 +1,10 @@
 import { FiHelpCircle, FiFile, FiCalendar, FiZap } from 'react-icons/fi'
 import type { QuizPaper } from '../types/grading-exam.type'
 import QuizStatusBadge from './QuizBadge'
+import { formatDate } from '@/utils/format'
 
 interface QuizPapersTableProps {
   quizzes: QuizPaper[]
-}
-
-function formatDate(iso: string) {
-  const d = new Date(iso)
-  return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
 }
 
 export default function QuizPapersTable({ quizzes }: QuizPapersTableProps) {
