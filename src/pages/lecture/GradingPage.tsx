@@ -65,7 +65,7 @@ export default function GradingPage() {
       {activeTab === 'quizzes' ? (
         <QuizPapersTable quizzes={mockQuizPapers} />
       ) : (
-        <GradingLogsTable logs={logs} onOpen={(log) => setSelectedLogId(log.id)} />
+        <GradingLogsTable />
       )}
 
       <CreateGradingLogModal
