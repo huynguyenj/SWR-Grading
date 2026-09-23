@@ -13,7 +13,11 @@ const diarySchema = z.object({
 
 type DiarySchemaType = z.infer<typeof diarySchema>
 
-export default function useCreateDiary() {
+type UseCreateDiaryType = {
+  onRefresh: () => void
+}
+
+export default function useCreateDiary({ onRefresh }: UseCreateDiaryType) {
   const { formState: { errors }, register, handleSubmit, reset } = useForm<DiarySchemaType>({ resolver: zodResolver(diarySchema) })
   const { execute, loading } = useApiCall()
   const onManualSubmit = async (formData: DiarySchemaType) => {
@@ -27,7 +31,9 @@ export default function useCreateDiary() {
             toast.error(response.error.message)
             return
       }
+      onRefresh()
       toast.success('Tạo nhật kí thành công')
+      
   }
   const onAutoSubmit = async (paperSet: PaperSetType) => {
       const formData: DiarySchemaType = {
@@ -45,6 +51,7 @@ export default function useCreateDiary() {
             toast.error(response.error.message)
             return
       }
+      onRefresh()
       toast.success('Tạo nhật kí thành công')
   }
   return { onAutoSubmit, onManualSubmit, reset, register, errors, handleSubmit, loading }

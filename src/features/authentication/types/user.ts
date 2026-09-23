@@ -1,6 +1,6 @@
 export type UserType = {
    id: string
-   fullname: string
+   fullName: string
    role: string
 }
 

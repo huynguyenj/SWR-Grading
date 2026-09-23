@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import useApiCall from '@/hooks/useApiCall'
 import type { LoginType } from '../types/user'
 import { useNavigate } from 'react-router'
+import { useAuthStore } from '../store/auth-store'
 
 const LoginFormSchema = z.object({
   email: z.email({ error: 'Hãy nhập đúng định dạng của email @gmail.com' }),
@@ -16,6 +17,7 @@ const LoginFormSchema = z.object({
 export type LoginFormType = z.infer<typeof LoginFormSchema>
 export default function useLogin() {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormType>({ resolver: zodResolver(LoginFormSchema) })
+  const authStore = useAuthStore()
   const { execute, loading } = useApiCall<LoginType>()
   const navigate = useNavigate()
   const onSubmit = async (loginFormData: LoginFormType) => {
@@ -30,6 +32,8 @@ export default function useLogin() {
         return
       }
       toast.success('Đăng nhập thành công')
+      authStore.setAccessToken(data.data.accessToken)
+      authStore.setAuthInfo(data.data.accessToken, data.data.user.id, data.data.user.role, data.data.user.fullName)
       if (data.data.user.role == 'Admin') navigate('/admin')
       if (data.data.user.role == 'Lecturer') navigate('/lecture')
       

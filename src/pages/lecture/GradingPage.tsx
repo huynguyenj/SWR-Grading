@@ -2,10 +2,9 @@ import Tabs from '@/components/ui/tabs'
 import CreateGradingLogModal from '@/features/lecturer/grading_exam/components/CreateGradingModal'
 import GradingLogDetailView from '@/features/lecturer/grading_exam/components/GradingLogDetailView'
 import GradingLogsTable from '@/features/lecturer/grading_exam/components/GradingLogsTable'
-import QuizPapersTable from '@/features/lecturer/grading_exam/components/QuizPaperTable'
-import { mockGradingLogs, mockQuizPapers, type GradingLog } from '@/features/lecturer/grading_exam/types/grading-exam.type'
+import PaperSetTable from '@/features/lecturer/grading_exam/components/PaperSetTable'
+import { mockGradingLogs, type GradingLog } from '@/features/lecturer/grading_exam/types/grading-exam.type'
 import { useState } from 'react'
-import { FiPlus } from 'react-icons/fi'
 
 export default function GradingPage() {
   const [activeTab, setActiveTab] = useState<'quizzes' | 'logs'>('quizzes')
@@ -42,7 +41,7 @@ export default function GradingPage() {
             Quản lý bài kiểm tra và nhật ký chấm điểm bằng AI.
           </p>
         </div>
-        {activeTab === 'logs' && (
+        {/* {activeTab === 'logs' && (
           <button
             onClick={() => setCreateModalOpen(true)}
             className="flex items-center gap-2 rounded-md bg-brand-orange px-4 py-2 text-sm font-medium text-white hover:bg-brand-rust transition-colors shrink-0"
@@ -50,7 +49,7 @@ export default function GradingPage() {
             <FiPlus className="w-4 h-4" />
             Tạo nhật ký
           </button>
-        )}
+        )} */}
       </div>
 
       <Tabs
@@ -63,7 +62,7 @@ export default function GradingPage() {
       />
 
       {activeTab === 'quizzes' ? (
-        <QuizPapersTable quizzes={mockQuizPapers} />
+        <PaperSetTable />
       ) : (
         <GradingLogsTable />
       )}
