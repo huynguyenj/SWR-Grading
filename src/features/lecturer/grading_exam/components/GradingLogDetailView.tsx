@@ -1,111 +1,62 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FiArrowLeft, FiCpu, FiDownload } from 'react-icons/fi'
-import FilePreviewModal from './FilePreviewModal'
-import type { ParsedSubmission } from './SubmissionFilesZone'
-import type { GradingLog, SubmissionFolder } from '../types/grading-exam.type'
-import GradingLogStatusBadge from './GradingLogStatusBadge'
-import ReferenceFilesSection from './ReferenceFileSection'
+import { toast } from 'react-toastify'
+import useApiCall from '@/hooks/useApiCall'
+import useGetGradingDiaryDetail from '../hooks/useGetGradingDiaryDetail'
+import type { SubmissionDetail } from '../types/grading-exam.type'
 import SubmissionUploadDropzone from './SubmissionFilesZone'
 import SubmissionFilesTable from './SubmissionFilesTable'
 import FileGradingDetailModal from './FileGradingDetailModal'
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
-const sampleAiLogTemplate = [
-  'Đang giải nén và đọc cấu trúc folder bài làm...',
-  'Đối chiếu bài làm với rubric chấm điểm...',
-  'Kiểm tra tiêu chí 1: Đặc tả yêu cầu',
-  'Kiểm tra tiêu chí 2: Mô hình hóa & thiết kế',
-  'Kiểm tra tiêu chí 3: Trình bày & định dạng',
-  'Không phát hiện dấu hiệu đạo văn đáng kể.',
-  'Tổng hợp điểm và tạo nhận xét tự động...',
-]
-
-function randomScore() {
-  // ~15% khả năng ra điểm 0 để minh họa tính năng highlight
-  if (Math.random() < 0.15) return 0
-  return Math.round((Math.random() * 4 + 6) * 10) / 10 // 6.0 - 10.0
-}
-
 interface GradingLogDetailViewProps {
-  log: GradingLog
+  diaryId: string
+  diaryName: string
   onBack: () => void
-  /** Cập nhật lại nhật ký hiện tại — cha (GradingPage) chịu trách nhiệm ghi vào state `logs` */
-  onUpdateLog: (updater: (log: GradingLog) => GradingLog) => void
 }
 
 /**
- * Màn hình chi tiết 1 nhật ký chấm điểm: upload bài làm, chạy AI Grading,
- * theo dõi tiến độ/điểm từng bài nộp, xem chi tiết + chấm lại, xuất Excel.
- * Toàn bộ logic của riêng màn hình này (isGrading, viewingFolder...) sống ở đây,
- * chỉ ghi thay đổi dữ liệu ra ngoài qua `onUpdateLog`.
+ * Màn hình chi tiết 1 nhật ký chấm điểm — component ĐỘC LẬP, tự fetch dữ liệu
+ * qua `diaryId` thay vì nhận nguyên object + callback mutate từ cha (khác bản cũ
+ * dùng data mock). Cha chỉ cần biết đang xem nhật ký nào (`diaryId`/`diaryName`).
  */
 export default function GradingLogDetailView({
-  log,
+  diaryId,
+  diaryName,
   onBack,
-  onUpdateLog,
 }: GradingLogDetailViewProps) {
-  const [viewingFolder, setViewingFolder] = useState<SubmissionFolder | null>(null)
-  const [previewFile, setPreviewFile] = useState<{ label: string; objectKey: string } | null>(
-    null,
-  )
-  const [isGrading, setIsGrading] = useState(false)
+  const { listSubmission, loading, handleGetListSubmission } = useGetGradingDiaryDetail()
+  const [viewingSubmission, setViewingSubmission] = useState<SubmissionDetail | null>(null)
+  const { execute: executeAiGrading, loading: isGrading } = useApiCall()
 
-  function updateFolder(folderId: string, updater: (folder: SubmissionFolder) => SubmissionFolder) {
-    onUpdateLog((prev) => ({
-      ...prev,
-      folders: prev.folders.map((f) => (f.id === folderId ? updater(f) : f)),
-    }))
-  }
+  useEffect(() => {
+    handleGetListSubmission(diaryId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [diaryId])
 
-  function handleFilesSelected(parsed: ParsedSubmission[]) {
-    const newFolders: SubmissionFolder[] = parsed.map((p) => ({
-      id: crypto.randomUUID(),
-      fileName: p.fileName,
-      fileSizeLabel: p.fileSizeLabel,
-      status: 'not_graded',
-      score: null,
-      aiLogs: [],
-      comment: '',
-    }))
-    onUpdateLog((prev) => ({ ...prev, folders: [...prev.folders, ...newFolders] }))
-  }
+  const submissions = listSubmission ?? []
+  const gradedCount = submissions.filter((s) => s.status !== '0').length
+  const totalCount = submissions.length
+  const canExport = totalCount > 0 && submissions.every((s) => s.status !== '0')
 
+  // GIẢ ĐỊNH endpoint — chưa được cung cấp, cần xác nhận lại route thật với BE
   async function handleAIGrading() {
-    if (isGrading) return
-    const targets = log.folders.filter((f) => f.status !== 'graded')
-    if (targets.length === 0) return
-
-    setIsGrading(true)
-    onUpdateLog((prev) => ({ ...prev, status: 'in_progress' }))
-
-    for (const folder of targets) {
-      updateFolder(folder.id, (f) => ({ ...f, status: 'grading' }))
-      await delay(700)
-      const score = randomScore()
-      updateFolder(folder.id, (f) => ({
-        ...f,
-        status: 'graded',
-        score,
-        aiLogs: sampleAiLogTemplate,
-        comment:
-          score === 0
-            ? 'AI không thể chấm điểm do thiếu tài liệu bắt buộc hoặc bài làm không hợp lệ.'
-            : 'Bài làm đáp ứng các tiêu chí trong rubric chấm điểm.',
-      }))
+    const response = await executeAiGrading({
+      apiUrl: `/grading-diaries/${diaryId}/ai-grading`,
+      method: 'post',
+      type: 'private',
+    })
+    if (response.error) {
+      toast.error(response.error.message)
+      return
     }
-
-    onUpdateLog((prev) => ({ ...prev, status: 'completed' }))
-    setIsGrading(false)
+    toast.success('Đã bắt đầu chấm điểm bằng AI')
+    handleGetListSubmission(diaryId)
   }
 
-  function handleSaveRegrade(folderId: string, score: number, comment: string) {
-    updateFolder(folderId, (f) => ({ ...f, score, comment }))
+  // Chưa có endpoint upload bài nộp thật — để rõ TODO thay vì giả lập thêm dữ liệu cục bộ
+  function handleFilesSelected() {
+    toast.info('Chưa nối API upload bài nộp thật — cần bổ sung endpoint từ BE.')
   }
-
-  const gradedCount = log.folders.filter((f) => f.status === 'graded').length
-  const totalCount = log.folders.length
-  const canExport = log.status === 'completed' && totalCount > 0
 
   return (
     <div className="space-y-5">
@@ -119,15 +70,7 @@ export default function GradingLogDetailView({
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-xl font-semibold text-text-primary">{log.name}</h1>
-            <GradingLogStatusBadge status={log.status} />
-          </div>
-          {log.examSessionName && (
-            <p className="mt-1 text-sm text-text-secondary">
-              Học kì {log.examSessionName}
-            </p>
-          )}
+          <h1 className="text-xl font-semibold text-text-primary">{diaryName}</h1>
         </div>
 
         <div className="flex items-center gap-2">
@@ -157,7 +100,7 @@ export default function GradingLogDetailView({
           <div className="flex items-center justify-between text-sm mb-2">
             <span className="text-text-secondary">Tiến độ chấm điểm</span>
             <span className="font-medium text-text-primary">
-              {gradedCount}/{totalCount} folder
+              {gradedCount}/{totalCount} bài nộp
             </span>
           </div>
           <div className="h-2 w-full rounded-full bg-bg-muted overflow-hidden">
@@ -168,38 +111,36 @@ export default function GradingLogDetailView({
           </div>
         </div>
       )}
-      <div className='flex gap-3'>
-            {/* Upload file bài làm */}
-            <div className='flex-3'>
-                  <h3 className="mb-2 text-sm font-semibold text-text-primary">Upload bài làm</h3>
-                  <SubmissionUploadDropzone onFilesSelected={handleFilesSelected} />
-            </div>
-            {/* Tài liệu tham khảo: đề thi / rubric / đáp án */}
-            <div>
-                  <h3 className="mb-2 text-sm font-semibold text-text-primary">Tài liệu tham khảo</h3>
-                  <ReferenceFilesSection
-                        examPaperFile={log.examPaperFile}
-                        rubricFile={log.rubricFile}
-                        answerFile={log.answerFile}
-                        // onFileClick={(label, file) => setPreviewFile({ label, objectKey })}
-                  />
-            </div>
 
+      {/* Upload file bài làm */}
+      <div>
+        <h3 className="mb-2 text-sm font-semibold text-text-primary">Upload bài làm</h3>
+        <SubmissionUploadDropzone onFilesSelected={handleFilesSelected} />
       </div>
+
+      {/*
+        TODO: "Tài liệu tham khảo" (đề/rubric/đáp án) đã bỏ tạm — SubmissionDetail
+        không có field file đề/rubric/đáp án. Cần API riêng lấy file theo paperSetId
+        của nhật ký này rồi mới hiển thị lại được đúng dữ liệu thật.
+      */}
 
       {/* Danh sách bài nộp */}
       <div>
         <h3 className="mb-2 text-sm font-semibold text-text-primary">Danh sách bài nộp</h3>
-        <SubmissionFilesTable folders={log.folders} onView={setViewingFolder} />
+        {loading ? (
+          <div className="rounded-lg border border-border-default bg-bg-primary py-16 text-center">
+            <p className="text-sm text-text-muted">Đang tải danh sách bài nộp...</p>
+          </div>
+        ) : (
+          <SubmissionFilesTable submissions={submissions} onView={setViewingSubmission} />
+        )}
       </div>
-      
-      <FileGradingDetailModal
-        folder={viewingFolder}
-        onClose={() => setViewingFolder(null)}
-        onSaveRegrade={handleSaveRegrade}
-      />
 
-      <FilePreviewModal data={previewFile} onClose={() => setPreviewFile(null)} />
+      <FileGradingDetailModal
+        submission={viewingSubmission}
+        onClose={() => setViewingSubmission(null)}
+        onSaved={() => handleGetListSubmission(diaryId)}
+      />
     </div>
   )
 }

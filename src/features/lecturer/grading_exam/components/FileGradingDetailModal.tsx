@@ -1,64 +1,92 @@
-import  { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { FiTerminal, FiEdit3 } from 'react-icons/fi'
-import type { SubmissionFolder } from '../types/grading-exam.type'
+import type { SubmissionDetail } from '../types/grading-exam.type'
 import Modal from '@/components/ui/modal'
 import Button from '@/components/ui/button'
 import Input from '@/components/ui/input'
+import useUpdateSubmissionScore from '../hooks/useUpdateSubmissionScore'
 
 interface FileGradingDetailModalProps {
-  folder: SubmissionFolder | null
+  submission: SubmissionDetail | null
   onClose: () => void
-  onSaveRegrade: (folderId: string, score: number, comment: string) => void
+  /** Gọi lại sau khi lưu điểm thành công — dùng để cha refetch danh sách */
+  onSaved: () => void
 }
 
 export default function FileGradingDetailModal({
-  folder,
+  submission,
   onClose,
-  onSaveRegrade,
+  onSaved,
 }: FileGradingDetailModalProps) {
   const [score, setScore] = useState('')
   const [comment, setComment] = useState('')
+  const { updateScore, loading } = useUpdateSubmissionScore()
 
-  // Đồng bộ lại form mỗi khi mở 1 folder khác
+  // Đồng bộ lại form mỗi khi mở 1 submission khác
   useEffect(() => {
-    const handleScoreAndComment = () => {
-      if (folder) {
-      setScore(folder.score?.toString() ?? '')
-      setComment(folder.comment ?? '')
+    const handleUpdateSubmission = () => {
+        if (submission) {
+          setScore((submission.lecturerScore ?? submission.aiScore)?.toString() ?? '')
+          setComment(submission.comment ?? '')
+        }
     }
-    }
-    handleScoreAndComment()
-  }, [folder])
+    handleUpdateSubmission()
+  }, [submission])
 
-  if (!folder) return null
+  if (!submission) return null
 
-  function handleSave() {
-    if (!folder) return
+  async function handleSave() {
+    if (!submission) return
     const parsedScore = Number(score)
-    onSaveRegrade(folder.id, Number.isNaN(parsedScore) ? 0 : parsedScore, comment)
-    onClose()
+    const success = await updateScore(
+      submission.submissionId,
+      Number.isNaN(parsedScore) ? 0 : parsedScore,
+      comment,
+    )
+    if (success) {
+      onSaved()
+      onClose()
+    }
   }
 
   return (
-    <Modal open={folder !== null} onClose={onClose} title={folder.fileName} maxWidth="full">
+    <Modal
+      open={submission !== null}
+      onClose={onClose}
+      title={submission.submissionFile}
+      maxWidth="full"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border-default">
-        {/* ===== Bên trái: logs AI đã chấm ===== */}
+        {/* ===== Bên trái: log AI + điểm theo tiêu chí ===== */}
         <div className="flex flex-col max-h-[70vh]">
           <div className="flex items-center gap-2 border-b border-border-default px-5 py-3 shrink-0">
             <FiTerminal className="w-4 h-4 text-text-muted" />
             <h3 className="text-sm font-semibold text-text-primary">Nhật ký chấm điểm AI</h3>
           </div>
-          <div className="flex-1 overflow-y-auto px-5 py-4">
-            <ul className="space-y-2 font-mono text-xs text-text-secondary">
-              {folder.aiLogs.map((line, i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="text-text-muted shrink-0">
-                    [{String(i + 1).padStart(2, '0')}]
-                  </span>
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+            {submission.criteriaScores.length > 0 && (
+              <div>
+                <p className="mb-1.5 text-xs font-medium text-text-muted">Điểm theo tiêu chí</p>
+                <ul className="space-y-1">
+                  {submission.criteriaScores.map((c) => (
+                    <li
+                      key={c.criterionId}
+                      className="flex items-center justify-between rounded-md bg-bg-muted/50 px-3 py-1.5 text-sm"
+                    >
+                      <span className="text-text-secondary">{c.criterionName}</span>
+                      <span className="font-medium text-text-primary">{c.score.toFixed(1)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div>
+              <p className="mb-1.5 text-xs font-medium text-text-muted">Log chi tiết</p>
+              <p className="whitespace-pre-line font-mono text-xs text-text-secondary">
+                {submission.aiLogs || 'Chưa có log.'}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -74,7 +102,7 @@ export default function FileGradingDetailModal({
                 Điểm AI đã chấm
               </label>
               <p className="text-2xl font-semibold text-text-primary">
-                {folder.score?.toFixed(1)}
+                {submission.aiScore !== null ? submission.aiScore.toFixed(1) : '—'}
                 <span className="ml-1 text-sm font-normal text-text-muted">/ 10</span>
               </p>
             </div>
@@ -84,7 +112,7 @@ export default function FileGradingDetailModal({
                 Điểm chấm lại
               </label>
               <Input
-                size='basic'                
+                size="basic"
                 type="number"
                 min={0}
                 max={10}
@@ -109,16 +137,11 @@ export default function FileGradingDetailModal({
           </div>
 
           <div className="flex items-center justify-end gap-2 border-t border-border-default px-5 py-3 shrink-0">
-            <Button
-              variant='basic'
-              onClick={onClose}
-            >
+            <Button variant="basic" onClick={onClose} type="button">
               Hủy
             </Button>
-            <Button
-              onClick={handleSave}
-            >
-              Lưu điểm
+            <Button onClick={handleSave} disabled={loading} type="button">
+              {loading ? 'Đang lưu...' : 'Lưu điểm'}
             </Button>
           </div>
         </div>

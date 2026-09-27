@@ -1,32 +1,21 @@
 import Tabs from '@/components/ui/tabs'
-import CreateGradingLogModal from '@/features/lecturer/grading_exam/components/CreateGradingModal'
 import GradingLogDetailView from '@/features/lecturer/grading_exam/components/GradingLogDetailView'
 import GradingLogsTable from '@/features/lecturer/grading_exam/components/GradingLogsTable'
 import PaperSetTable from '@/features/lecturer/grading_exam/components/PaperSetTable'
-import { mockGradingLogs, type GradingLog } from '@/features/lecturer/grading_exam/types/grading-exam.type'
+import type { GradingDiaryType } from '@/features/lecturer/grading_exam/types/grading-diary.type'
 import { useState } from 'react'
 
 export default function GradingPage() {
   const [activeTab, setActiveTab] = useState<'quizzes' | 'logs'>('quizzes')
-  const [logs, setLogs] = useState<GradingLog[]>(mockGradingLogs)
-  const [selectedLogId, setSelectedLogId] = useState<string | null>(null)
-  const [createModalOpen, setCreateModalOpen] = useState(false)
-
-  const selectedLog = logs.find((l) => l.id === selectedLogId) ?? null
-
-  function handleCreateLog(log: GradingLog) {
-    setLogs((prev) => [log, ...prev])
-  }
+  const [selectedDiary, setSelectedDiary] = useState<GradingDiaryType | null>(null)
 
   // ================= DETAIL VIEW =================
-  if (selectedLog) {
+  if (selectedDiary) {
     return (
       <GradingLogDetailView
-        log={selectedLog}
-        onBack={() => setSelectedLogId(null)}
-        onUpdateLog={(updater) =>
-          setLogs((prev) => prev.map((l) => (l.id === selectedLog.id ? updater(l) : l)))
-        }
+        diaryId={selectedDiary.gradingDiaryId}
+        diaryName={selectedDiary.name}
+        onBack={() => setSelectedDiary(null)}
       />
     )
   }
@@ -41,15 +30,6 @@ export default function GradingPage() {
             Quản lý bài kiểm tra và nhật ký chấm điểm bằng AI.
           </p>
         </div>
-        {/* {activeTab === 'logs' && (
-          <button
-            onClick={() => setCreateModalOpen(true)}
-            className="flex items-center gap-2 rounded-md bg-brand-orange px-4 py-2 text-sm font-medium text-white hover:bg-brand-rust transition-colors shrink-0"
-          >
-            <FiPlus className="w-4 h-4" />
-            Tạo nhật ký
-          </button>
-        )} */}
       </div>
 
       <Tabs
@@ -67,11 +47,11 @@ export default function GradingPage() {
         <GradingLogsTable />
       )}
 
-      <CreateGradingLogModal
-        open={createModalOpen}
-        onClose={() => setCreateModalOpen(false)}
-        onCreate={handleCreateLog}
-      />
+      {/*
+        TODO: CreateGradingLogModal vẫn đang dùng kiểu dữ liệu mock (onCreate nhận
+        GradingLog cũ) — cần chuyển sang gọi API thật + onRefresh giống pattern
+        CreateSemesterModal/CreateExamSessionModal ở lượt chỉnh sau.
+      */}
     </div>
   )
 }
