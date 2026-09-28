@@ -1,4 +1,4 @@
-export type SubmissionStatus = '0' | '1' | '2' | '3'
+import type { SubmissionStatus } from "./submission.type"
 
 export interface CriterionScore {
   criterionId: string

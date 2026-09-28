@@ -1,14 +1,14 @@
 import useApiCall from "@/hooks/useApiCall"
-import type { SubmissionDetail } from "../types/grading-exam.type"
 import { useState } from "react"
 import { toast } from "react-toastify"
+import type { GradingDiaryDetailType } from "../types/grading-diary.type"
 
 export default function useGetGradingDiaryDetail() {
-  const { execute, loading } = useApiCall<SubmissionDetail[]>()
-  const [listSubmission, setListSubmissions] = useState<SubmissionDetail[]>()
-  const handleGetListSubmission = async (diaryId: string) => {
+  const { execute, loading } = useApiCall<GradingDiaryDetailType>()
+  const [diaryDetail, setDiaryDetail] = useState<GradingDiaryDetailType>()
+  const handleGetDiaryDetail = async (diaryId: string) => {
       const response = await execute({
-            apiUrl: `grading-diaries/${diaryId}/submissions`,
+            apiUrl: `grading-diaries/${diaryId}`,
             method: 'get',
             type: 'private'
       })
@@ -16,8 +16,8 @@ export default function useGetGradingDiaryDetail() {
             toast.error(response.error.message)
             return
       }
-      setListSubmissions(response.data)
+      setDiaryDetail(response.data)
   }
 
-  return { loading, listSubmission, handleGetListSubmission }
+  return { loading, diaryDetail, handleGetDiaryDetail,  }
 }

@@ -1,20 +1,33 @@
-import { FiFile, FiEye } from 'react-icons/fi'
-import type { SubmissionDetail } from '../types/grading-exam.type'
+import { FiFile, FiEye, FiCalendar } from 'react-icons/fi'
+import type { SubmissionStatus, SubmissionType } from '../types/submission.type'
 import SubmissionStatusBadge from './SubmissionFileBadge'
+import { formatDate } from '@/utils/format'
 
 interface SubmissionFilesTableProps {
-  submissions: SubmissionDetail[]
-  onView: (submission: SubmissionDetail) => void
+  submissions: SubmissionType[]
+  onView: (submission: SubmissionType) => void
 }
 
-function ScoreCell({ score }: { score: number | null }) {
-  if (score === null) return <span className="text-text-muted">—</span>
-  const isZero = score === 0
+// SubmissionType không còn statusName từ BE nên tự map nhãn theo enum
+const STATUS_LABEL: Record<SubmissionStatus, string> = {
+  '0': 'Đã nộp',
+  '1': 'AI đã chấm',
+  '2': 'GV đã duyệt',
+  '3': 'Hoàn tất',
+}
+
+/**
+ * aiScore/lecturerScore giờ là `number` (không null) nên bài chưa chấm sẽ mang giá trị
+ * mặc định 0 — phải dựa vào status để biết điểm đã thật sự có hay chưa,
+ * nếu không sẽ highlight đỏ nhầm cho mọi bài mới nộp.
+ */
+function ScoreCell({ score, visible }: { score: number; visible: boolean }) {
+  if (!visible) return <span className="text-text-muted">—</span>
   return (
     <span
       className={[
         'inline-flex items-center rounded-md px-2 py-0.5 text-sm font-semibold',
-        isZero ? 'bg-danger/10 text-danger' : 'text-text-primary',
+        score === 0 ? 'bg-danger/10 text-danger' : 'text-text-primary',
       ].join(' ')}
     >
       {score.toFixed(1)}
@@ -39,7 +52,7 @@ export default function SubmissionFilesTable({ submissions, onView }: Submission
         <thead>
           <tr className="border-b border-border-default bg-bg-muted/50 text-left">
             <th className="px-4 py-3 font-medium text-text-secondary">File bài làm</th>
-            <th className="px-4 py-3 font-medium text-text-secondary">Sinh viên</th>
+            <th className="px-4 py-3 font-medium text-text-secondary">Ngày nộp</th>
             <th className="px-4 py-3 font-medium text-text-secondary">Trạng thái</th>
             <th className="px-4 py-3 font-medium text-text-secondary">Điểm AI</th>
             <th className="px-4 py-3 font-medium text-text-secondary">Điểm GV</th>
@@ -48,10 +61,11 @@ export default function SubmissionFilesTable({ submissions, onView }: Submission
         </thead>
         <tbody>
           {submissions.map((submission) => {
-            const isZero =
-              submission.aiScore === 0 || submission.lecturerScore === 0
-            // Chưa có bản ghi AI chấm (status Submitted) thì chưa xem chi tiết được
-            const canView = submission.status !== '0'
+            const aiVisible = submission.status !== '0'
+            const lecturerVisible = submission.status === '2' || submission.status === '3'
+            // Điểm cuối cùng: ưu tiên điểm giảng viên nếu đã duyệt
+            const finalScore = lecturerVisible ? submission.lecturerScore : submission.aiScore
+            const isZero = aiVisible && finalScore === 0
 
             return (
               <tr
@@ -68,30 +82,30 @@ export default function SubmissionFilesTable({ submissions, onView }: Submission
                   </div>
                 </td>
                 <td className="px-4 py-3 text-text-secondary">
-                  <div className="flex flex-col">
-                    <span className="text-text-primary">{submission.studentName}</span>
-                    <span className="text-xs text-text-muted">{submission.studentCode}</span>
+                  <div className="flex items-center gap-1.5">
+                    <FiCalendar className="w-3.5 h-3.5 text-text-muted" />
+                    {formatDate(submission.createdDate)}
                   </div>
                 </td>
                 <td className="px-4 py-3">
                   <SubmissionStatusBadge
                     status={submission.status}
-                    statusName={submission.statusName}
+                    statusName={STATUS_LABEL[submission.status]}
                   />
                 </td>
                 <td className="px-4 py-3">
-                  <ScoreCell score={submission.aiScore} />
+                  <ScoreCell score={submission.aiScore} visible={aiVisible} />
                 </td>
                 <td className="px-4 py-3">
-                  <ScoreCell score={submission.lecturerScore} />
+                  <ScoreCell score={submission.lecturerScore} visible={lecturerVisible} />
                 </td>
                 <td className="px-4 py-3 text-right">
                   <button
                     onClick={() => onView(submission)}
-                    disabled={!canView}
+                    disabled={!aiVisible}
                     className="rounded-md p-1.5 text-text-muted enabled:hover:bg-bg-muted enabled:hover:text-text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                     aria-label="Xem chi tiết chấm điểm"
-                    title={!canView ? 'Chưa có kết quả chấm AI' : 'Xem chi tiết'}
+                    title={!aiVisible ? 'Chưa có kết quả chấm AI' : 'Xem chi tiết'}
                   >
                     <FiEye className="w-4 h-4" />
                   </button>

@@ -1,44 +1,40 @@
 import { useEffect, useState } from 'react'
-import { FiArrowLeft, FiCpu, FiDownload } from 'react-icons/fi'
+import { FiArrowLeft, FiCpu, FiDownload, FiFileText, FiUser } from 'react-icons/fi'
 import { toast } from 'react-toastify'
 import useApiCall from '@/hooks/useApiCall'
 import useGetGradingDiaryDetail from '../hooks/useGetGradingDiaryDetail'
-import type { SubmissionDetail } from '../types/grading-exam.type'
+import type { SubmissionType } from '../types/submission.type'
 import SubmissionUploadDropzone from './SubmissionFilesZone'
 import SubmissionFilesTable from './SubmissionFilesTable'
 import FileGradingDetailModal from './FileGradingDetailModal'
 
 interface GradingLogDetailViewProps {
   diaryId: string
+  /** Chỉ dùng làm tiêu đề tạm trong lúc đang tải chi tiết */
   diaryName: string
   onBack: () => void
 }
 
-/**
- * Màn hình chi tiết 1 nhật ký chấm điểm — component ĐỘC LẬP, tự fetch dữ liệu
- * qua `diaryId` thay vì nhận nguyên object + callback mutate từ cha (khác bản cũ
- * dùng data mock). Cha chỉ cần biết đang xem nhật ký nào (`diaryId`/`diaryName`).
- */
 export default function GradingLogDetailView({
   diaryId,
   diaryName,
   onBack,
 }: GradingLogDetailViewProps) {
-  const { listSubmission, loading, handleGetListSubmission } = useGetGradingDiaryDetail()
-  const [viewingSubmission, setViewingSubmission] = useState<SubmissionDetail | null>(null)
+  const { diaryDetail, loading, handleGetDiaryDetail } = useGetGradingDiaryDetail()
+  const [viewingSubmission, setViewingSubmission] = useState<SubmissionType | null>(null)
   const { execute: executeAiGrading, loading: isGrading } = useApiCall()
 
   useEffect(() => {
-    handleGetListSubmission(diaryId)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    handleGetDiaryDetail(diaryId)
   }, [diaryId])
-
-  const submissions = listSubmission ?? []
-  const gradedCount = submissions.filter((s) => s.status !== '0').length
+  console.log(diaryDetail);
+  
+  const submissions = diaryDetail?.submissions ?? []
   const totalCount = submissions.length
-  const canExport = totalCount > 0 && submissions.every((s) => s.status !== '0')
+  // Status '0' = mới nộp, chưa qua AI chấm
+  const gradedCount = submissions.filter((s) => s.status !== '0').length
+  const canExport = totalCount > 0 && gradedCount === totalCount
 
-  // GIẢ ĐỊNH endpoint — chưa được cung cấp, cần xác nhận lại route thật với BE
   async function handleAIGrading() {
     const response = await executeAiGrading({
       apiUrl: `/grading-diaries/${diaryId}/ai-grading`,
@@ -50,10 +46,10 @@ export default function GradingLogDetailView({
       return
     }
     toast.success('Đã bắt đầu chấm điểm bằng AI')
-    handleGetListSubmission(diaryId)
+    handleGetDiaryDetail(diaryId)
   }
 
-  // Chưa có endpoint upload bài nộp thật — để rõ TODO thay vì giả lập thêm dữ liệu cục bộ
+  // Chưa có endpoint upload bài nộp thật
   function handleFilesSelected() {
     toast.info('Chưa nối API upload bài nộp thật — cần bổ sung endpoint từ BE.')
   }
@@ -69,8 +65,27 @@ export default function GradingLogDetailView({
       </button>
 
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-semibold text-text-primary">{diaryName}</h1>
+        <div className="min-w-0">
+          <h1 className="text-xl font-semibold text-text-primary">
+            {diaryDetail?.name ?? diaryName}
+          </h1>
+
+          {diaryDetail?.content && (
+            <p className="mt-1 text-sm text-text-secondary">{diaryDetail.content}</p>
+          )}
+
+          {diaryDetail && (
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-muted">
+              <span className="flex items-center gap-1.5">
+                <FiFileText className="w-3.5 h-3.5" />
+                Bộ đề: {diaryDetail.paperSetCode}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <FiUser className="w-3.5 h-3.5" />
+                Giảng viên: {diaryDetail.lecturerName}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -106,7 +121,7 @@ export default function GradingLogDetailView({
           <div className="h-2 w-full rounded-full bg-bg-muted overflow-hidden">
             <div
               className="h-full rounded-full bg-brand-orange transition-all duration-300"
-              style={{ width: `${totalCount === 0 ? 0 : (gradedCount / totalCount) * 100}%` }}
+              style={{ width: `${(gradedCount / totalCount) * 100}%` }}
             />
           </div>
         </div>
@@ -117,12 +132,6 @@ export default function GradingLogDetailView({
         <h3 className="mb-2 text-sm font-semibold text-text-primary">Upload bài làm</h3>
         <SubmissionUploadDropzone onFilesSelected={handleFilesSelected} />
       </div>
-
-      {/*
-        TODO: "Tài liệu tham khảo" (đề/rubric/đáp án) đã bỏ tạm — SubmissionDetail
-        không có field file đề/rubric/đáp án. Cần API riêng lấy file theo paperSetId
-        của nhật ký này rồi mới hiển thị lại được đúng dữ liệu thật.
-      */}
 
       {/* Danh sách bài nộp */}
       <div>
@@ -139,7 +148,7 @@ export default function GradingLogDetailView({
       <FileGradingDetailModal
         submission={viewingSubmission}
         onClose={() => setViewingSubmission(null)}
-        onSaved={() => handleGetListSubmission(diaryId)}
+        onSaved={() => handleGetDiaryDetail(diaryId)}
       />
     </div>
   )

@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import { FiTerminal, FiEdit3 } from 'react-icons/fi'
-import type { SubmissionDetail } from '../types/grading-exam.type'
+import type { SubmissionType } from '../types/submission.type'
 import Modal from '@/components/ui/modal'
 import Button from '@/components/ui/button'
 import Input from '@/components/ui/input'
 import useUpdateSubmissionScore from '../hooks/useUpdateSubmissionScore'
 
 interface FileGradingDetailModalProps {
-  submission: SubmissionDetail | null
+  submission: SubmissionType | null
   onClose: () => void
-  /** Gọi lại sau khi lưu điểm thành công — dùng để cha refetch danh sách */
+  /** Gọi lại sau khi lưu điểm thành công — dùng để cha refetch chi tiết nhật ký */
   onSaved: () => void
 }
 
@@ -24,13 +24,14 @@ export default function FileGradingDetailModal({
 
   // Đồng bộ lại form mỗi khi mở 1 submission khác
   useEffect(() => {
-    const handleUpdateSubmission = () => {
-        if (submission) {
-          setScore((submission.lecturerScore ?? submission.aiScore)?.toString() ?? '')
-          setComment(submission.comment ?? '')
-        }
+    const handleUpdateScore = () => {
+      if (submission) {
+        const reviewed = submission.status === '2' || submission.status === '3'
+        setScore((reviewed ? submission.lecturerScore : submission.aiScore).toString())
+        setComment(submission.comment ?? '')
+      }
     }
-    handleUpdateSubmission()
+    handleUpdateScore()
   }, [submission])
 
   if (!submission) return null
@@ -57,36 +58,24 @@ export default function FileGradingDetailModal({
       maxWidth="full"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border-default">
-        {/* ===== Bên trái: log AI + điểm theo tiêu chí ===== */}
+        {/* ===== Bên trái: kết quả AI ===== */}
         <div className="flex flex-col max-h-[70vh]">
           <div className="flex items-center gap-2 border-b border-border-default px-5 py-3 shrink-0">
             <FiTerminal className="w-4 h-4 text-text-muted" />
-            <h3 className="text-sm font-semibold text-text-primary">Nhật ký chấm điểm AI</h3>
+            <h3 className="text-sm font-semibold text-text-primary">Kết quả chấm AI</h3>
           </div>
-          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-            {submission.criteriaScores.length > 0 && (
-              <div>
-                <p className="mb-1.5 text-xs font-medium text-text-muted">Điểm theo tiêu chí</p>
-                <ul className="space-y-1">
-                  {submission.criteriaScores.map((c) => (
-                    <li
-                      key={c.criterionId}
-                      className="flex items-center justify-between rounded-md bg-bg-muted/50 px-3 py-1.5 text-sm"
-                    >
-                      <span className="text-text-secondary">{c.criterionName}</span>
-                      <span className="font-medium text-text-primary">{c.score.toFixed(1)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
             <div>
-              <p className="mb-1.5 text-xs font-medium text-text-muted">Log chi tiết</p>
-              <p className="whitespace-pre-line font-mono text-xs text-text-secondary">
-                {submission.aiLogs || 'Chưa có log.'}
+              <p className="text-xs font-medium text-text-muted">Điểm AI</p>
+              <p className="text-2xl font-semibold text-text-primary">
+                {submission.aiScore.toFixed(1)}
+                <span className="ml-1 text-sm font-normal text-text-muted">/ 10</span>
               </p>
             </div>
+            {/* SubmissionType không còn aiLogs / criteriaScores nên chưa hiển thị log chi tiết */}
+            <p className="rounded-md bg-bg-muted/50 px-3 py-2 text-xs text-text-muted">
+              Log chi tiết và điểm theo từng tiêu chí chưa có trong dữ liệu hiện tại.
+            </p>
           </div>
         </div>
 
@@ -97,16 +86,6 @@ export default function FileGradingDetailModal({
             <h3 className="text-sm font-semibold text-text-primary">Chấm lại & nhận xét</h3>
           </div>
           <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-text-primary mb-1.5">
-                Điểm AI đã chấm
-              </label>
-              <p className="text-2xl font-semibold text-text-primary">
-                {submission.aiScore !== null ? submission.aiScore.toFixed(1) : '—'}
-                <span className="ml-1 text-sm font-normal text-text-muted">/ 10</span>
-              </p>
-            </div>
-
             <div>
               <label className="block text-sm font-medium text-text-primary mb-1.5">
                 Điểm chấm lại

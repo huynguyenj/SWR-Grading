@@ -19,7 +19,6 @@ export default function GradingPage() {
       />
     )
   }
-
   // ================= LIST VIEW =================
   return (
     <div className="space-y-5">
@@ -44,7 +43,9 @@ export default function GradingPage() {
       {activeTab === 'quizzes' ? (
         <PaperSetTable />
       ) : (
-        <GradingLogsTable />
+        <GradingLogsTable 
+          onSelected={setSelectedDiary}
+        />
       )}
 
       {/*
