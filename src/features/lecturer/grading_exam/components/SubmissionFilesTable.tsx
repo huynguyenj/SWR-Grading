@@ -61,8 +61,8 @@ export default function SubmissionFilesTable({ submissions, onView }: Submission
         </thead>
         <tbody>
           {submissions.map((submission) => {
-            const aiVisible = submission.status !== '0'
-            const lecturerVisible = submission.status === '2' || submission.status === '3'
+            const aiVisible = submission.aiScore ? true : false
+            const lecturerVisible = submission.lecturerScore ? true : false
             // Điểm cuối cùng: ưu tiên điểm giảng viên nếu đã duyệt
             const finalScore = lecturerVisible ? submission.lecturerScore : submission.aiScore
             const isZero = aiVisible && finalScore === 0

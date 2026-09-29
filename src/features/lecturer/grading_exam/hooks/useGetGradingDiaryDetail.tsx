@@ -1,12 +1,18 @@
 import useApiCall from "@/hooks/useApiCall"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import type { GradingDiaryDetailType } from "../types/grading-diary.type"
 
-export default function useGetGradingDiaryDetail() {
+type UseGradingDiaryDetailType = {
+  diaryId: string
+}
+
+export default function useGetGradingDiaryDetail({ diaryId }: UseGradingDiaryDetailType) {
   const { execute, loading } = useApiCall<GradingDiaryDetailType>()
   const [diaryDetail, setDiaryDetail] = useState<GradingDiaryDetailType>()
-  const handleGetDiaryDetail = async (diaryId: string) => {
+  const [refreshKey, setRefreshKey] = useState(0)
+  useEffect(() => {
+      const handleGetDiaryDetail = async () => {
       const response = await execute({
             apiUrl: `grading-diaries/${diaryId}`,
             method: 'get',
@@ -18,6 +24,10 @@ export default function useGetGradingDiaryDetail() {
       }
       setDiaryDetail(response.data)
   }
-
-  return { loading, diaryDetail, handleGetDiaryDetail,  }
+      handleGetDiaryDetail()
+  }, [refreshKey])
+  const refresh = () => {
+      setRefreshKey(prev => prev + 1)
+  }
+  return { loading, diaryDetail, refresh }
 }

@@ -1,4 +1,4 @@
-import type { SubmissionStatus } from '../types/grading-exam.type'
+import type { SubmissionStatus } from "../types/submission.type"
 
 const config: Record<SubmissionStatus, { className: string }> = {
   '0': { className: 'bg-bg-muted text-text-secondary' }, // Submitted

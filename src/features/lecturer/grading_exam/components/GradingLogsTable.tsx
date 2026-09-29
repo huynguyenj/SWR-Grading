@@ -34,7 +34,7 @@ export default function GradingLogsTable({ onSelected }: GradingLogTableType) {
       </div>
     )
   }
-
+  
   return (
     <div>
       <div className="overflow-x-auto rounded-lg border border-border-default bg-bg-primary mb-3">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { FiArrowLeft, FiCpu, FiDownload, FiFileText, FiUser } from 'react-icons/fi'
 import { toast } from 'react-toastify'
 import useApiCall from '@/hooks/useApiCall'
@@ -20,15 +20,10 @@ export default function GradingLogDetailView({
   diaryName,
   onBack,
 }: GradingLogDetailViewProps) {
-  const { diaryDetail, loading, handleGetDiaryDetail } = useGetGradingDiaryDetail()
+  const { diaryDetail, loading, refresh } = useGetGradingDiaryDetail({ diaryId })
   const [viewingSubmission, setViewingSubmission] = useState<SubmissionType | null>(null)
   const { execute: executeAiGrading, loading: isGrading } = useApiCall()
 
-  useEffect(() => {
-    handleGetDiaryDetail(diaryId)
-  }, [diaryId])
-  console.log(diaryDetail);
-  
   const submissions = diaryDetail?.submissions ?? []
   const totalCount = submissions.length
   // Status '0' = mới nộp, chưa qua AI chấm
@@ -46,7 +41,7 @@ export default function GradingLogDetailView({
       return
     }
     toast.success('Đã bắt đầu chấm điểm bằng AI')
-    handleGetDiaryDetail(diaryId)
+    refresh()
   }
 
   // Chưa có endpoint upload bài nộp thật
@@ -148,7 +143,7 @@ export default function GradingLogDetailView({
       <FileGradingDetailModal
         submission={viewingSubmission}
         onClose={() => setViewingSubmission(null)}
-        onSaved={() => handleGetDiaryDetail(diaryId)}
+        onSaved={refresh}
       />
     </div>
   )
