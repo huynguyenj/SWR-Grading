@@ -1,16 +1,17 @@
 import { useState } from 'react'
-import { FiArrowLeft, FiCpu, FiDownload, FiFileText, FiUser } from 'react-icons/fi'
-import { toast } from 'react-toastify'
-import useApiCall from '@/hooks/useApiCall'
+import { FiArrowLeft, FiDownload, FiFileText, FiUser } from 'react-icons/fi'
 import useGetGradingDiaryDetail from '../hooks/useGetGradingDiaryDetail'
+import useUploadSubmissionFiles from '../hooks/useUploadSubmissionFiles'
 import type { SubmissionType } from '../types/submission.type'
-import SubmissionUploadDropzone from './SubmissionFilesZone'
 import SubmissionFilesTable from './SubmissionFilesTable'
 import FileGradingDetailModal from './FileGradingDetailModal'
+import PaperSetDocumentsModal from './PaperDocumentModal'
+import DiarySubmissionUploadZone from './DiarySubmissionUploadZone'
+import Button from '@/components/ui/button'
+import { exportSubmissionsToExcel } from '../utils/submission_excel'
 
 interface GradingLogDetailViewProps {
   diaryId: string
-  /** Chỉ dùng làm tiêu đề tạm trong lúc đang tải chi tiết */
   diaryName: string
   onBack: () => void
 }
@@ -22,7 +23,9 @@ export default function GradingLogDetailView({
 }: GradingLogDetailViewProps) {
   const { diaryDetail, loading, refresh } = useGetGradingDiaryDetail({ diaryId })
   const [viewingSubmission, setViewingSubmission] = useState<SubmissionType | null>(null)
-  const { execute: executeAiGrading, loading: isGrading } = useApiCall()
+  const [documentsPaperSetId, setDocumentsPaperSetId] = useState<string | null>(null)
+  // const { execute: executeAiGrading, loading: isGrading } = useApiCall()
+  const { handleUploadSubmissionFiles, loading: isUploading } = useUploadSubmissionFiles()
 
   const submissions = diaryDetail?.submissions ?? []
   const totalCount = submissions.length
@@ -30,23 +33,29 @@ export default function GradingLogDetailView({
   const gradedCount = submissions.filter((s) => s.status !== '0').length
   const canExport = totalCount > 0 && gradedCount === totalCount
 
-  async function handleAIGrading() {
-    const response = await executeAiGrading({
-      apiUrl: `/grading-diaries/${diaryId}/ai-grading`,
-      method: 'post',
-      type: 'private',
-    })
-    if (response.error) {
-      toast.error(response.error.message)
-      return
-    }
-    toast.success('Đã bắt đầu chấm điểm bằng AI')
-    refresh()
+  // async function handleAIGrading() {
+  //   const response = await executeAiGrading({
+  //     apiUrl: `/grading-diaries/${diaryId}/ai-grading`,
+  //     method: 'post',
+  //     type: 'private',
+  //   })
+  //   if (response.error) {
+  //     toast.error(response.error.message)
+  //     return
+  //   }
+  //   toast.success('Đã bắt đầu chấm điểm bằng AI')
+  //   refresh()
+  // }
+
+  async function handleUploadFiles(files: File[]) {
+    const success = await handleUploadSubmissionFiles(diaryId, files)
+    if (success) refresh()
+    return success
   }
 
-  // Chưa có endpoint upload bài nộp thật
-  function handleFilesSelected() {
-    toast.info('Chưa nối API upload bài nộp thật — cần bổ sung endpoint từ BE.')
+   
+  function handleExportExcel() {
+    exportSubmissionsToExcel(submissions, `${diaryDetail?.name ?? diaryName}_${diaryDetail?.paperSetCode}.xlsx`)
   }
 
   return (
@@ -84,16 +93,16 @@ export default function GradingLogDetailView({
         </div>
 
         <div className="flex items-center gap-2">
-          <button
+          {/* <Button
             onClick={handleAIGrading}
             disabled={isGrading || totalCount === 0 || gradedCount === totalCount}
-            className="flex items-center gap-2 rounded-md bg-brand-orange px-4 py-2 text-sm font-medium text-white hover:bg-brand-rust transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FiCpu className="w-4 h-4" />
             {isGrading ? 'Đang chấm điểm...' : 'AI Grading'}
-          </button>
+          </Button> */}
 
           <button
+            onClick={handleExportExcel}
             disabled={!canExport}
             title={canExport ? 'Xuất Excel' : 'Cần hoàn thành chấm điểm trước'}
             className="flex items-center gap-2 rounded-md border border-border-default px-4 py-2 text-sm font-medium text-text-secondary hover:bg-bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
@@ -122,10 +131,33 @@ export default function GradingLogDetailView({
         </div>
       )}
 
-      {/* Upload file bài làm */}
-      <div>
-        <h3 className="mb-2 text-sm font-semibold text-text-primary">Upload bài làm</h3>
-        <SubmissionUploadDropzone onFilesSelected={handleFilesSelected} />
+      {/* Upload file bài làm + Tài liệu */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {/* Upload */}
+        <div>
+          <h3 className="mb-2 text-sm font-semibold text-text-primary">Upload bài làm</h3>
+          <DiarySubmissionUploadZone onUpload={handleUploadFiles} uploading={isUploading} />
+        </div>
+
+        {/* Tài liệu */}
+        <div>
+          <h3 className="mb-2 text-sm font-semibold text-text-primary">Tài liệu</h3>
+          <div className="flex items-center justify-between gap-3 rounded-md border border-border-default bg-bg-primary p-4">
+            <div className="min-w-0">
+              <p className="text-sm text-text-primary">Đề, rubric và template của bộ đề này</p>
+              {diaryDetail?.paperSetCode && (
+                <p className="mt-0.5 text-xs text-text-muted">Bộ đề: {diaryDetail.paperSetCode}</p>
+              )}
+            </div>
+            <Button
+              onClick={() => diaryDetail && setDocumentsPaperSetId(diaryDetail.paperSetId)}
+              disabled={!diaryDetail?.paperSetId}
+              variant='basic'
+            >
+              Xem tài liệu
+            </Button>
+          </div>
+        </div>
       </div>
 
       {/* Danh sách bài nộp */}
@@ -144,6 +176,11 @@ export default function GradingLogDetailView({
         submission={viewingSubmission}
         onClose={() => setViewingSubmission(null)}
         onSaved={refresh}
+      />
+
+      <PaperSetDocumentsModal
+        paperSetId={documentsPaperSetId}
+        onClose={() => setDocumentsPaperSetId(null)}
       />
     </div>
   )

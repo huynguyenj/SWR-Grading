@@ -47,12 +47,6 @@ export default function GradingPage() {
           onSelected={setSelectedDiary}
         />
       )}
-
-      {/*
-        TODO: CreateGradingLogModal vẫn đang dùng kiểu dữ liệu mock (onCreate nhận
-        GradingLog cũ) — cần chuyển sang gọi API thật + onRefresh giống pattern
-        CreateSemesterModal/CreateExamSessionModal ở lượt chỉnh sau.
-      */}
     </div>
   )
 }

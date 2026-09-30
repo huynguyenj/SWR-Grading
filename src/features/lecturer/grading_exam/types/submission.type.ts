@@ -28,3 +28,4 @@ export interface SubmissionDetailType extends SubmissionType {
   criteriaScores: CriterionScore[]
   updatedDate: string
 }
+

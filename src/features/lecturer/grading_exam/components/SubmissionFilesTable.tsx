@@ -1,19 +1,12 @@
 import { FiFile, FiEye, FiCalendar } from 'react-icons/fi'
-import type { SubmissionStatus, SubmissionType } from '../types/submission.type'
+import type {  SubmissionType } from '../types/submission.type'
 import SubmissionStatusBadge from './SubmissionFileBadge'
 import { formatDate } from '@/utils/format'
+import { STATUS_LABEL } from '../const/submission_type'
 
 interface SubmissionFilesTableProps {
   submissions: SubmissionType[]
   onView: (submission: SubmissionType) => void
-}
-
-// SubmissionType không còn statusName từ BE nên tự map nhãn theo enum
-const STATUS_LABEL: Record<SubmissionStatus, string> = {
-  '0': 'Đã nộp',
-  '1': 'AI đã chấm',
-  '2': 'GV đã duyệt',
-  '3': 'Hoàn tất',
 }
 
 /**

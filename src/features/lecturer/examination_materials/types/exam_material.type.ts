@@ -1,4 +1,6 @@
 export type PaperSetStatus = 0 | 1 | 2 | 3 | 4
+export type PaperSetFileType = 1 | 2 | 3
+
 type PaperSetFilesType = {
   fileType: number
   fileName: string
@@ -27,4 +29,15 @@ export type PreviewQuestionType = {
   title: string
   content: string
   point: number
+}
+
+type FilesType = {
+  fileType: PaperSetFileType
+  fileName: string
+  text: string
+}
+
+export type FileInformationType = {
+  paperSetId: string
+  files: FilesType[]
 }
