@@ -1,10 +1,13 @@
 import { FiFolder, FiArrowRight, FiUser, FiFileText } from 'react-icons/fi'
 import Pagination from '@/components/ui/pagination'
 import useGetGradingDiary from '../hooks/useGetGradingDiary'
+import type { GradingDiaryType } from '../types/grading-diary.type'
 
+type GradingLogTableType = {
+  onSelected: (diary: GradingDiaryType) => void
+}
 
-
-export default function GradingLogsTable() {
+export default function GradingLogsTable({ onSelected }: GradingLogTableType) {
   const {
     gradingDiaryList,
     loading,
@@ -31,7 +34,7 @@ export default function GradingLogsTable() {
       </div>
     )
   }
-
+  
   return (
     <div>
       <div className="overflow-x-auto rounded-lg border border-border-default bg-bg-primary mb-3">
@@ -76,9 +79,7 @@ export default function GradingLogsTable() {
                 </td>
                 <td className="px-4 py-3 text-right">
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                    }}
+                    onClick={() => onSelected(log)}
                     className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-orange hover:text-brand-rust transition-colors"
                   >
                     Mở

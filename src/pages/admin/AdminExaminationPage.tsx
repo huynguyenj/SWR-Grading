@@ -8,7 +8,7 @@ import useGetSemester from '@/features/admin/management/semester/hooks/useGetSem
 import { useMemo, useState } from 'react'
 
 export default function AdminExamSessionsPage() {
-  const [sessions, setSessions] = useState<ExamSession[]>(mockExamSessions)
+  const [sessions] = useState<ExamSession[]>(mockExamSessions)
   const [search, setSearch] = useState('')
   const [semesterFilter, setSemesterFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState<ExamSessionStatus | 'all'>('all')
@@ -16,7 +16,7 @@ export default function AdminExamSessionsPage() {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
   const [modalOpen, setModalOpen] = useState(false)
   const [viewingSession, setViewingSession] = useState<ExamSession | null>(null)
-  const { semesterDataList } = useGetSemester()
+  const { semesterDataList, refresh } = useGetSemester()
   
   const filteredSessions = useMemo(() => {
     let result = sessions.filter((session) => {
@@ -79,8 +79,8 @@ export default function AdminExamSessionsPage() {
           <CreateExamSessionModal
             open={modalOpen}
             onClose={() => setModalOpen(false)}
-            onCreate={(session) => setSessions((prev) => [session, ...prev])}
             semesters={semesterDataList?.items}
+            onRefresh={refresh}
           />
     
           <ViewExamSessionModal

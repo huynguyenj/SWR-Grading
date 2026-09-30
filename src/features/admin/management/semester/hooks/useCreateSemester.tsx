@@ -35,7 +35,10 @@ export default function useCreateSemester({ onRefresh }: { onRefresh: () => void
             type: 'private',
             body: body
       })
-      console.log(data);
+      if (data.error) {
+            toast.error(data.error.message)
+            return
+      }
       onRefresh()
       toast.success('Tạo học kì thành công')
   }
