@@ -22,7 +22,7 @@ apiPrivate.interceptors.response.use((response) => {
       // const apiResponseError = error.response?.data as ApiResponseError
       // if (apiResponseError.code === 'TOKEN_EXPIRED' || apiResponseError.code === 'UNAUTHORIZED')
       //       authStore.getState().removeAuthInfo()
-              console.log("===== AXIOS ERROR =====")
+        console.log("===== AXIOS ERROR =====")
         console.log("Status:", error.response?.status)
         console.log("Response data:", error.response?.data)
         console.log("Response headers:", error.response?.headers)
