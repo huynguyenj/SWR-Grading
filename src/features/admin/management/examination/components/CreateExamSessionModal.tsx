@@ -88,7 +88,7 @@ export default function CreateExamSessionModal({
 
         {/* ===== Đề thi ===== */}
         <section className="space-y-3">
-          <h3 className="text-sm font-semibold text-text-primary">Đề thi</h3>
+          {/* <h3 className="text-sm font-semibold text-text-primary">Đề thi</h3> */}
           <div>
             <label className="block text-sm font-medium text-text-primary mb-1.5">Bộ đề</label>
             <select

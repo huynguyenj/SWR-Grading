@@ -1,10 +1,13 @@
 import { FiSearch, FiArrowUp, FiArrowDown, FiPlus } from 'react-icons/fi'
-import type { ExamSessionStatus } from '../types/examination.type'
+import {
+  EXAMINATION_STATUS_LABEL,
+  type ExaminationStatus,
+} from '../types/examination.type'
 import Input from '@/components/ui/input'
 import Button from '@/components/ui/button'
 import type { SemesterType } from '../../semester/types/semester'
 
-export type SortField = 'examDate' | 'name'
+export type SortField = 'startDate' | 'name'
 export type SortDirection = 'asc' | 'desc'
 
 interface ExamSessionsToolbarProps {
@@ -12,8 +15,8 @@ interface ExamSessionsToolbarProps {
   onSearchChange: (v: string) => void
   semesterFilter: string
   onSemesterFilterChange: (v: string) => void
-  statusFilter: ExamSessionStatus | 'all'
-  onStatusFilterChange: (v: ExamSessionStatus | 'all') => void
+  statusFilter: ExaminationStatus | 'all'
+  onStatusFilterChange: (v: ExaminationStatus | 'all') => void
   sortField: SortField
   sortDirection: SortDirection
   onSortFieldChange: (v: SortField) => void
@@ -22,17 +25,17 @@ interface ExamSessionsToolbarProps {
   onCreateClick: () => void
 }
 
-const statusOptions: { value: ExamSessionStatus | 'all'; label: string }[] = [
+// Lấy nhãn từ EXAMINATION_STATUS_LABEL để luôn khớp enum 0-4 của BE
+const statusOptions: { value: ExaminationStatus | 'all'; label: string }[] = [
   { value: 'all', label: 'Tất cả trạng thái' },
-  { value: 'draft', label: 'Nháp' },
-  { value: 'scheduled', label: 'Đã lên lịch' },
-  { value: 'ongoing', label: 'Đang diễn ra' },
-  { value: 'completed', label: 'Đã kết thúc' },
-  { value: 'cancelled', label: 'Đã hủy' },
+  ...(Object.entries(EXAMINATION_STATUS_LABEL) as [string, string][]).map(([value, label]) => ({
+    value: Number(value) as ExaminationStatus,
+    label,
+  })),
 ]
 
 const sortFieldLabels: Record<SortField, string> = {
-  examDate: 'Ngày thi',
+  startDate: 'Ngày thi',
   name: 'Tên đợt thi',
 }
 
@@ -59,7 +62,7 @@ export default function ExamSessionsToolbar({
             value={search}
             size='basic'
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Tìm theo tên đợt thi..."
+            placeholder="Tìm theo tên hoặc mã đợt thi..."
           />
         </div>
 
@@ -78,7 +81,12 @@ export default function ExamSessionsToolbar({
 
         <select
           value={statusFilter}
-          onChange={(e) => onStatusFilterChange(e.target.value as ExamSessionStatus | 'all')}
+          // <select> luôn trả về chuỗi nên phải đổi lại sang số trước khi đưa vào state
+          onChange={(e) =>
+            onStatusFilterChange(
+              e.target.value === 'all' ? 'all' : (Number(e.target.value) as ExaminationStatus),
+            )
+          }
           className="rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15"
         >
           {statusOptions.map((opt) => (

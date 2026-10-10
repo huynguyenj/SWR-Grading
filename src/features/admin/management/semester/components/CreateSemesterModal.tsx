@@ -79,7 +79,6 @@ export default function CreateSemesterModal({
             type="submit"
             variant='default'
             disabled={loading}
-            className='disabled:bg-bg-muted text-text-primary'
           >
             {loading ? 'Đang tạo...' : 'Tạo học kỳ'}
           </Button>
