@@ -35,7 +35,7 @@ export default function useLogin() {
       authStore.setAccessToken(data.data.accessToken)
       authStore.setAuthInfo(data.data.accessToken, data.data.user.id, data.data.user.role, data.data.user.fullName)
       if (data.data.user.role == 'Admin') navigate('/admin')
-      if (data.data.user.role == 'Lecturer') navigate('/lecture')
+      if (data.data.user.role == 'Lecturer') navigate('/lecturer')
       
   }
   return { onSubmit, register, handleSubmit, errors, loading }

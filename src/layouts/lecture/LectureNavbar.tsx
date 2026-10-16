@@ -28,7 +28,7 @@ export default function Navbar() {
               <NavLink
                 key={item.href}
                 to={item.href}
-                end={item.href === '/lecture'}
+                end={item.href === '/lecturer'}
                 className={({ isActive }) =>
                   [
                     'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
