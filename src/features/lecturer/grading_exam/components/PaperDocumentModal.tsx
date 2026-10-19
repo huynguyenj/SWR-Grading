@@ -8,15 +8,18 @@ import { FILE_TYPE_LABEL } from '../const/file_type'
 interface PaperSetDocumentsModalProps {
   paperSetId: string | null
   onClose: () => void
+  /** Các loại file cần hiển thị, theo đúng thứ tự truyền vào (1 = Câu hỏi, 2 = Rubric, 3 = Template) */
+  fileTypes?: PaperSetFileType[]
+  title?: string
 }
 
-
-// Luôn hiển thị theo đúng thứ tự Câu hỏi -> Rubric -> Template, không phụ thuộc thứ tự BE trả về
-const FILE_TYPE_ORDER: PaperSetFileType[] = [1, 2, 3]
+const DEFAULT_FILE_TYPES: PaperSetFileType[] = [1, 2, 3]
 
 export default function PaperSetDocumentsModal({
   paperSetId,
   onClose,
+  fileTypes = DEFAULT_FILE_TYPES,
+  title = 'Tài liệu bộ đề',
 }: PaperSetDocumentsModalProps) {
   const { fileInformation, loading, handleGetFileInformation } = useGetFileDetail()
 
@@ -28,14 +31,14 @@ export default function PaperSetDocumentsModal({
   }, [paperSetId])
 
   return (
-    <Modal open={paperSetId !== null} onClose={onClose} title="Tài liệu bộ đề" maxWidth="lg">
+    <Modal open={paperSetId !== null} onClose={onClose} title={title} maxWidth="lg">
       <div className="max-h-[75vh] overflow-y-auto px-5 py-4 space-y-5">
         {loading && (
           <p className="py-8 text-center text-sm text-text-muted">Đang tải tài liệu...</p>
         )}
 
         {!loading &&
-          FILE_TYPE_ORDER.map((type) => {
+          fileTypes.map((type) => {
             const file = fileInformation?.files.find((f) => f.fileType === type)
             return (
               <div key={type}>

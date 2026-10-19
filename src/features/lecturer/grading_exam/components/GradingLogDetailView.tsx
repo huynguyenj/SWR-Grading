@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { FiArrowLeft, FiDownload, FiFileText, FiUser } from 'react-icons/fi'
+import { FiArrowLeft, FiDownload, FiFileText, FiList, FiUser } from 'react-icons/fi'
 import useGetGradingDiaryDetail from '../hooks/useGetGradingDiaryDetail'
 import useUploadSubmissionFiles from '../hooks/useUploadSubmissionFiles'
 import type { SubmissionType } from '../types/submission.type'
 import SubmissionFilesTable from './SubmissionFilesTable'
 import FileGradingDetailModal from './FileGradingDetailModal'
 import PaperSetDocumentsModal from './PaperDocumentModal'
+import PaperRubricModal from './PaperRubricModal'
+import DocumentCard from './DocumentCard'
 import DiarySubmissionUploadZone from './DiarySubmissionUploadZone'
-import Button from '@/components/ui/button'
 import { exportSubmissionsToExcel } from '../utils/submission_excel'
 
 interface GradingLogDetailViewProps {
@@ -24,6 +25,7 @@ export default function GradingLogDetailView({
   const { diaryDetail, loading, refresh } = useGetGradingDiaryDetail({ diaryId })
   const [viewingSubmission, setViewingSubmission] = useState<SubmissionType | null>(null)
   const [documentsPaperSetId, setDocumentsPaperSetId] = useState<string | null>(null)
+  const [rubricPaperSetId, setRubricPaperSetId] = useState<string | null>(null)
   // const { execute: executeAiGrading, loading: isGrading } = useApiCall()
   const { handleUploadSubmissionFiles, loading: isUploading } = useUploadSubmissionFiles()
 
@@ -53,10 +55,11 @@ export default function GradingLogDetailView({
     return success
   }
 
-   
   function handleExportExcel() {
     exportSubmissionsToExcel(submissions, `${diaryDetail?.name ?? diaryName}_${diaryDetail?.paperSetCode}.xlsx`)
   }
+
+  const paperSetLabel = diaryDetail?.paperSetCode ? `Bộ đề ${diaryDetail.paperSetCode}` : ''
 
   return (
     <div className="space-y-5">
@@ -139,23 +142,26 @@ export default function GradingLogDetailView({
           <DiarySubmissionUploadZone onUpload={handleUploadFiles} uploading={isUploading} />
         </div>
 
-        {/* Tài liệu */}
+        {/* Tài liệu: file đề + rubric */}
         <div>
           <h3 className="mb-2 text-sm font-semibold text-text-primary">Tài liệu</h3>
-          <div className="flex items-center justify-between gap-3 rounded-md border border-border-default bg-bg-primary p-4">
-            <div className="min-w-0">
-              <p className="text-sm text-text-primary">Đề, rubric và template của bộ đề này</p>
-              {diaryDetail?.paperSetCode && (
-                <p className="mt-0.5 text-xs text-text-muted">Bộ đề: {diaryDetail.paperSetCode}</p>
-              )}
-            </div>
-            <Button
-              onClick={() => diaryDetail && setDocumentsPaperSetId(diaryDetail.paperSetId)}
+          <div className="space-y-3">
+            <DocumentCard
+              icon={FiFileText}
+              title="File đề"
+              description={`Câu hỏi và template${paperSetLabel ? ` · ${paperSetLabel}` : ''}`}
+              buttonLabel="Xem file đề"
+              onView={() => diaryDetail && setDocumentsPaperSetId(diaryDetail.paperSetId)}
               disabled={!diaryDetail?.paperSetId}
-              variant='basic'
-            >
-              Xem tài liệu
-            </Button>
+            />
+            <DocumentCard
+              icon={FiList}
+              title="Rubric"
+              description={`Tiêu chí và thang điểm chi tiết${paperSetLabel ? ` · ${paperSetLabel}` : ''}`}
+              buttonLabel="Xem rubric"
+              onView={() => diaryDetail && setRubricPaperSetId(diaryDetail.paperSetId)}
+              disabled={!diaryDetail?.paperSetId}
+            />
           </div>
         </div>
       </div>
@@ -178,10 +184,14 @@ export default function GradingLogDetailView({
         onSaved={refresh}
       />
 
+      {/* Rubric đã tách riêng sang PaperRubricModal nên modal file đề chỉ còn Câu hỏi (1) và Template (3) */}
       <PaperSetDocumentsModal
         paperSetId={documentsPaperSetId}
         onClose={() => setDocumentsPaperSetId(null)}
+        title="File đề"
       />
+
+      <PaperRubricModal paperSetId={rubricPaperSetId} onClose={() => setRubricPaperSetId(null)} />
     </div>
   )
 }
