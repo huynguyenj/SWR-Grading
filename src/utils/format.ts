@@ -7,3 +7,5 @@ export function formatDate(iso: string) {
     year: 'numeric',
   })
 }
+
+export const formatPoint = (n: number) => Number(n.toFixed(3)).toString()
