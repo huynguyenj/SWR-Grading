@@ -149,7 +149,7 @@ export default function GradingLogDetailView({
             <DocumentCard
               icon={FiFileText}
               title="File đề"
-              description={`Câu hỏi và template${paperSetLabel ? ` · ${paperSetLabel}` : ''}`}
+              description={`Nội dung các câu hỏi${paperSetLabel ? ` · ${paperSetLabel}` : ''}`}
               buttonLabel="Xem file đề"
               onView={() => diaryDetail && setDocumentsPaperSetId(diaryDetail.paperSetId)}
               disabled={!diaryDetail?.paperSetId}
@@ -184,11 +184,9 @@ export default function GradingLogDetailView({
         onSaved={refresh}
       />
 
-      {/* Rubric đã tách riêng sang PaperRubricModal nên modal file đề chỉ còn Câu hỏi (1) và Template (3) */}
       <PaperSetDocumentsModal
         paperSetId={documentsPaperSetId}
         onClose={() => setDocumentsPaperSetId(null)}
-        title="File đề"
       />
 
       <PaperRubricModal paperSetId={rubricPaperSetId} onClose={() => setRubricPaperSetId(null)} />
