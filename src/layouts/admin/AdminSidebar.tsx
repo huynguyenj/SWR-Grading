@@ -4,9 +4,16 @@ import SidebarContext from './context/AdminSidebarContext'
 import { navSections } from './constants/Nav.config'
 import SidebarNavItem from './AdminSidebarItems'
 import FPTLogo from '@/assets/fptulogo.jpg'
+import { useAuthStore } from '@/features/authentication/store/auth-store'
+import { useNavigate } from 'react-router'
 export default function AdminSidebar() {
   const { collapsed, toggleCollapsed, mobileOpen, closeMobile } = useContextValid(SidebarContext)
-
+  const authInfo = useAuthStore()
+  const navigate = useNavigate()
+  const handleLogout = () => {
+    authInfo.removeAuthInfo()
+    navigate('/', { replace: true })
+  }
   return (
     <>
       {/* Backdrop cho mobile drawer */}
@@ -85,6 +92,7 @@ export default function AdminSidebar() {
               <button
                 className="text-text-muted hover:text-danger shrink-0"
                 aria-label="Đăng xuất"
+                onClick={handleLogout}
               >
                 <FiLogOut className="w-4 h-4" />
               </button>

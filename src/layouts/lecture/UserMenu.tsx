@@ -1,9 +1,16 @@
+import { useAuthStore } from '@/features/authentication/store/auth-store'
 import { useState } from 'react'
 import { FiChevronDown, FiUser, FiSettings, FiLogOut } from 'react-icons/fi'
+import { useNavigate } from 'react-router'
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false)
-
+  const authInfo = useAuthStore()
+  const navigate = useNavigate()
+  const handleLogout = () => {
+    authInfo.removeAuthInfo()
+    navigate('/', { replace: true })
+  }
   return (
     <div className="relative">
       <button
@@ -14,8 +21,8 @@ export default function UserMenu() {
           GV
         </div>
         <div className="hidden sm:block text-left">
-          <p className="text-sm font-medium text-text-primary leading-tight">Nguyễn Văn A</p>
-          <p className="text-xs text-text-muted leading-tight">Giảng viên</p>
+          <p className="text-sm font-medium text-text-primary leading-tight">{authInfo.userName}</p>
+          <p className="text-xs text-text-muted leading-tight">{authInfo.role}</p>
         </div>
         <FiChevronDown
           className={`w-4 h-4 text-text-muted transition-transform ${open ? 'rotate-180' : ''}`}
@@ -37,7 +44,7 @@ export default function UserMenu() {
               Cài đặt
             </button>
             <div className="my-1 h-px bg-border-default" />
-            <button className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-danger hover:bg-danger/10 transition-colors">
+            <button className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-danger hover:bg-danger/10 transition-colors" onClick={handleLogout}>
               <FiLogOut className="w-4 h-4" />
               Đăng xuất
             </button>

@@ -2,37 +2,41 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from 'react-router'
-import { apiPrivate } from '@/config/axiox.config'
-import type { UserType } from '../types/user'
+// import { useNavigate } from 'react-router'
+// import type { UserType } from '../types/user'
 import { toast } from 'react-toastify'
+import useApiCall from '@/hooks/useApiCall'
+import type { LoginType } from '../types/user'
+import { useNavigate } from 'react-router'
+import { useAuthStore } from '../store/auth-store'
 
 const LoginFormSchema = z.object({
-  username: z.email({ error: 'Hãy nhập đúng định dạng của email @gmail.com' }),
+  email: z.email({ error: 'Hãy nhập đúng định dạng của email @gmail.com' }),
   password: z.string().min(8, { error: 'Mật khẩu ít nhất 8 kí tự' })
 })
 export type LoginFormType = z.infer<typeof LoginFormSchema>
 export default function useLogin() {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormType>({ resolver: zodResolver(LoginFormSchema) })
+  const authStore = useAuthStore()
+  const { execute, loading } = useApiCall<LoginType>()
   const navigate = useNavigate()
   const onSubmit = async (loginFormData: LoginFormType) => {
-      try {
-        const response: UserType[] = (await apiPrivate.get('user'))
-        const user = response.find(u => u.name === loginFormData.username)
-        if (!user) {
-            toast.error('Username not existed')
-            return
-        }
-        if (user.password === loginFormData.password) {
-            toast.success('Login successfully')
-            navigate(user.role === 'admin' ? '/admin' : '/lecture')
-        } else {
-            toast.error('Wrong password')
-            return
-        }
-      } catch (error) {
-        toast.error(error as string)    
+      const data = await execute({
+        apiUrl: '/Auth/login',
+        method: 'post',
+        type: 'public',
+        body: loginFormData
+      })
+      if (data.error) {
+        toast.error(data.error.message)
+        return
       }
+      toast.success('Đăng nhập thành công')
+      authStore.setAccessToken(data.data.accessToken)
+      authStore.setAuthInfo(data.data.accessToken, data.data.user.id, data.data.user.role, data.data.user.fullName)
+      if (data.data.user.role == 'Admin') navigate('/admin')
+      if (data.data.user.role == 'Lecturer') navigate('/lecturer')
+      
   }
-  return { onSubmit, register, handleSubmit, errors }
+  return { onSubmit, register, handleSubmit, errors, loading }
 }

@@ -1,89 +1,51 @@
-export type ExamSessionStatus = 'draft' | 'scheduled' | 'ongoing' | 'completed' | 'cancelled'
-export type PaperSelectionMode = 'assigned' | 'random'
+/** Exam Status từ BE: Draft=0, Ongoing=1, Closed=2, Completed=3, Cancelled=4 */
+export type ExaminationStatus = 0 | 1 | 2 | 3 | 4
 
-/** Quy tắc/yêu cầu khi thi — mỗi key tương ứng 1 checkbox trong form tạo đợt thi */
-export const examRuleOptions = [
-  { key: 'webcam', label: 'Bật giám sát qua webcam' },
-  { key: 'lockdown', label: 'Khóa trình duyệt, cấm chuyển tab' },
-  { key: 'faceVerify', label: 'Xác thực khuôn mặt trước khi vào thi' },
-  { key: 'noReentry', label: 'Không cho vào lại sau khi đã thoát' },
-  { key: 'screenRecord', label: 'Ghi lại màn hình trong suốt quá trình thi' },
-] as const
+/**
+ * ExaminationType (enum BE): RE=0, PE=1, ThreeW=2.
+ * Đặt tên `ExaminationKind` để không trùng với interface `ExaminationType` bên dưới
+ * (theo convention của bạn: `XxxType` là interface của entity).
+ * Giá trị số suy ra từ data mẫu (examinationType: 1 ứng với mã "..._PE_...") — xác nhận lại với BE.
+ */
+export type ExaminationKind = 0 | 1 | 2
 
-export type ExamRuleKey = (typeof examRuleOptions)[number]['key']
-
-/** Đề thi mà Lecturer đã upload, gắn theo học kỳ — dùng làm ngân hàng đề để Admin chọn/random */
-export interface ExamPaper {
-  id: string
-  fileName: string
-  semesterId: string
-  uploadedBy: string
+export const EXAMINATION_STATUS_LABEL: Record<ExaminationStatus, string> = {
+  0: 'Nháp',
+  1: 'Đang diễn ra',
+  2: 'Đã đóng',
+  3: 'Đã hoàn thành',
+  4: 'Đã hủy',
 }
 
-export const mockExamPapers: ExamPaper[] = [
-  { id: 'p1', fileName: 'De_thi_SWR301_ca1.docx', semesterId: '2', uploadedBy: 'Nguyễn Văn A' },
-  { id: 'p2', fileName: 'De_thi_SWR301_ca2.docx', semesterId: '2', uploadedBy: 'Nguyễn Văn A' },
-  { id: 'p3', fileName: 'De_thi_SWR302_v1.docx', semesterId: '2', uploadedBy: 'Trần Thị B' },
-  { id: 'p4', fileName: 'De_thi_SWR302_v2.docx', semesterId: '2', uploadedBy: 'Trần Thị B' },
-  { id: 'p5', fileName: 'De_thi_giua_ky_SWR301.docx', semesterId: '3', uploadedBy: 'Nguyễn Văn A' },
+export const EXAMINATION_KIND_LABEL: Record<ExaminationKind, string> = {
+  0: 'Thi lại (RE)',
+  1: 'Thi thực hành (PE)',
+  2: '3 tuần (3W)',
+}
+
+export const EXAMINATION_KIND_OPTIONS: { value: ExaminationKind; label: string }[] = [
+  { value: 0, label: EXAMINATION_KIND_LABEL[0] },
+  { value: 1, label: EXAMINATION_KIND_LABEL[1] },
+  { value: 2, label: EXAMINATION_KIND_LABEL[2] },
 ]
 
-export interface ExamSession {
-  id: string
+export interface ExaminationType {
+  examinationId: string
+  /** BE tự sinh từ SemesterCode + loại exam (VD: SWR302_FA26_PE_658287) — không nhập tay */
+  examinationCode: string
   name: string
-  semesterId: string
-  paperMode: PaperSelectionMode
-  assignedPaperId?: string
-  randomPoolSize?: number
-  examDate: string // ISO date
-  startTime: string // HH:mm
+  examinationType: ExaminationKind
+  startDate: string // "YYYY-MM-DD"
+  startTime: string // "HH:mm:ss"
   durationMinutes: number
-  openBeforeMinutes: number
-  rules: ExamRuleKey[]
-  notes?: string
-  status: ExamSessionStatus
+  beforeTimeMinutes: number
+  note: string
+  status: ExaminationStatus
+  semesterId: string
+  paperSetId: string
 }
 
-export const mockExamSessions: ExamSession[] = [
-  {
-    id: '1',
-    name: 'Đợt thi thực hành giữa kỳ - Ca 1',
-    semesterId: '2',
-    paperMode: 'assigned',
-    assignedPaperId: 'p1',
-    examDate: '2026-09-02',
-    startTime: '08:00',
-    durationMinutes: 90,
-    openBeforeMinutes: 15,
-    rules: ['webcam', 'lockdown'],
-    notes: 'Thí sinh cần chuẩn bị laptop có webcam.',
-    status: 'scheduled',
-  },
-  {
-    id: '2',
-    name: 'Đợt thi thực hành giữa kỳ - Ca 2',
-    semesterId: '2',
-    paperMode: 'random',
-    randomPoolSize: 2,
-    examDate: '2026-09-02',
-    startTime: '13:30',
-    durationMinutes: 90,
-    openBeforeMinutes: 10,
-    rules: ['webcam', 'lockdown', 'faceVerify'],
-    status: 'scheduled',
-  },
-  {
-    id: '3',
-    name: 'Đợt thi cuối kỳ Spring 2026',
-    semesterId: '3',
-    paperMode: 'assigned',
-    assignedPaperId: 'p5',
-    examDate: '2026-04-20',
-    startTime: '09:00',
-    durationMinutes: 120,
-    openBeforeMinutes: 20,
-    rules: ['webcam', 'lockdown', 'faceVerify', 'noReentry', 'screenRecord'],
-    notes: 'Áp dụng quy chế thi cuối kỳ.',
-    status: 'completed',
-  },
-]
+/** "08:00:00" -> "08:00" */
+export function toShortTime(time: string) {
+  return time.slice(0, 5)
+}

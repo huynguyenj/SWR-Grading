@@ -1,20 +1,19 @@
-import type { ExamSessionStatus } from "../types/examination.type";
+import { EXAMINATION_STATUS_LABEL, type ExaminationStatus } from '../types/examination.type'
 
-const statusConfig: Record<ExamSessionStatus, { label: string; className: string }> = {
-  draft: { label: 'Nháp', className: 'bg-bg-muted text-text-secondary' },
-  scheduled: { label: 'Sắp diễn ra', className: 'bg-brand-rust/10 text-brand-rust' },
-  ongoing: { label: 'Đang diễn ra', className: 'bg-success/10 text-success' },
-  completed: { label: 'Đã kết thúc', className: 'bg-text-muted/10 text-text-muted' },
-  cancelled: { label: 'Đã hủy', className: 'bg-text-muted/10 text-text-muted' }
+const statusClass: Record<ExaminationStatus, string> = {
+  0: 'bg-bg-muted text-text-secondary',
+  1: 'bg-success/10 text-success',
+  2: 'bg-warning/10 text-warning',
+  3: 'bg-text-muted/10 text-text-muted',
+  4: 'bg-danger/10 text-danger',
 }
 
-export default function ExamSessionStatusBadge({ status }: { status: ExamSessionStatus }) {
-  const config = statusConfig[status]
+export default function ExamSessionStatusBadge({ status }: { status: ExaminationStatus }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${config.className}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${statusClass[status] ?? statusClass[0]}`}
     >
-      {config.label}
+      {EXAMINATION_STATUS_LABEL[status] ?? '—'}
     </span>
   )
 }

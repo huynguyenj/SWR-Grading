@@ -32,9 +32,10 @@ const inputVariants = cva(
 
 type InputProps = Omit<React.ComponentProps<'input'>, 'size'> & VariantProps<typeof inputVariants> & {
     icon?: React.ComponentType<{ className?:string }>
+    error?: string
   }
 
-export default function Input({ className, variant = 'default', size = 'default', icon: Icon, type = 'text',  ...props }: InputProps) {
+export default function Input({ className, variant = 'default', size = 'default', icon: Icon, type = 'text', error,  ...props }: InputProps) {
   const [showPassword, setShowPassword] = useState(false)
   return (
     <div className='relative'>
@@ -42,6 +43,7 @@ export default function Input({ className, variant = 'default', size = 'default'
       { type != 'password' && 
       <input  
         className={cn(inputVariants({variant, size}), className)}
+        type={type}
         {...props}
       />
       }
@@ -68,6 +70,7 @@ export default function Input({ className, variant = 'default', size = 'default'
                             </button>
         </> 
       }
+      { error && <span className='text-xs text-danger'>{error}</span>  }
     </div>
   )
 }
