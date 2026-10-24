@@ -10,10 +10,18 @@ export interface SubmissionType {
 }
 
 export interface CriterionScore {
+  question_id: string
   criterion: string
   max_score: number
   actual_score: number
   comment: string
+}
+
+export interface ItemDetail {
+  questionTitle: string
+  score: number
+  comment: string
+  detailId: string
 }
 
 export interface SubmissionDetailType extends SubmissionType {
@@ -26,6 +34,7 @@ export interface SubmissionDetailType extends SubmissionType {
   comment: string
   statusName: string
   criteriaScores: CriterionScore[]
+  itemDetails: ItemDetail[]
   updatedDate: string
 }
 
