@@ -135,22 +135,6 @@ export default function UpdateExamSessionModal({
           <div>
             <label className="block text-sm font-medium text-text-primary mb-1.5">Trạng thái</label>
             <select
-                  {...register('examinationType')}
-                  className="w-full rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                        <option value="0">{EXAMINATION_STATUS_LABEL[0]}</option>
-                        <option value="1">{EXAMINATION_STATUS_LABEL[1]}</option>
-                        <option value="2">{EXAMINATION_STATUS_LABEL[2]}</option>
-                        <option value="3">{EXAMINATION_STATUS_LABEL[3]}</option>
-                        <option value="4">{EXAMINATION_STATUS_LABEL[4]}</option>
-            </select>
-                  {errors.status && (
-                  <p className="mt-1 text-xs text-danger">{errors.status.message}</p>
-                  )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-text-primary mb-1.5">Trạng thái</label>
-            <select
                   {...register('status')}
                   className="w-full rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15 disabled:opacity-50 disabled:cursor-not-allowed"
                   >

@@ -13,7 +13,7 @@ export const questionSchema = z.object({
 })
 
 export const examMaterialSchema = z.object({
-      Description: z.string(),
+      Description: z.string().min(1, 'Hãy điền mô tả đề thi'),
       SemesterId: z.string().min(1, 'Hãy chọn học kì phù hợp'),
       Questions: z.array(questionSchema).min(1, 'Phải có ít nhất 1 câu hỏi'),
       Question: z.instanceof(File, { error: 'File câu hỏi không được để trống' }).refine((file) => file.type === DOCX_MIME, 'File câu hỏi chỉ được upload dạng word'),
@@ -63,10 +63,11 @@ export default function useUploadExamMaterial() {
     })
     if (response.error) {
       toast.error(response.error.message)
-      return
+      return false
     }
     toast.success('Upload thành công')
     reset()
+    return true
   })
  
   return {

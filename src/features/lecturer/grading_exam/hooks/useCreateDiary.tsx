@@ -37,8 +37,8 @@ export default function useCreateDiary({ onRefresh }: UseCreateDiaryType) {
   }
   const onAutoSubmit = async (paperSet: PaperSetType) => {
       const formData: DiarySchemaType = {
-            content: `Nhật kí chấm điểm của đề ${paperSet.paperSetCode}`,
-            name: `Đề ${paperSet.paperSetCode} - ${paperSet.totalQuestions}`,
+            content: `DIARY_${paperSet.paperSetCode}`,
+            name: `DE_${paperSet.paperSetCode}_${paperSet.totalQuestions}`,
             paperSetId: paperSet.paperSetId
       }
       const response = await execute({
