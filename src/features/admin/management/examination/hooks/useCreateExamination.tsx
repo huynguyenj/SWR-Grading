@@ -54,7 +54,7 @@ export default function useCreateExamination({ onRefresh }: { onRefresh: () => v
   const onSubmit = async (createExaminationForm: CreateExaminationType): Promise<boolean> => {
     const body = {
       name: createExaminationForm.name,
-      examinationType: createExaminationForm.examinationType,
+      examinationType: Number(createExaminationForm.examinationType),
       startDate: createExaminationForm.startDate,
       startTime: `${createExaminationForm.startTime}:00`,
       durationMinutes: createExaminationForm.durationMinutes,
