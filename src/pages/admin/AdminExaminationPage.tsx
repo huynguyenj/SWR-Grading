@@ -120,7 +120,6 @@ export default function AdminExamSessionsPage() {
           <ViewExamSessionModal
             session={viewExamSession}
             onClose={() => setViewExamSession(null)}
-            semesters={semesterDataList.items}
           />
           <UpdateExamSessionModal
             examination={editExamSession}

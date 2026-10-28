@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import z from "zod"
 import type { PaperSetType } from "../../examination_materials/types/exam_material.type"
+import type { ExaminationType } from "@/features/admin/management/examination/types/examination.type"
 
 const diarySchema = z.object({
    paperSetId: z.string(),
@@ -54,5 +55,24 @@ export default function useCreateDiary({ onRefresh }: UseCreateDiaryType) {
       onRefresh()
       toast.success('Tạo nhật kí thành công')
   }
-  return { onAutoSubmit, onManualSubmit, reset, register, errors, handleSubmit, loading }
+    const onAutoSubmitV2 = async (examination: ExaminationType) => {
+      const formData: DiarySchemaType = {
+            content: `DIARY_${examination.name}`,
+            name: `${examination.examinationCode}`,
+            paperSetId: examination.paperSetId
+      }
+      const response = await execute({
+            apiUrl: 'grading-diaries',
+            method: 'post',
+            type: 'private',
+            body: formData
+      }) 
+      if (response.error) {
+            toast.error(response.error.message)
+            return
+      }
+      onRefresh()
+      toast.success('Tạo nhật kí thành công')
+  }
+  return { onAutoSubmit, onAutoSubmitV2, onManualSubmit, reset, register, errors, handleSubmit, loading }
 }
