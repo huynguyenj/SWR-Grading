@@ -1,7 +1,7 @@
 import Tabs from '@/components/ui/tabs'
+import ExaminationTableLecturer from '@/features/lecturer/grading_exam/components/ExaminationTableLecturer'
 import GradingLogDetailView from '@/features/lecturer/grading_exam/components/GradingLogDetailView'
 import GradingLogsTable from '@/features/lecturer/grading_exam/components/GradingLogsTable'
-import PaperSetTable from '@/features/lecturer/grading_exam/components/PaperSetTable'
 import type { GradingDiaryType } from '@/features/lecturer/grading_exam/types/grading-diary.type'
 import { useState } from 'react'
 
@@ -33,7 +33,7 @@ export default function GradingPage() {
 
       <Tabs
         tabs={[
-          { id: 'quizzes', label: 'Bài kiểm tra' },
+          { id: 'quizzes', label: 'Đợt thi' },
           { id: 'logs', label: 'Nhật ký chấm điểm' },
         ]}
         activeTab={activeTab}
@@ -41,7 +41,7 @@ export default function GradingPage() {
       />
 
       {activeTab === 'quizzes' ? (
-        <PaperSetTable />
+        <ExaminationTableLecturer />
       ) : (
         <GradingLogsTable 
           onSelected={setSelectedDiary}

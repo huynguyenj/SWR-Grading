@@ -29,8 +29,9 @@ export default function AdminExamSessionsPage() {
   const [sortField, setSortField] = useState<SortField>('startDate')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
   const [modalOpen, setModalOpen] = useState(false)
-  const [selectedExamSession, setSelectedExamSession] = useState<ExaminationType | null>(null)
-
+  const [viewExamSession, setViewExamSession] = useState<ExaminationType | null>(null)
+  const [editExamSession, setEditExamSession] = useState<ExaminationType | null>(null)
+  const [deleteExamSession, setDeleteExamSession] = useState<ExaminationType | null>(null)
   const filteredSessions = useMemo(() => {
     const sessions = examinationDataList?.items ?? []
 
@@ -95,7 +96,9 @@ export default function AdminExamSessionsPage() {
             <ExamSessionsTable
               sessions={filteredSessions}
               semesters={semesterDataList.items}
-              onSelectedExam={setSelectedExamSession}
+              onDelete={setDeleteExamSession}
+              onEdit={setEditExamSession}
+              onView={setViewExamSession}
             />
           </div>
 
@@ -115,19 +118,18 @@ export default function AdminExamSessionsPage() {
           />
 
           <ViewExamSessionModal
-            session={selectedExamSession}
-            onClose={() => setSelectedExamSession(null)}
-            semesters={semesterDataList.items}
+            session={viewExamSession}
+            onClose={() => setViewExamSession(null)}
           />
           <UpdateExamSessionModal
-            examination={selectedExamSession}
-            onClose={() => setSelectedExamSession(null)}
+            examination={editExamSession}
+            onClose={() => setEditExamSession(null)}
             semesters={semesterDataList.items}
             onRefresh={refresh}
           />
           <ConfirmDeleteExamModal
-            examination={selectedExamSession}
-            onClose={() => setSelectedExamSession(null)}
+            examination={deleteExamSession}
+            onClose={() => setDeleteExamSession(null)}
             onRefresh={refresh}
           />
         </>

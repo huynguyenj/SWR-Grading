@@ -5,6 +5,7 @@ import Button from '@/components/ui/button'
 import type { SemesterType } from '../../semester/types/semester'
 import useCreateExamination, { type CreateExaminationType } from '../hooks/useCreateExamination'
 import useGetSemesterDetail from '../../semester/hooks/useGetDetailSemesterAdmin'
+import { EXAMINATION_KIND_LABEL } from '../types/examination.type'
 
 interface CreateExamSessionModalProps {
   open: boolean
@@ -115,6 +116,20 @@ export default function CreateExamSessionModal({
               <p className="mt-1 text-xs text-danger">{errors.paperSetId.message}</p>
             )}
           </div>
+                    <div>
+                      <label className="block text-sm font-medium text-text-primary mb-1.5">Loại thi</label>
+                      <select
+                            {...register('examinationType')}
+                            className="w-full rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                  <option value="0">{EXAMINATION_KIND_LABEL[0]}</option>
+                                  <option value="1">{EXAMINATION_KIND_LABEL[1]}</option>
+                                  <option value="2">{EXAMINATION_KIND_LABEL[2]}</option>
+                      </select>
+                            {errors.examinationType && (
+                            <p className="mt-1 text-xs text-danger">{errors.examinationType.message}</p>
+                            )}
+                    </div>
         </section>
 
         {/* ===== Thời gian tổ chức ===== */}

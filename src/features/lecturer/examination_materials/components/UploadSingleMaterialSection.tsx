@@ -36,7 +36,7 @@ export default function UploadSingleMaterialSection({ isSelected, semester, onUp
    const questionFile = watch('Question')
    const rubricFile = watch('AnswerRubric')
    const answerTemplateFile = watch('AnswerTemplate')
-   const { handlePreviewFile, questionList } = useReadFile()
+   const { handlePreviewFile, questionList, loading: previewLoading } = useReadFile()
   // Mỗi khi mở modal cho 1 học kỳ khác -> reset form + gán sẵn semesterId
   useEffect(() => {
     if (isSelected && semester) {
@@ -55,6 +55,8 @@ export default function UploadSingleMaterialSection({ isSelected, semester, onUp
       reset({
         SemesterId: semester.semesterId,
         Question: questionFile,
+        AnswerRubric: rubricFile,
+        AnswerTemplate: answerTemplateFile,
         Questions: questionList.map((q) => {
           return {
             title: q.title,
@@ -69,9 +71,11 @@ export default function UploadSingleMaterialSection({ isSelected, semester, onUp
   }, [questionList])
   async function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault()
-    await onSubmit()
-    onUploaded?.()
-    onClose()
+    const isSuccess = await onSubmit()
+    if (isSuccess) {
+      onUploaded?.()
+      onClose()
+    }
   }
   
   return (
@@ -104,7 +108,7 @@ export default function UploadSingleMaterialSection({ isSelected, semester, onUp
                     <Button
                       type='button'
                       onClick={() => handlePreviewFile(questionFile)}
-                      disabled={questionFile == null}
+                      disabled={questionFile == null || previewLoading}
                     >
                       Kiểm tra nội dung file
                     </Button>
@@ -114,7 +118,7 @@ export default function UploadSingleMaterialSection({ isSelected, semester, onUp
                      label="File rubric (.xlsx)"
                      file={rubricFile}
                      onChange={setRubricFile}
-                     accept=".pdf,.doc,.docx,.xlsx"
+                     accept=".xlsx"
                      error={errors.AnswerRubric?.message}
                    />
                    <SingleFileUploadField
@@ -176,7 +180,7 @@ export default function UploadSingleMaterialSection({ isSelected, semester, onUp
                         <div>
                           <TextArea
                             placeholder="Nội dung câu hỏi"
-                            rows={2}
+                            rows={5}
                             {...register(`Questions.${index}.content`)}
                           />
                           {errors.Questions?.[index]?.content && (
@@ -228,7 +232,7 @@ export default function UploadSingleMaterialSection({ isSelected, semester, onUp
                  </Button>
                  <Button
                    type="submit"
-                   disabled={loading}
+                   disabled={loading || questionFields.length === 0}
                  >
                    {loading ? 'Đang tải lên...' : 'Upload'}
                  </Button>

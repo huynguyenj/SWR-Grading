@@ -20,6 +20,8 @@ const examinationSchema = z.object({
   semesterId: z.string().min(1, 'Vui lòng chọn học kỳ'),
 
   paperSetId: z.string().min(1, 'Vui lòng chọn bộ đề'),
+
+  examinationType: z.number().default(0)
 })
 
 export type CreateExaminationInput = z.input<typeof examinationSchema>
@@ -52,9 +54,9 @@ export default function useCreateExamination({ onRefresh }: { onRefresh: () => v
   const onSubmit = async (createExaminationForm: CreateExaminationType): Promise<boolean> => {
     const body = {
       name: createExaminationForm.name,
-      examinationType: 0,
+      examinationType: Number(createExaminationForm.examinationType),
       startDate: createExaminationForm.startDate,
-      startTime: createExaminationForm.startTime,
+      startTime: `${createExaminationForm.startTime}:00`,
       durationMinutes: createExaminationForm.durationMinutes,
       beforeTimeMinutes: createExaminationForm.beforeTimeMinutes,
       note: createExaminationForm.note ?? '',
@@ -62,7 +64,8 @@ export default function useCreateExamination({ onRefresh }: { onRefresh: () => v
       semesterId: createExaminationForm.semesterId,
       paperSetId: createExaminationForm.paperSetId,
     }
-
+    console.log(body);
+    
     const data = await execute({
       apiUrl: '/examinations',
       method: 'post',

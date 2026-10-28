@@ -8,10 +8,10 @@ import FileGradingDetailModal from './FileGradingDetailModal'
 import PaperSetDocumentsModal from './PaperDocumentModal'
 import PaperRubricModal from './PaperRubricModal'
 import DocumentCard from './DocumentCard'
-import DiarySubmissionUploadZone from './DiarySubmissionUploadZone'
 import { exportSubmissionsToExcel } from '../utils/submission_excel'
 import useAiGrade from '../hooks/useAiGrade'
 import Button from '@/components/ui/button'
+import DiarySubmissionUploadZoneV2 from './DiarySubmissionUploadZoneV2'
 
 interface GradingLogDetailViewProps {
   diaryId: string
@@ -30,11 +30,12 @@ export default function GradingLogDetailView({
   const [rubricPaperSetId, setRubricPaperSetId] = useState<string | null>(null)
   // const { execute: executeAiGrading, loading: isGrading } = useApiCall()
   const { handleUploadSubmissionFiles, loading: isUploading } = useUploadSubmissionFiles()
-  const { handleAiGrading, loading: aiLoading } = useAiGrade()
+  const { handleAiGrading, isGrading } = useAiGrade({ onRefresh: refresh })
   const submissions = diaryDetail?.submissions ?? []
   const totalCount = submissions.length
   // Status '0' = mới nộp, chưa qua AI chấm
-  const gradedCount = submissions.filter((s) => s.status !== '0').length
+  const gradedCount = submissions.filter((s) => String(s.status) !== '0').length
+  
   const canExport = totalCount > 0 && gradedCount === totalCount
 
   // async function handleAIGrading() {
@@ -51,7 +52,7 @@ export default function GradingLogDetailView({
   //   refresh()
   // }
 
-  async function handleUploadFiles(files: File[]) {
+  async function handleUploadFiles(files: File) {
     const success = await handleUploadSubmissionFiles(diaryId, files)
     if (success) refresh()
     return success
@@ -99,10 +100,10 @@ export default function GradingLogDetailView({
         <div className="flex items-center gap-2">
           <Button
             onClick={() => handleAiGrading(diaryDetail?.submissions)}
-            disabled={aiLoading|| totalCount === 0 || gradedCount === totalCount}
+            disabled={ isGrading || totalCount === 0 || gradedCount === totalCount}
           >
             <FiCpu className="w-4 h-4" />
-            {aiLoading ? 'Đang chấm điểm...' : 'AI Grading'}
+            {isGrading ? 'Đang chấm điểm...' : 'AI Grading'}
           </Button>
 
           <button
@@ -140,7 +141,7 @@ export default function GradingLogDetailView({
         {/* Upload */}
         <div>
           <h3 className="mb-2 text-sm font-semibold text-text-primary">Upload bài làm</h3>
-          <DiarySubmissionUploadZone onUpload={handleUploadFiles} uploading={isUploading} />
+          <DiarySubmissionUploadZoneV2 onUpload={handleUploadFiles} uploading={isUploading} />
         </div>
 
         {/* Tài liệu: file đề + rubric */}
