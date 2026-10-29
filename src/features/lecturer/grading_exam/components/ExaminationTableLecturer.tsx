@@ -45,7 +45,7 @@ export default function ExaminationTableLecturer() {
             <thead>
             <tr className="border-b border-border-default bg-bg-muted/50 text-left">
                   <th className="px-4 py-3 font-medium text-text-secondary">Đợt thi</th>
-                  <th className="px-4 py-3 font-medium text-text-secondary">Học kỳ</th>
+                  <th className="px-4 py-3 font-medium text-text-secondary">Mã kì thi</th>
                   <th className="px-4 py-3 font-medium text-text-secondary">Loại</th>
                   <th className="px-4 py-3 font-medium text-text-secondary">Thời gian</th>
                   <th className="px-4 py-3 font-medium text-text-secondary">Trạng thái</th>
@@ -60,9 +60,9 @@ export default function ExaminationTableLecturer() {
                   >
                   <td className="px-4 py-3">
                   <p className="font-medium text-text-primary">{session.name}</p>
-                  <p className="mt-0.5 text-xs text-text-muted">{session.examinationCode}</p>
+                  {/* <p className="mt-0.5 text-xs text-text-muted">{session.examinationCode}</p> */}
                   </td>
-                  <td className="px-4 py-3 text-text-secondary">{}</td>
+                  <td className="px-4 py-3 text-text-secondary">{session.examinationCode}</td>
                   <td className="px-4 py-3 text-text-secondary">
                   {EXAMINATION_KIND_LABEL[session.examinationType] ?? '—'}
                   </td>

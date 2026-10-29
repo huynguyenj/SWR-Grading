@@ -1,3 +1,5 @@
+import type { ExaminationKind, ExaminationStatus } from "@/features/admin/management/examination/types/examination.type"
+
 export type PaperSetStatus = 0 | 1 | 2 | 3 | 4
 export type PaperSetFileType = 1 | 2 | 3
 
@@ -14,6 +16,11 @@ export type PaperSetType = {
   totalQuestions: number
   status: PaperSetStatus
   examinationId: string | null
+  examinationCode: string | null
+  examinationName: string | null
+  examinationType: ExaminationKind
+  examinationStatus: ExaminationStatus
+  examinationStartDate: Date
   createdDate: string
   updatedDate: string
   fileQuestionDocs: string
