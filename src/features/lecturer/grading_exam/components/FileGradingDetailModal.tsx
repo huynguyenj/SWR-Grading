@@ -15,6 +15,7 @@ interface FileGradingDetailModalProps {
   onClose: () => void
   /** Gọi lại sau khi lưu điểm thành công — dùng để cha refetch danh sách/chi tiết nhật ký */
   onSaved: () => void
+  onRefresh: () => void
 }
 
 /** aiLogs là chuỗi JSON chứa breakdown đầy đủ hơn field `criteriaScores` phẳng
@@ -39,9 +40,10 @@ export default function FileGradingDetailModal({
   submission,
   onClose,
   onSaved,
+  onRefresh: refreshListSubmission
 }: FileGradingDetailModalProps) {
-  const { submissionDetail, loading, handleGetGradingDetail, refresh } = useGetGradingSubmissionDetail()
-  const { loading: saving, appendQuestionFix, questionFixField, removeQuestionFix, register, handleSubmit, onSubmit } = useUpdateSubmissionScore({ submissionId: submission?.submissionId, onRefresh: refresh })
+  const { submissionDetail, loading, handleGetGradingDetail, refresh: refreshSubmissionDetail } = useGetGradingSubmissionDetail()
+  const { loading: saving, appendQuestionFix, questionFixField, removeQuestionFix, register, handleSubmit, onSubmit } = useUpdateSubmissionScore({ submissionId: submission?.submissionId, onRefreshSubmissionDetail: refreshSubmissionDetail, onRefreshListSubmission: refreshListSubmission})
   const { finalizeScore, loading: loadingFinalize } = useFinalizeScore()
   useEffect(() => {
     if (submission) {
@@ -55,6 +57,12 @@ export default function FileGradingDetailModal({
     () => parseAiLogs(submissionDetail?.aiLogs ?? null),
     [submissionDetail?.aiLogs],
   )
+  const studentAnswerList = useMemo(() => {
+    if (!submissionDetail?.studentAnswers) return []
+    if (submissionDetail.studentAnswers.length === 0) return []
+    return submissionDetail.studentAnswers.sort((a, b) => a.questionNumber - b.questionNumber)
+  }, [submissionDetail])
+
   // Ưu tiên breakdown từ aiLogs (đầy đủ hơn), fallback về criteriaScores phẳng nếu parse lỗi
   const criteriaScores = parsedAiLog?.criteria_scores ?? submissionDetail?.criteriaScores ?? []
   const missingItems = parsedAiLog?.missing_items ?? []
@@ -76,6 +84,7 @@ export default function FileGradingDetailModal({
     const isQuestionAddedExisted = questionFixField.find((q) => q.questionId === question_id)
     if (!isQuestionAddedExisted) appendQuestionFix({ questionId: question_id, comment: comment, score: actual_score, notRecognized: '' })
   }
+
   return (
     <Modal
       open={submission !== null}
@@ -88,8 +97,51 @@ export default function FileGradingDetailModal({
           <p className="text-sm text-text-muted">Đang tải chi tiết bài chấm...</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border-default">
-          {/* ===== Bên trái: kết quả AI chi tiết ===== */}
+        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border-default">
+        {/* ===== Bên trái: bài làm sinh viên ===== */}
+          <div className="flex flex-col max-h-[70vh]">
+            <div className="flex items-center justify-between gap-2 border-b border-border-default px-5 py-3 shrink-0">
+              <div className="flex items-center gap-2">
+                <FiTerminal className="w-4 h-4 text-text-muted" />
+                <h3 className="text-sm font-semibold text-text-primary">Bài làm sinh viên</h3>
+              </div>
+              <span className="text-xs text-text-muted">
+                {submissionDetail.studentName} · {submissionDetail.studentCode}
+              </span>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+              {studentAnswerList?.length > 0 && (
+                <div>
+                  <p className="mb-1.5 text-xs font-medium text-text-muted">Bài làm từng câu</p>
+                  <ul className="space-y-2">
+                    {studentAnswerList.map((answer, i) => (
+                      <li key={i} className="rounded-md bg-bg-muted/50 px-3 py-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="text-sm text-text-primary">Question {answer.questionNumber}:</span>
+                        </div>
+                        {answer.extractedText ? (
+                          <p className="mt-1 text-xs text-text-secondary leading-relaxed">
+                            {answer.extractedText}
+                          </p>
+                        )
+                        :
+                        <p className="mt-1 text-xs text-text-secondary leading-relaxed">Không có câu trả lời</p>
+                      }
+                        {answer.extractedImageUrl && 
+                          <div className='my-2'>
+                            <img src={answer.extractedImageUrl} alt="answer image" className='w-30 aspect-square'/>
+                          </div>
+                        }
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ===== Ở giữa: kết quả AI chi tiết ===== */}
           <div className="flex flex-col max-h-[70vh]">
             <div className="flex items-center justify-between gap-2 border-b border-border-default px-5 py-3 shrink-0">
               <div className="flex items-center gap-2">
@@ -172,7 +224,7 @@ export default function FileGradingDetailModal({
           <LecturerGradingSection
             submissionItemDetail={submissionDetail.itemDetails}
             submissionId= {submissionDetail.submissionId}
-            onRefresh={refresh}
+            onRefresh={refreshSubmissionDetail}
             lecturerComment={submissionDetail.comment}
           />
         }

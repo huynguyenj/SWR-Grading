@@ -6,6 +6,13 @@ export interface CriterionScore {
   score: number
 }
 
+export interface StudentAnswer {
+  questionNumber: number
+  question: string
+  extractedText: string
+  extractedImageUrl: string
+}
+
 export interface SubmissionDetail {
   submissionId: string
   submissionFile: string
@@ -21,6 +28,7 @@ export interface SubmissionDetail {
   status: SubmissionStatus
   statusName: string
   criteriaScores: CriterionScore[]
+  studentAnswers: StudentAnswer[]
   createdDate: string
   updatedDate: string
 }

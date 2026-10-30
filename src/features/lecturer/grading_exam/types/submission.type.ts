@@ -24,6 +24,14 @@ export interface ItemDetail {
   detailId: string
 }
 
+export interface StudentAnswer {
+  questionNumber: number
+  question: string
+  extractedText: string
+  extractedImageUrl: string
+}
+
+
 export interface SubmissionDetailType extends SubmissionType {
   filePath: string | null
   diaryId: string
@@ -34,6 +42,7 @@ export interface SubmissionDetailType extends SubmissionType {
   comment: string
   statusName: string
   criteriaScores: CriterionScore[]
+  studentAnswers: StudentAnswer[]
   itemDetails: ItemDetail[]
   updatedDate: string
 }

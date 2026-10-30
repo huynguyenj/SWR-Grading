@@ -181,6 +181,7 @@ export default function GradingLogDetailView({
       </div>
 
       <FileGradingDetailModal
+        onRefresh={refresh}
         submission={viewingSubmission}
         onClose={() => setViewingSubmission(null)}
         onSaved={refresh}

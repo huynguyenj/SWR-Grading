@@ -26,7 +26,13 @@ const updateSubmissionScoreSchema = z.object({
 type UpdateSubmissionScoreSchemaInputType = z.input<typeof updateSubmissionScoreSchema>
 type UpdateSubmissionScoreSchemaOutputType = z.output<typeof updateSubmissionScoreSchema>
 
-export default function useUpdateSubmissionScore({ submissionId, onRefresh }: { submissionId?: string, onRefresh: (submissionId: string) => void }) {
+type UseUpdateSubmissionScoreType = {
+  submissionId?: string
+  onRefreshSubmissionDetail: (submissionId: string) => void
+  onRefreshListSubmission: () => void
+}
+
+export default function useUpdateSubmissionScore({ onRefreshListSubmission, onRefreshSubmissionDetail, submissionId }: UseUpdateSubmissionScoreType) {
   const { execute, loading } = useApiCall()
   const {
   control,
@@ -65,7 +71,8 @@ export default function useUpdateSubmissionScore({ submissionId, onRefresh }: { 
       return
     }
     toast.success('Chấm điểm thành công')
-    onRefresh(submissionId)
+    onRefreshSubmissionDetail(submissionId)
+    onRefreshListSubmission()
  }
   return { loading, handleSubmit, onSubmit, control, register, appendQuestionFix: append, removeQuestionFix: remove, questionFixField: fields, errors }
 }
