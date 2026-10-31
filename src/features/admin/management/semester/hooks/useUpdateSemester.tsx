@@ -6,8 +6,8 @@ import { toast } from "react-toastify"
 import z from "zod"
 
 const semesterSchema = z.object({
-   semesterCode: z.string(),
-   name: z.string(),
+   semesterCode: z.string().min(1, 'Mã học kì không được để trống'),
+   name: z.string().min(1, 'Tên học kì không được để trống'),
    startDate: z.coerce.date(),
    endDate: z.coerce.date(),
    status: z.string()

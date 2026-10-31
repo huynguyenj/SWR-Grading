@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { FiTerminal, FiEdit3, FiAlertTriangle, FiTrash } from 'react-icons/fi'
+import { FiTerminal, FiEdit3, FiAlertTriangle } from 'react-icons/fi'
 import type { CriterionScore, SubmissionType } from '../types/submission.type'
 import Modal from '@/components/ui/modal'
 import Button from '@/components/ui/button'
@@ -43,7 +43,7 @@ export default function FileGradingDetailModal({
   onRefresh: refreshListSubmission
 }: FileGradingDetailModalProps) {
   const { submissionDetail, loading, handleGetGradingDetail, refresh: refreshSubmissionDetail } = useGetGradingSubmissionDetail()
-  const { loading: saving, appendQuestionFix, questionFixField, removeQuestionFix, register, handleSubmit, onSubmit } = useUpdateSubmissionScore({ submissionId: submission?.submissionId, onRefreshSubmissionDetail: refreshSubmissionDetail, onRefreshListSubmission: refreshListSubmission})
+  const { loading: saving, appendQuestionFix, questionFixField, register, handleSubmit, onSubmit, resetUpdateSubmission } = useUpdateSubmissionScore({ submissionId: submission?.submissionId, onRefreshSubmissionDetail: refreshSubmissionDetail, onRefreshListSubmission: refreshListSubmission})
   const { finalizeScore, loading: loadingFinalize } = useFinalizeScore()
   useEffect(() => {
     if (submission) {
@@ -79,12 +79,28 @@ export default function FileGradingDetailModal({
     }
   }
 
-  const handleAppendItemManualGrade = (question_id: string, comment: string, actual_score: number) => {
-    if (submissionDetail?.itemDetails && submissionDetail.itemDetails.length > 0) return
-    const isQuestionAddedExisted = questionFixField.find((q) => q.questionId === question_id)
-    if (!isQuestionAddedExisted) appendQuestionFix({ questionId: question_id, comment: comment, score: actual_score, notRecognized: '' })
-  }
+  // const handleAppendItemManualGrade = (question_id: string, comment: string, actual_score: number) => {
+  //   if (submissionDetail?.itemDetails && submissionDetail.itemDetails.length > 0) return
+  //   const isQuestionAddedExisted = questionFixField.find((q) => q.questionId === question_id)
+  //   if (!isQuestionAddedExisted) appendQuestionFix({ questionId: question_id, comment: comment, score: actual_score, notRecognized: '' })
+  // }
 
+  const handleEditGrading = (gradingCriterion: CriterionScore[]) => {
+    if (gradingCriterion.length === 0) return
+    if (questionFixField.length > 0) return
+    gradingCriterion.forEach((criterion) => {
+      appendQuestionFix({
+        questionId: criterion.question_id,
+        comment: criterion.comment,
+        notRecognized: '',
+        score: criterion.actual_score
+      })
+    })
+  }
+  const handleCloseModal = () => {
+    resetUpdateSubmission()
+    onClose()
+  }
   return (
     <Modal
       open={submission !== null}
@@ -167,7 +183,7 @@ export default function FileGradingDetailModal({
                   <p className="mb-1.5 text-xs font-medium text-text-muted">Điểm theo tiêu chí</p>
                   <ul className="space-y-2">
                     {criteriaScores.map((c, i) => (
-                      <li key={i} className="rounded-md bg-bg-muted/50 px-3 py-2" onClick={() => handleAppendItemManualGrade(c.question_id, c.comment, c.actual_score)}>
+                      <li key={i} className="rounded-md bg-bg-muted/50 px-3 py-2">
                         <div className="flex items-start justify-between gap-2">
                           <span className="text-sm text-text-primary">{c.criterion}</span>
                           <span className="shrink-0 text-sm font-semibold text-text-primary">
@@ -234,14 +250,20 @@ export default function FileGradingDetailModal({
             <div className="flex items-center gap-2 border-b border-border-default px-5 py-3 shrink-0">
                 <FiEdit3 className="w-4 h-4 text-text-muted" />
                 <h3 className="text-sm font-semibold text-text-primary">Chấm lại & nhận xét</h3>
+                <Button
+                  size='sm'
+                  onClick={() => handleEditGrading(submissionDetail.criteriaScores)}
+                >
+                  Chấm lại
+                </Button>
             </div>
                 { questionFixField.map((qFix, index) => (
                   <div className="flex-1  px-5 py-4 space-y-4" key={qFix.questionId}>
                     <div className='flex items-center justify-between'>
                       <h2>{criteriaScores.find((q) => q.question_id === qFix.questionId)?.criterion}</h2>
-                      <Button onClick={() => removeQuestionFix(index)} variant='danger'>
+                      {/* <Button onClick={() => removeQuestionFix(index)} variant='danger'>
                         <FiTrash/>
-                      </Button>
+                      </Button> */}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-text-primary mb-1.5">
@@ -294,7 +316,7 @@ export default function FileGradingDetailModal({
                         className="w-full rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15 resize-none"
                       />
                   </div>
-                  <Button variant="basic" onClick={onClose} type="button">
+                  <Button variant="basic" onClick={handleCloseModal} type="button">
                     Hủy
                   </Button>
                   { submissionDetail.status != '3' &&

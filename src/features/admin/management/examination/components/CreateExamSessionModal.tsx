@@ -64,8 +64,8 @@ export default function CreateExamSessionModal({
               size="basic"
               placeholder="VD: Đợt thi thực hành giữa kỳ - Ca 1"
               {...register('name')}
+              error={errors.name?.message}
             />
-            {errors.name && <p className="mt-1 text-xs text-danger">{errors.name.message}</p>}
           </div>
 
           <div>

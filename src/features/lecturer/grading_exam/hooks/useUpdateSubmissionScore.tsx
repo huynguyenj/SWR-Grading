@@ -11,7 +11,6 @@ import z from 'zod'
 const updateSubmissionScoreSchema = z.object({
   lecturerScore: z.number(),
   comment: z.string(),
-  pickAiScore: z.boolean().default(true),
   isFinal: z.boolean().default(false),
   selectionReason: z.string(),
   itemDetails: z.array(
@@ -38,6 +37,7 @@ export default function useUpdateSubmissionScore({ onRefreshListSubmission, onRe
   control,
   register,
   formState: { errors },
+  reset,
   handleSubmit,
 } = useForm<
   UpdateSubmissionScoreSchemaInputType,
@@ -48,7 +48,6 @@ export default function useUpdateSubmissionScore({ onRefreshListSubmission, onRe
   defaultValues: {
     lecturerScore: 0,
     comment: '',
-    pickAiScore: true,
     isFinal: false,
     selectionReason: '',
     itemDetails: [],
@@ -73,6 +72,7 @@ export default function useUpdateSubmissionScore({ onRefreshListSubmission, onRe
     toast.success('Chấm điểm thành công')
     onRefreshSubmissionDetail(submissionId)
     onRefreshListSubmission()
+    reset()
  }
-  return { loading, handleSubmit, onSubmit, control, register, appendQuestionFix: append, removeQuestionFix: remove, questionFixField: fields, errors }
+  return { loading, handleSubmit, onSubmit, control, resetUpdateSubmission: reset, register, appendQuestionFix: append, removeQuestionFix: remove, questionFixField: fields, errors }
 }
