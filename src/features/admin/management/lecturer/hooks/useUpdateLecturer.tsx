@@ -1,26 +1,39 @@
 
 import useApiCall from '@/hooks/useApiCall'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import z from 'zod'
 
 const lecturerSchema = z.object({
-  fullName: z.string().trim().min(1, 'Họ và tên không được để trống'),
-  email: z.string().trim().min(1, 'Email không được để trống').email('Email không hợp lệ'),
-  subject: z.string().trim().min(1, 'Chuyên ngành không được để trống'),
+  fullName: z
+    .string()
+    .trim()
+    .min(1, 'Họ và tên không được để trống'),
+
+  email: z
+    .string()
+    .trim()
+    .min(1, 'Email không được để trống')
+    .email('Email không hợp lệ'),
+
+  subject: z
+    .string()
+    .trim()
+    .min(1, 'Chuyên ngành không được để trống'),
 })
 
-type UpdateLecturerInput = z.input<typeof lecturerSchema>
-type UpdateLecturerType = z.output<typeof lecturerSchema>
+export type UpdateLecturerInput = z.input<typeof lecturerSchema>
+export type UpdateLecturerType = z.output<typeof lecturerSchema>
 
-type UseUpdateLecturerProps = {
+interface UseUpdateLecturerProps {
   onRefresh: () => void
+  updateSelectedLecturerId?: string
 }
 
 export default function useUpdateLecturer({
   onRefresh,
+  updateSelectedLecturerId,
 }: UseUpdateLecturerProps) {
   const { execute, loading } = useApiCall()
 
@@ -38,12 +51,12 @@ export default function useUpdateLecturer({
     },
   })
 
-  const [selectedLecturerId, setSelectedLecturerId] = useState('')
-
-  const onSubmit = async (updateLecturerForm: UpdateLecturerType) => {
-    if (!selectedLecturerId) {
+  const onSubmit = async (
+    updateLecturerForm: UpdateLecturerType,
+  ): Promise<boolean> => {
+    if (!updateSelectedLecturerId) {
       toast.error('Không tìm thấy giảng viên cần cập nhật')
-      return
+      return false
     }
 
     const body = {
@@ -52,29 +65,29 @@ export default function useUpdateLecturer({
       subject: updateLecturerForm.subject,
     }
 
-    const response = await execute({
-      apiUrl: `/admin/lecturers/${selectedLecturerId}`,
-      method: 'put',
-      type: 'private',
-      body,
-    })
-    
-    if (response.error) {
-      toast.error(response.error.message)
-      return
-    }
+    try {
+      await execute({
+        apiUrl: `/admin/lecturers/${updateSelectedLecturerId}`,
+        method: 'put',
+        type: 'private',
+        body,
+      })
 
-    onRefresh()
-    toast.success('Cập nhật thông tin giảng viên thành công')
+      onRefresh()
+      toast.success('Cập nhật thông tin giảng viên thành công')
+
+      return true
+    } catch {
+      return false
+    }
   }
 
   return {
-    updateRegister: register,
+    register,
     handleSubmit,
     errors,
     loading,
     onSubmit,
     reset,
-    setSelectedLecturerId,
   }
 }

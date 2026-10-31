@@ -1,4 +1,4 @@
-import { useCallback, useEffect,  useState } from 'react'
+import { useEffect,  useState } from 'react'
 import useApiCall from '@/hooks/useApiCall'
 import type { SemesterStatistics } from '../types/admin_dashboard.type'
 
@@ -41,16 +41,16 @@ export default function useGetSemesterStatistics() {
       }
     }
 
-    void fetchStatistics()
+    fetchStatistics()
 
     return () => {
       cancelled = true
     }
   }, [refreshKey])
 
-  const refresh = useCallback(() => {
+  const refresh =() => {
     setRefreshKey((previous) => previous + 1)
-  }, [])
+  }
 
   return {
     semesters,

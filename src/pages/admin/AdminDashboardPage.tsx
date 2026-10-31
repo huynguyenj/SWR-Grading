@@ -6,6 +6,7 @@ import {
   FiCheckCircle,
   FiClock,
   FiFileText,
+  FiRefreshCw,
   FiTrendingUp,
   FiUsers,
 } from 'react-icons/fi'
@@ -131,15 +132,18 @@ export default function AdminDashboardPage() {
             Theo dõi tình hình kỳ thi, kết quả chấm điểm và phổ điểm của các học kỳ.
           </p>
         </div>
-
-        <button
-          type="button"
-          onClick={refresh}
-          disabled={loading}
-          className="rounded-md bg-action-primary px-4 py-2 text-sm font-medium text-text-on-brand transition-colors hover:bg-action-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {loading ? 'Đang tải...' : 'Làm mới dữ liệu'}
-        </button>
+        {/* REFRESH */}
+         <button
+           type="button"
+           onClick={refresh}
+           disabled={loading}
+           className="inline-flex items-center justify-center gap-2 rounded-md border border-border-default bg-bg-primary px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+         >
+           <FiRefreshCw
+             className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`}
+           />
+           Làm mới
+         </button>
       </div>
 
       {/* ERROR WHEN REFRESHING */}
