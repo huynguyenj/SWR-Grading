@@ -9,3 +9,10 @@ export function formatDate(iso: string) {
 }
 
 export const formatPoint = (n: number) => Number(n.toFixed(3)).toString()
+
+export function formatScore(score: number | null | undefined) {
+  return score == null ? '—' : score.toFixed(1)
+}
+export function formatPercentage(value: number): string {
+  return `${value.toFixed(1)}%`
+}

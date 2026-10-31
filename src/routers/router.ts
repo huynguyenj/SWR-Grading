@@ -47,6 +47,12 @@ export const router = createBrowserRouter([
                         }
                   },
                                     {
+                        path:'/admin/student',
+                        lazy: {
+                              Component: async() => (await import('@/pages/admin/AdminStudentPage')).default
+                        }
+                  },
+                                    {
                         path: '/admin/semester',
                         lazy: {
                               Component: async() => (await import('@/pages/admin/AdminSemesterPage')).default
