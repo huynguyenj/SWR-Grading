@@ -119,7 +119,7 @@ export default function CreateExamSessionModal({
                     <div>
                       <label className="block text-sm font-medium text-text-primary mb-1.5">Loại thi</label>
                       <select
-                            {...register('examinationType')}
+                            {...register('examinationType', { valueAsNumber: true })}
                             className="w-full rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                   <option value="0">{EXAMINATION_KIND_LABEL[0]}</option>
