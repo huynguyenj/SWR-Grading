@@ -1,4 +1,5 @@
 import type { PaperSetType } from "@/features/lecturer/examination_materials/types/exam_material.type"
+import type { ExaminationType } from "../../examination/types/examination.type"
 
 export type SemesterStatus = 0 | 1 | 2
 // export const SemesterTranslate: Record<number, SemesterStatus> = {
@@ -18,4 +19,5 @@ export interface SemesterType {
 
 export interface SemesterDetailType extends SemesterType {
   paperSets: PaperSetType[]
+  examinations: ExaminationType[]
 }

@@ -1,40 +1,60 @@
-import useApiCall from '@/hooks/useApiCall'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
-import { getMockDashboard, type LecturerDashboardType } from '../types/dashboard.type'
+import useApiCall from '@/hooks/useApiCall'
+import type { LecturerDashboardType } from '../types/dashboard.type'
 
-// TODO: đổi thành false khi BE có endpoint dashboard thật
-const USE_MOCK_DASHBOARD = true
+interface UseGetLecturerDashboardProps {
+  semesterId: string
+}
 
-export default function useGetLecturerDashboard({ semesterId }: { semesterId: string }) {
+export default function useGetLecturerDashboard({
+  semesterId,
+}: UseGetLecturerDashboardProps) {
   const { execute, loading } = useApiCall<LecturerDashboardType>()
+
   const [dashboard, setDashboard] = useState<LecturerDashboardType>()
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const getDashboard = async () => {
-      if (USE_MOCK_DASHBOARD) {
-        setDashboard(getMockDashboard(semesterId))
-        return
-      }
+    let cancelled = false
 
-      // GIẢ ĐỊNH endpoint — chưa được cung cấp, cần xác nhận lại route/tham số với BE
-      const response = await execute({
-        apiUrl: '/dashboard/lecturer',
-        method: 'get',
-        type: 'private',
-        body: {
-          SemesterId: semesterId === 'all' ? undefined : semesterId,
-        },
-      })
-      if (response.error) {
-        toast.error(response.error.message)
+    const getDashboard = async () => {
+      setDashboard(undefined)
+      setError(null)
+      if (semesterId === 'all') {
         return
       }
-      setDashboard(response.data)
+      try {
+        const response = await execute({
+          apiUrl: `lecturer/dashboard?semesterId=${semesterId}`,
+          method: 'get',
+          type: 'private',
+        })
+
+        if (cancelled) return
+
+        if (response.error) {
+          setError(response.error.message)
+          return
+        }
+
+        setDashboard(response.data)
+      } catch {
+        if (!cancelled) {
+          setError('Không thể tải dữ liệu dashboard. Vui lòng thử lại.')
+        }
+      }
     }
-    getDashboard()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    void getDashboard()
+
+    return () => {
+      cancelled = true
+    }
   }, [semesterId])
 
-  return { dashboard, loading }
+  return {
+    dashboard,
+    loading,
+    error,
+  }
 }

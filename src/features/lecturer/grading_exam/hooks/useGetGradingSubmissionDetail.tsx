@@ -13,5 +13,8 @@ export default function useGetGradingSubmissionDetail() {
       })
       setSubmissionDetail(response.data)
   }
-  return { loading, submissionDetail, handleGetGradingDetail }
+  const refresh = (submissionId: string) => {
+    handleGetGradingDetail(submissionId)
+  }
+  return { loading, submissionDetail, handleGetGradingDetail , refresh}
 }

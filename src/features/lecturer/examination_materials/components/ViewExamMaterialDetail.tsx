@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import {  useState } from 'react'
 import { FiCalendar } from 'react-icons/fi'
 import Modal from '@/components/ui/modal'
 import SemesterStatusBadge from '@/features/admin/management/semester/components/SemesterBadge'
@@ -7,7 +7,7 @@ import { formatDate } from '@/utils/format'
 import useGetExamMaterialBySemester from '../hooks/useGetExamMaterialBySemester'
 import FilePreviewModal from '../../grading_exam/components/FilePreviewModal'
 import Button from '@/components/ui/button'
-import PaperSetCard from './ExamMaterialCard'
+import PaperSetCard from './PaperSetCard'
 
 interface ViewExamMaterialDetailModalProps {
   semester: SemesterType | null
@@ -23,7 +23,7 @@ export default function ViewExamMaterialDetailModal({
   const { lecturerSemesterDetail, loading, onRefresh } = useGetExamMaterialBySemester({
     semesterId: semester?.semesterId ?? '',
   })
-  
+
   const [previewFile, setPreviewFile] = useState<{ label: string; objectKey: string } | null>(
     null,
   )

@@ -12,10 +12,12 @@ import Button from '@/components/ui/button'
 interface ExamSessionsTableProps {
   sessions: ExaminationType[]
   semesters: SemesterType[]
-  onSelectedExam: (exam: ExaminationType) => void
+  onView: (exam: ExaminationType) => void
+  onEdit: (exam: ExaminationType) => void
+  onDelete: (exam: ExaminationType) => void
 }
 
-export default function ExamSessionsTable({ sessions, semesters, onSelectedExam}: ExamSessionsTableProps) {
+export default function ExamSessionsTable({ sessions, semesters, onDelete, onEdit, onView}: ExamSessionsTableProps) {
   function semesterName(id: string) {
     return semesters.find((s) => s.semesterId === id)?.name ?? '—'
   }
@@ -69,25 +71,25 @@ export default function ExamSessionsTable({ sessions, semesters, onSelectedExam}
               <td className="px-4 py-3">
                 <ExamSessionStatusBadge status={session.status} />
               </td>
-              <td className="px-4 py-3 text-right">
+              <td className="flex justify-end px-4 py-3 text-right">
                 <button
-                  onClick={() => onSelectedExam(session)}
+                  onClick={() => onView(session)}
                   className="rounded-md p-1.5 text-text-muted hover:bg-bg-muted hover:text-text-primary transition-colors"
                   aria-label="Xem chi tiết"
                 >
                   <FiEye className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => onSelectedExam(session)}
+                  onClick={() => onEdit(session)}
                   className="rounded-md p-1.5 text-text-muted hover:bg-bg-muted hover:text-text-primary transition-colors"
                   aria-label="Chỉnh sửa"
                 >
                   <FiEdit className="w-4 h-4" />
                 </button>
                 <Button
-                  onClick={() => onSelectedExam(session)}
+                  onClick={() => onDelete(session)}
                   variant='danger'
-                  className="rounded-md p-1.5 text-text-muted hover:bg-bg-muted hover:text-text-primary transition-colors"
+                  className="px-1.5 py-1"
                   aria-label="Xóa"
                 >
                   <FiTrash className="w-4 h-4" />

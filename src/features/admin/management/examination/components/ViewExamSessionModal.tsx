@@ -8,22 +8,16 @@ import {
   toShortTime,
   type ExaminationType,
 } from '../types/examination.type'
-import type { SemesterType } from '../../semester/types/semester'
 
 interface ViewExamSessionModalProps {
   session: ExaminationType | null
   onClose: () => void
-  semesters: SemesterType[]
 }
 
 export default function ViewExamSessionModal({
   session,
   onClose,
-  semesters,
 }: ViewExamSessionModalProps) {
-  const semesterName = session
-    ? (semesters.find((s) => s.semesterId === session.semesterId)?.name ?? '—')
-    : ''
 
   return (
     <Modal open={session !== null} onClose={onClose} title={session?.name} maxWidth="lg">
@@ -32,7 +26,7 @@ export default function ViewExamSessionModal({
           <div className="flex flex-wrap items-center gap-2">
             <ExamSessionStatusBadge status={session.status} />
             <span className="text-sm text-text-secondary">
-              · {semesterName} · {EXAMINATION_KIND_LABEL[session.examinationType]}
+               · {EXAMINATION_KIND_LABEL[session.examinationType]}
             </span>
           </div>
 

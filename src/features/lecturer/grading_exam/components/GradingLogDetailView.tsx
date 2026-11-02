@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FiArrowLeft, FiDownload, FiFileText, FiList, FiUser } from 'react-icons/fi'
+import { FiArrowLeft, FiCpu, FiDownload, FiFileText, FiList, FiUser } from 'react-icons/fi'
 import useGetGradingDiaryDetail from '../hooks/useGetGradingDiaryDetail'
 import useUploadSubmissionFiles from '../hooks/useUploadSubmissionFiles'
 import type { SubmissionType } from '../types/submission.type'
@@ -8,8 +8,10 @@ import FileGradingDetailModal from './FileGradingDetailModal'
 import PaperSetDocumentsModal from './PaperDocumentModal'
 import PaperRubricModal from './PaperRubricModal'
 import DocumentCard from './DocumentCard'
-import DiarySubmissionUploadZone from './DiarySubmissionUploadZone'
 import { exportSubmissionsToExcel } from '../utils/submission_excel'
+import useAiGrade from '../hooks/useAiGrade'
+import Button from '@/components/ui/button'
+import DiarySubmissionUploadZone from './DiarySubmissionUploadZone'
 
 interface GradingLogDetailViewProps {
   diaryId: string
@@ -28,11 +30,12 @@ export default function GradingLogDetailView({
   const [rubricPaperSetId, setRubricPaperSetId] = useState<string | null>(null)
   // const { execute: executeAiGrading, loading: isGrading } = useApiCall()
   const { handleUploadSubmissionFiles, loading: isUploading } = useUploadSubmissionFiles()
-
+  const { handleAiGrading, isGrading } = useAiGrade({ onRefresh: refresh })
   const submissions = diaryDetail?.submissions ?? []
   const totalCount = submissions.length
   // Status '0' = mới nộp, chưa qua AI chấm
-  const gradedCount = submissions.filter((s) => s.status !== '0').length
+  const gradedCount = submissions.filter((s) => String(s.status) !== '0').length
+  
   const canExport = totalCount > 0 && gradedCount === totalCount
 
   // async function handleAIGrading() {
@@ -60,7 +63,6 @@ export default function GradingLogDetailView({
   }
 
   const paperSetLabel = diaryDetail?.paperSetCode ? `Bộ đề ${diaryDetail.paperSetCode}` : ''
-
   return (
     <div className="space-y-5">
       <button
@@ -96,13 +98,13 @@ export default function GradingLogDetailView({
         </div>
 
         <div className="flex items-center gap-2">
-          {/* <Button
-            onClick={handleAIGrading}
-            disabled={isGrading || totalCount === 0 || gradedCount === totalCount}
+          <Button
+            onClick={() => handleAiGrading(diaryDetail?.submissions)}
+            disabled={ isGrading || totalCount === 0 || gradedCount === totalCount}
           >
             <FiCpu className="w-4 h-4" />
             {isGrading ? 'Đang chấm điểm...' : 'AI Grading'}
-          </Button> */}
+          </Button>
 
           <button
             onClick={handleExportExcel}
@@ -179,6 +181,7 @@ export default function GradingLogDetailView({
       </div>
 
       <FileGradingDetailModal
+        onRefresh={refresh}
         submission={viewingSubmission}
         onClose={() => setViewingSubmission(null)}
         onSaved={refresh}

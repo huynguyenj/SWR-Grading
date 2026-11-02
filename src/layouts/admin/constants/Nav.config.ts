@@ -35,7 +35,8 @@ export const navSections: NavSection[] = [
   {
     title: 'Quản lý',
     items: [
-      { label: 'Người dùng', href: '/admin/users', icon: FiUsers },
+      { label: 'Giảng viên', href: '/admin/users', icon: FiUsers },
+      { label: 'Sinh viên', href: '/admin/student', icon: FiUsers },
       { label: 'Học kì', href: '/admin/semester', icon: FiMessageSquare },
       { label: 'Tổ chức thi', href: '/admin/examination', icon: FiFlag },
     ],

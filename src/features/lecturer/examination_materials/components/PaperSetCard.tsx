@@ -55,7 +55,14 @@ export default function PaperSetCard({ material, onRefresh }: PaperSetCardProps)
           <p className="text-xs font-medium text-text-muted">Mã đề: {material.paperSetCode}</p>
           <p className="text-sm font-medium text-text-primary">{material.description}</p>
         </div>
-        <PaperSetStatusBadge status={material.status} />
+        <div className='flex items-center gap-2'>
+          <PaperSetStatusBadge status={material.status} />
+          { material.examinationName && 
+            <div>
+              <p className='text-xs font-medium '>{material.examinationName}</p>
+            </div>
+          }
+        </div>
       </div>
 
       <div className="flex items-center gap-1.5 text-xs text-text-muted">

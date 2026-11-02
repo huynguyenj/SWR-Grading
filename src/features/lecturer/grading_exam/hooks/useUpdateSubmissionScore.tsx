@@ -1,29 +1,78 @@
 import useApiCall from '@/hooks/useApiCall'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import z from 'zod'
 
 /**
  * GIẢ ĐỊNH endpoint — chưa được cung cấp trong yêu cầu, cần xác nhận lại với BE.
  * Tạm dùng PUT /grading-diaries/submissions/{submissionId}/score
  */
-export default function useUpdateSubmissionScore() {
-  const { execute, loading } = useApiCall()
+const updateSubmissionScoreSchema = z.object({
+  lecturerScore: z.number(),
+  comment: z.string(),
+  isFinal: z.boolean().default(false),
+  selectionReason: z.string(),
+  itemDetails: z.array(
+    z.object({
+      questionId: z.string(),
+      score: z.number(),
+      comment: z.string(),
+      notRecognized: z.string().nullable()
+    }),
+  ),
+})
+type UpdateSubmissionScoreSchemaInputType = z.input<typeof updateSubmissionScoreSchema>
+type UpdateSubmissionScoreSchemaOutputType = z.output<typeof updateSubmissionScoreSchema>
 
-  const updateScore = async (submissionId: string, lecturerScore: number, comment: string) => {
+type UseUpdateSubmissionScoreType = {
+  submissionId?: string
+  onRefreshSubmissionDetail: (submissionId: string) => void
+  onRefreshListSubmission: () => void
+}
+
+export default function useUpdateSubmissionScore({ onRefreshListSubmission, onRefreshSubmissionDetail, submissionId }: UseUpdateSubmissionScoreType) {
+  const { execute, loading } = useApiCall()
+  const {
+  control,
+  register,
+  formState: { errors },
+  reset,
+  handleSubmit,
+} = useForm<
+  UpdateSubmissionScoreSchemaInputType,
+  unknown,
+  UpdateSubmissionScoreSchemaOutputType
+>({
+  resolver: zodResolver(updateSubmissionScoreSchema),
+  defaultValues: {
+    lecturerScore: 0,
+    comment: '',
+    isFinal: false,
+    selectionReason: '',
+    itemDetails: [],
+  },
+})
+  const { append, fields, remove } = useFieldArray({ control, name: 'itemDetails' })
+
+ const onSubmit = async (values: UpdateSubmissionScoreSchemaInputType) => {
+    if (!submissionId) return
+    console.log(values);
+    
     const response = await execute({
       apiUrl: `submissions/${submissionId}/review`,
-      method: 'put',
+      method: 'post',
       type: 'private',
-      body: { lecturerScore, comment },
+      body: values,
     })
-
     if (response.error) {
       toast.error(response.error.message)
-      return false
+      return
     }
-
-    toast.success('Lưu điểm thành công')
-    return true
-  }
-
-  return { updateScore, loading }
+    toast.success('Chấm điểm thành công')
+    onRefreshSubmissionDetail(submissionId)
+    onRefreshListSubmission()
+    reset()
+ }
+  return { loading, handleSubmit, onSubmit, control, resetUpdateSubmission: reset, register, appendQuestionFix: append, removeQuestionFix: remove, questionFixField: fields, errors }
 }

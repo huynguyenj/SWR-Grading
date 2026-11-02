@@ -37,7 +37,7 @@ export default function Modal({ open, onClose, title, children, maxWidth = 'md' 
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? 'modal-title' : undefined}
-        className={`relative w-full ${maxWidthClasses[maxWidth]} rounded-lg border border-border-default bg-bg-primary shadow-xl`}
+        className={`relative w-full ${maxWidthClasses[maxWidth]} rounded-lg border border-border-default bg-bg-primary shadow-xl max-h-[90vh] sm:h-auto overflow-y-auto`}
       >
         {title && (
           <div className="flex items-center justify-between border-b border-border-default px-5 py-4">
