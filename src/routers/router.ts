@@ -4,6 +4,7 @@ import protectedRole from './loader/protected_route'
 import { ROLE } from './const/role_route'
 import { guestLoader } from './loader/guest_route'
 import MonitorLayout from '@/layouts/monitor/MonitorLayout'
+import ExaminerLayout from '@/layouts/examiner/ExaminerLayout'
 export const router = createBrowserRouter([
       {
             path: '/',
@@ -90,5 +91,11 @@ export const router = createBrowserRouter([
                         }
                   },
             ]
+      },
+      {
+            path: '/examiner',
+            Component: ExaminerLayout,
+            loader: protectedRole(ROLE.examiner),
+            children: []
       }
 ])

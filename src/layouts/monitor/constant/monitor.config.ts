@@ -12,9 +12,9 @@ export interface NavItem {
  * Muốn thêm/xóa trang -> chỉ sửa mảng này.
  */
 export const monitorNavItems: NavItem[] = [
-  { label: 'Tổng quan', href: '/lecturer', icon: FiHome },
-  { label: 'Quản lí đề thi', href: '/lecturer/examination', icon: FiCalendar },
+  { label: 'Tổng quan', href: '/monitor', icon: FiHome },
+  { label: 'Quản lí đề thi', href: '/monitor/examination', icon: FiCalendar },
 //   { label: 'Chấm điểm', href: '/lecturer/exams', icon: FiFileText },
-  { label: 'Chấm bài', href: '/lecturer/grading', icon: FiEdit3 },
+  { label: 'Chấm bài', href: '/monitor/grading', icon: FiEdit3 },
 //   { label: 'Lớp học', href: '/lecturer/classes', icon: FiUsers },
 ]
