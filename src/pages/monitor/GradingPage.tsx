@@ -1,12 +1,9 @@
-import Tabs from '@/components/ui/tabs'
-import ExaminationTableLecturer from '@/features/lecturer/grading_exam/components/ExaminationTableLecturer'
 import GradingLogDetailView from '@/features/lecturer/grading_exam/components/GradingLogDetailView'
 import GradingLogsTable from '@/features/lecturer/grading_exam/components/GradingLogsTable'
 import type { GradingDiaryType } from '@/features/lecturer/grading_exam/types/grading-diary.type'
 import { useState } from 'react'
 
 export default function GradingPage() {
-  const [activeTab, setActiveTab] = useState<'quizzes' | 'logs'>('quizzes')
   const [selectedDiary, setSelectedDiary] = useState<GradingDiaryType | null>(null)
 
   // ================= DETAIL VIEW =================
@@ -31,22 +28,9 @@ export default function GradingPage() {
         </div>
       </div>
 
-      <Tabs
-        tabs={[
-          { id: 'quizzes', label: 'Đợt thi' },
-          { id: 'logs', label: 'Nhật ký chấm điểm' },
-        ]}
-        activeTab={activeTab}
-        onChange={(id) => setActiveTab(id as 'quizzes' | 'logs')}
-      />
-
-      {activeTab === 'quizzes' ? (
-        <ExaminationTableLecturer />
-      ) : (
         <GradingLogsTable 
           onSelected={setSelectedDiary}
         />
-      )}
     </div>
   )
 }
