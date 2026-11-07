@@ -1,3 +1,5 @@
+import type { PaperSetType } from "@/features/lecturer/examination_materials/types/exam_material.type"
+
 /** Exam Status từ BE: Draft=0, Ongoing=1, Closed=2, Completed=3, Cancelled=4 */
 export type ExaminationStatus = 0 | 1 | 2 | 3 | 4
 
@@ -43,6 +45,11 @@ export interface ExaminationType {
   status: ExaminationStatus
   semesterId: string
   paperSetId: string
+}
+
+export interface ExaminationDetailType extends ExaminationType {
+  endDate?: string
+  paperSets: PaperSetType[]
 }
 
 /** "08:00:00" -> "08:00" */

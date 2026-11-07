@@ -19,7 +19,7 @@ const examinationSchema = z.object({
 
   semesterId: z.string().min(1, 'Vui lòng chọn học kỳ'),
 
-  paperSetId: z.string().min(1, 'Vui lòng chọn bộ đề'),
+  paperSetIds: z.array(z.string()).default([]).nullable(),
 
   examinationType: z.number().default(0)
 })
@@ -47,7 +47,6 @@ export default function useCreateExamination({ onRefresh }: { onRefresh: () => v
       beforeTimeMinutes: 15,
       note: '',
       semesterId: '',
-      paperSetId: '',
     },
   })
 
@@ -62,7 +61,7 @@ export default function useCreateExamination({ onRefresh }: { onRefresh: () => v
       note: createExaminationForm.note ?? '',
       status: 0,
       semesterId: createExaminationForm.semesterId,
-      paperSetId: createExaminationForm.paperSetId,
+      paperSetId: [],
     }
     console.log(body);
     

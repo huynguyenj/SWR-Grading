@@ -40,30 +40,6 @@ export const router = createBrowserRouter([
                         lazy: {
                               Component: async() => (await import('@/pages/admin/AdminAnalysisPage')).default
                         }
-                  },
-                  {
-                        path:'/admin/users',
-                        lazy: {
-                              Component: async() => (await import('@/pages/admin/AdminUserPage')).default
-                        }
-                  },
-                                    {
-                        path:'/admin/student',
-                        lazy: {
-                              Component: async() => (await import('@/pages/admin/AdminStudentPage')).default
-                        }
-                  },
-                                    {
-                        path: '/admin/semester',
-                        lazy: {
-                              Component: async() => (await import('@/pages/admin/AdminSemesterPage')).default
-                        }
-                  },
-                  {
-                        path: '/admin/examination',
-                        lazy: {
-                              Component: async() => (await import('@/pages/admin/AdminExaminationPage')).default
-                        }
                   }
             ]
       },
@@ -79,13 +55,13 @@ export const router = createBrowserRouter([
                         }
                   },
                                     {
-                        path: '/lecturer/examination',
+                        path: '/monitor/examination',
                         lazy: {
                               Component: async() => (await import('@/pages/monitor/ExaminationMaterialManagementPage')).default
                         }
                   },
                                     {
-                        path: '/lecturer/grading',
+                        path: '/monitor/grading',
                         lazy: {
                               Component: async() => (await import('@/pages/monitor/GradingPage')).default
                         }
@@ -96,6 +72,26 @@ export const router = createBrowserRouter([
             path: '/examiner',
             Component: ExaminerLayout,
             loader: protectedRole(ROLE.examiner),
-            children: []
+            children: [             
+                  {
+                        index: true,
+                        path: '/examiner/semester',
+                        lazy: {
+                              Component: async() => (await import('@/pages/examiner/SemesterManagement')).default
+                        }
+                  },
+                  {
+                        path:'/examiner/student',
+                        lazy: {
+                              Component: async() => (await import('@/pages/examiner/StudentManagement')).default
+                        }
+                  },
+                  {
+                        path: '/examiner/examination',
+                        lazy: {
+                              Component: async() => (await import('@/pages/examiner/ExaminationManagement')).default
+                        }
+                  }
+            ]
       }
 ])

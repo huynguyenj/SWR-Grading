@@ -4,8 +4,6 @@ import Input from '@/components/ui/input'
 import Button from '@/components/ui/button'
 import type { SemesterType } from '../../semester/types/semester'
 import useCreateExamination, { type CreateExaminationType } from '../hooks/useCreateExamination'
-import useGetSemesterDetail from '../../semester/hooks/useGetDetailSemesterAdmin'
-import { EXAMINATION_KIND_LABEL } from '../types/examination.type'
 
 interface CreateExamSessionModalProps {
   open: boolean
@@ -20,18 +18,10 @@ export default function CreateExamSessionModal({
   onRefresh,
   semesters,
 }: CreateExamSessionModalProps) {
-  const { register, handleSubmit, watch, setValue, reset, errors, loading, onSubmit } =
+  const { register, handleSubmit, reset, errors, loading, onSubmit } =
     useCreateExamination({ onRefresh })
 
-  // Bộ đề phụ thuộc vào học kỳ đang chọn -> theo dõi giá trị semesterId trong form
-  const semesterId = watch('semesterId')
-  const { semesterDetail, loading: loadingPaperSets } = useGetSemesterDetail(semesterId)
-  const paperSets = semesterDetail?.paperSets ?? []
 
-  // Đổi học kỳ -> bộ đề đã chọn trước đó (nếu có) không còn hợp lệ, reset lại
-  useEffect(() => {
-    setValue('paperSetId', '')
-  }, [semesterId, setValue])
 
   // Đóng modal thì reset sạch form, tránh giữ lại dữ liệu cũ cho lần mở sau
   useEffect(() => {
@@ -85,51 +75,6 @@ export default function CreateExamSessionModal({
               <p className="mt-1 text-xs text-danger">{errors.semesterId.message}</p>
             )}
           </div>
-        </section>
-
-        {/* ===== Đề thi ===== */}
-        <section className="space-y-3">
-          {/* <h3 className="text-sm font-semibold text-text-primary">Đề thi</h3> */}
-          <div>
-            <label className="block text-sm font-medium text-text-primary mb-1.5">Bộ đề</label>
-            <select
-              {...register('paperSetId')}
-              disabled={!semesterId || loadingPaperSets}
-              className="w-full rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <option value="">
-                {!semesterId
-                  ? '-- Chọn học kỳ trước --'
-                  : loadingPaperSets
-                    ? 'Đang tải bộ đề...'
-                    : paperSets.length === 0
-                      ? 'Học kỳ này chưa có bộ đề nào'
-                      : '-- Chọn bộ đề --'}
-              </option>
-              {paperSets.map((p) => (
-                <option key={p.paperSetId} value={p.paperSetId}>
-                  {p.paperSetCode}
-                </option>
-              ))}
-            </select>
-            {errors.paperSetId && (
-              <p className="mt-1 text-xs text-danger">{errors.paperSetId.message}</p>
-            )}
-          </div>
-                    <div>
-                      <label className="block text-sm font-medium text-text-primary mb-1.5">Loại thi</label>
-                      <select
-                            {...register('examinationType', { valueAsNumber: true })}
-                            className="w-full rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                  <option value="0">{EXAMINATION_KIND_LABEL[0]}</option>
-                                  <option value="1">{EXAMINATION_KIND_LABEL[1]}</option>
-                                  <option value="2">{EXAMINATION_KIND_LABEL[2]}</option>
-                      </select>
-                            {errors.examinationType && (
-                            <p className="mt-1 text-xs text-danger">{errors.examinationType.message}</p>
-                            )}
-                    </div>
         </section>
 
         {/* ===== Thời gian tổ chức ===== */}
