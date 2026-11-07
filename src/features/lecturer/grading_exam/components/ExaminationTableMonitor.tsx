@@ -1,26 +1,27 @@
-import { FiCalendar, FiClock, FiEye, FiZap } from 'react-icons/fi'
-
+import { FiCalendar, FiClock, FiEye, FiUploadCloud } from 'react-icons/fi'
 import { formatDate } from '@/utils/format'
-import Button from '@/components/ui/button'
 import useGetExaminationList from '@/features/admin/management/examination/hooks/useGetExaminationList'
 import { EXAMINATION_KIND_LABEL, toShortTime, type ExaminationType } from '@/features/admin/management/examination/types/examination.type'
 import ExamSessionStatusBadge from '@/features/admin/management/examination/components/ExaminationBadge'
-import useCreateDiary from '../hooks/useCreateDiary'
 import Pagination from '@/components/ui/pagination'
 import { useState } from 'react'
 import ViewExamSessionModal from '@/features/admin/management/examination/components/ViewExamSessionModal'
 
+interface ExaminationTableMonitorProps {
+  onOpenUpload: (examination: ExaminationType) => void
+}
 
-export default function ExaminationTableLecturer() {
+
+export default function ExaminationTableMonitor({ onOpenUpload }: ExaminationTableMonitorProps) {
     const {
       examinationDataList,
       currentExaminationPage,
       pageExaminationSize,
       setCurrentExaminationPage,
       setPageExaminationSize,
-      refresh,
+      // refresh,
     } = useGetExaminationList()
-    const { onAutoSubmitV2, loading: createLoading} = useCreateDiary({ onRefresh: refresh })
+//     const { onAutoSubmitV2, loading: createLoading} = useCreateDiary({ onRefresh: refresh })
 //     const { semesterDataList } = useGetSemester()
     const [viewExamSession, setViewExamSession] = useState<ExaminationType | null>(null)
 
@@ -88,16 +89,13 @@ export default function ExaminationTableLecturer() {
                         >
                               <FiEye className="w-4 h-4" />
                         </button>
-                        <Button
-                              variant='basic'
-                              disabled={createLoading}
+                        <button
+                              onClick={() => onOpenUpload(session)}
                               className="inline-flex items-center gap-1.5 rounded-md border border-border-default px-3 py-1.5 text-xs font-medium text-text-secondary hover:border-brand-orange hover:text-brand-orange transition-colors"
-                              title="Tạo nhật ký nhanh (chưa có chức năng)"
-                              onClick={() => onAutoSubmitV2(session)}
                         >
-                        <FiZap className="w-3.5 h-3.5" />
-                        Tạo nhật ký nhanh
-                        </Button>
+                        <FiUploadCloud className="w-3.5 h-3.5" />
+                        Tài liệu
+                        </button>
                   </td>
                   </tr>
             ))}
