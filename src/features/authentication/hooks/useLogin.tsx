@@ -33,9 +33,23 @@ export default function useLogin() {
       }
       toast.success('Đăng nhập thành công')
       authStore.setAccessToken(data.data.accessToken)
-      authStore.setAuthInfo(data.data.accessToken, data.data.user.id, data.data.user.role, data.data.user.fullName)
+      authStore.setAuthInfo(data.data.accessToken, data.data.user.id, data.data.user.role, data.data.user.fullName, data.data.user.staffCode)
       if (data.data.user.role == 'Admin') navigate('/admin')
-      if (data.data.user.role == 'Lecturer') navigate('/lecturer')
+      if (data.data.user.role == 'monitor') navigate('/monitor')
+      switch (data.data.user.role.toLowerCase()) {
+        case 'admin':
+          navigate('/admin')
+          break;
+        case 'monitor':
+          navigate('/monitor')
+          break;
+        case 'manager':
+          navigate('/manager')
+          break;
+        case 'student':
+          navigate('/student')
+          break;
+      }
       
   }
   return { onSubmit, register, handleSubmit, errors, loading }

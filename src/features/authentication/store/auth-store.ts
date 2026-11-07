@@ -6,8 +6,9 @@ type AuthType = {
   role: string | null
   userId: string | null
   userName: string | null
+  staffCode: string | null
   setAccessToken: (accessToken: string) => void,
-   setAuthInfo: (accessToken: string, userId: string, role: string, userName: string) => void
+   setAuthInfo: (accessToken: string, userId: string, role: string, userName: string, staffCode: string) => void
   removeAuthInfo: () => void
 }
 
@@ -18,8 +19,9 @@ export const useAuthStore = create<AuthType>()(
       userId: null,
       role: null,
       userName: null,
+      staffCode: null,
       setAccessToken: (accessToken: string) => set({ accessToken: accessToken }),
-      setAuthInfo: (accessToken: string, userId: string, role: string, userName: string) => set({ accessToken: accessToken, userId: userId, role: role, userName: userName }),
+      setAuthInfo: (accessToken: string, userId: string, role: string, userName: string, staffCode: string) => set({ accessToken: accessToken, userId: userId, role: role, userName: userName, staffCode: staffCode }),
       removeAuthInfo: () => set((state) => ({ ...state, accessToken: null, userId: null, role: null }))
     }),
     { name: 'swr-grading-auth-info' }
