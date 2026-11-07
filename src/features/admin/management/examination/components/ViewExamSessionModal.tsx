@@ -1,4 +1,4 @@
-import { FiCalendar, FiClock, FiFileText } from 'react-icons/fi'
+import { FiCalendar, FiFileText } from 'react-icons/fi'
 import Modal from '@/components/ui/modal'
 import Button from '@/components/ui/button'
 import { formatDate } from '@/utils/format'
@@ -115,18 +115,17 @@ export default function ViewExamSessionModal({
                     </div>
                   )}
 
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <FiClock className="h-4 w-4 shrink-0 text-text-muted" />
-
                     <div>
                       <p className="text-xs text-text-muted">Giờ bắt đầu</p>
                       <p className="text-sm font-medium text-text-primary">
                         {detail.startTime}
                       </p>
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <FiClock className="h-4 w-4 shrink-0 text-text-muted" />
 
                     <div>
@@ -135,9 +134,9 @@ export default function ViewExamSessionModal({
                         {detail.durationMinutes} phút
                       </p>
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="sm:col-span-2">
+                  {/* <div className="sm:col-span-2">
                     <p className="text-xs text-text-muted">
                       Thời gian mở bài thi
                     </p>
@@ -147,7 +146,7 @@ export default function ViewExamSessionModal({
                         {detail.beforeTimeMinutes} phút
                       </span>
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               </section>
 
