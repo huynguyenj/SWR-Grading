@@ -129,7 +129,7 @@ export default function ExamSessionsToolbar({
         size='sm'
       >
         <FiPlus className="w-4 h-4" />
-        Tạo đợt thi
+        Tạo kì thi
       </Button>
     </div>
   )
