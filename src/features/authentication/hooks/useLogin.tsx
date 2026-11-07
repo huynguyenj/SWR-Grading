@@ -49,6 +49,11 @@ export default function useLogin() {
         case 'student':
           navigate('/student')
           break;
+        case 'examiner': 
+          navigate('examiner')
+          break;
+        default:
+          navigate('/')
       }
       
   }
