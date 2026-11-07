@@ -1,9 +1,9 @@
 import AdminLayout from '@/layouts/admin/AdminLayout'
-import LecturerLayout from '@/layouts/lecture/LecturerLayout'
 import { createBrowserRouter } from 'react-router'
 import protectedRole from './loader/protected_route'
 import { ROLE } from './const/role_route'
 import { guestLoader } from './loader/guest_route'
+import MonitorLayout from '@/layouts/monitor/MonitorLayout'
 export const router = createBrowserRouter([
       {
             path: '/',
@@ -67,26 +67,26 @@ export const router = createBrowserRouter([
             ]
       },
       {
-            path: '/lecturer',
-            Component: LecturerLayout,
-            loader: protectedRole(ROLE.lecturer),
+            path: '/monitor',
+            Component: MonitorLayout,
+            loader: protectedRole(ROLE.monitor),
             children: [
                   {
                         index: true,
                         lazy: {
-                              Component: async() => (await import('@/pages/lecture/LectureMainPage')).default
+                              Component: async() => (await import('@/pages/monitor/MonitorMainPage')).default
                         }
                   },
                                     {
                         path: '/lecturer/examination',
                         lazy: {
-                              Component: async() => (await import('@/pages/lecture/ExaminationMaterialManagementPage')).default
+                              Component: async() => (await import('@/pages/monitor/ExaminationMaterialManagementPage')).default
                         }
                   },
                                     {
                         path: '/lecturer/grading',
                         lazy: {
-                              Component: async() => (await import('@/pages/lecture/GradingPage')).default
+                              Component: async() => (await import('@/pages/monitor/GradingPage')).default
                         }
                   },
             ]

@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import {  FiMenu, FiX, FiBell } from 'react-icons/fi'
-import UserMenu from '@/layouts/lecture/UserMenu'
-import { lecturerNavItems } from './constant/lecture.config'
+import { monitorNavItems } from './constant/monitor.config'
 import { NavLink } from 'react-router'
 import FptLogo from '@/assets/fptulogo.jpg'
+import UserMenu from './UserMenu'
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -22,13 +22,13 @@ export default function Navbar() {
 
         {/* Nav links — desktop */}
         <nav className="hidden lg:flex items-center gap-1 ml-4">
-          {lecturerNavItems.map((item) => {
+          {monitorNavItems.map((item) => {
             const Icon = item.icon
             return (
               <NavLink
                 key={item.href}
                 to={item.href}
-                end={item.href === '/lecturer'}
+                end={item.href === '/monitor'}
                 className={({ isActive }) =>
                   [
                     'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
@@ -70,13 +70,13 @@ export default function Navbar() {
       {/* Nav links — mobile dropdown */}
       {mobileOpen && (
         <nav className="lg:hidden border-t border-border-default bg-bg-primary px-4 py-3 space-y-1">
-          {lecturerNavItems.map((item) => {
+          {monitorNavItems.map((item) => {
             const Icon = item.icon
             return (
               <NavLink
                 key={item.href}
                 to={item.href}
-                end={item.href === '/lecturer'}
+                end={item.href === '/monitor'}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   [
