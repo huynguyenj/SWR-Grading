@@ -11,7 +11,7 @@ export interface NavItem {
  * Danh sách trang trong navbar của Lecturer.
  * Muốn thêm/xóa trang -> chỉ sửa mảng này.
  */
-export const lecturerNavItems: NavItem[] = [
+export const monitorNavItems: NavItem[] = [
   { label: 'Tổng quan', href: '/lecturer', icon: FiHome },
   { label: 'Quản lí đề thi', href: '/lecturer/examination', icon: FiCalendar },
 //   { label: 'Chấm điểm', href: '/lecturer/exams', icon: FiFileText },
