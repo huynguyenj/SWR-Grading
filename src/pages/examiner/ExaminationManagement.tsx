@@ -32,6 +32,7 @@ export default function ExaminationManagementPage() {
   const [viewExamSession, setViewExamSession] = useState<ExaminationType | null>(null)
   const [editExamSession, setEditExamSession] = useState<ExaminationType | null>(null)
   const [deleteExamSession, setDeleteExamSession] = useState<ExaminationType | null>(null)
+  
   const filteredSessions = useMemo(() => {
     const sessions = examinationDataList?.items ?? []
 

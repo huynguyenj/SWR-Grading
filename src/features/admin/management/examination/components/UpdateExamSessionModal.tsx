@@ -3,7 +3,6 @@ import Modal from '@/components/ui/modal'
 import Input from '@/components/ui/input'
 import Button from '@/components/ui/button'
 import type { SemesterType } from '../../semester/types/semester'
-import useGetSemesterDetail from '../../semester/hooks/useGetDetailSemesterAdmin'
 import useUpdateExamination, { type UpdateExaminationType } from '../hooks/useUpdateExamination'
 import { EXAMINATION_KIND_LABEL, EXAMINATION_STATUS_LABEL, type ExaminationType } from '../types/examination.type'
 
@@ -25,8 +24,6 @@ export default function UpdateExamSessionModal({
 
   // Bộ đề phụ thuộc vào học kỳ đang chọn -> theo dõi giá trị semesterId trong form
   const semesterId = watch('semesterId')
-  const { semesterDetail, loading: loadingPaperSets } = useGetSemesterDetail(semesterId)
-  const paperSets = semesterDetail?.paperSets ?? []
 
   
   // Đổi học kỳ -> bộ đề đã chọn trước đó (nếu có) không còn hợp lệ, reset lại
@@ -63,7 +60,7 @@ export default function UpdateExamSessionModal({
   }
 
   return (
-    <Modal open={examination != null} onClose={onClose} title="Tạo đợt thi mới" maxWidth="xl">
+    <Modal open={examination != null} onClose={onClose} title="Cập nhật thông tin kì thi" maxWidth="xl">
       <form
         onSubmit={handleSubmit(handleFormSubmit)}
         className="max-h-[75vh] overflow-y-auto px-5 py-4 space-y-6"
@@ -105,33 +102,6 @@ export default function UpdateExamSessionModal({
 
         {/* ===== Đề thi ===== */}
         <section className="space-y-3">
-          {/* <h3 className="text-sm font-semibold text-text-primary">Đề thi</h3> */}
-          <div>
-            <label className="block text-sm font-medium text-text-primary mb-1.5">Bộ đề</label>
-            <select
-              {...register('paperSetId')}
-              disabled={!semesterId || loadingPaperSets}
-              className="w-full rounded-md border border-border-default bg-bg-primary px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/15 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <option value="">
-                {!semesterId
-                  ? '-- Chọn học kỳ trước --'
-                  : loadingPaperSets
-                    ? 'Đang tải bộ đề...'
-                    : paperSets.length === 0
-                      ? 'Học kỳ này chưa có bộ đề nào'
-                      : '-- Chọn bộ đề --'}
-              </option>
-              {paperSets.map((p) => (
-                <option key={p.paperSetId} value={p.paperSetId}>
-                  {p.paperSetCode}
-                </option>
-              ))}
-            </select>
-            {errors.paperSetId && (
-              <p className="mt-1 text-xs text-danger">{errors.paperSetId.message}</p>
-            )}
-          </div>
           <div>
             <label className="block text-sm font-medium text-text-primary mb-1.5">Trạng thái</label>
             <select

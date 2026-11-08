@@ -1,7 +1,8 @@
-import { FiSearch, FiArrowUp, FiArrowDown, FiPlus } from 'react-icons/fi'
+import { FiSearch, FiArrowUp, FiArrowDown, FiPlus, FiDownload } from 'react-icons/fi'
 import type { SemesterStatus } from '../types/semester'
 import Input from '@/components/ui/input'
 import Button from '@/components/ui/button'
+import useGetStudentSemesterFile from '../hooks/useGetStudentSemesterFile'
 
 export type SortField = 'startDate' | 'name'
 export type SortDirection = 'asc' | 'desc'
@@ -41,6 +42,7 @@ export default function SemestersToolbar({
   onToggleSortDirection,
   onCreateClick,
 }: SemestersToolbarProps) {
+  const { handleDownloadStudentFiles } = useGetStudentSemesterFile()
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 flex-wrap items-center gap-2">
@@ -95,16 +97,25 @@ export default function SemestersToolbar({
           </Button>
         </div>
       </div>
-
-      <Button
-        size='basic'
-        variant='default'
-        onClick={onCreateClick}
-        className="w-fit"
-      >
-        <FiPlus className="w-4 h-4" />
-        Tạo học kỳ
-      </Button>
+      <div className='flex gap-2'>
+        <Button
+          size='basic'
+          variant='default'
+          onClick={onCreateClick}
+          className="w-fit"
+        >
+          <FiPlus className="w-4 h-4" />
+          Tạo học kỳ
+        </Button>
+        <Button
+          size='basic'
+          variant='basic'
+          onClick={handleDownloadStudentFiles}
+        >
+                <FiDownload/>
+          Tải file về
+        </Button>
+      </div>
     </div>
   )
 }

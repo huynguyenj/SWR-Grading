@@ -14,6 +14,7 @@ export const examinerNavItem: NavSection[] = [
     items: [
         { label: 'Quản lí học kì', href: '/examiner/semester', icon: FiMessageSquare },
         { label: 'Quản lí kì thi', href: '/examiner/examination', icon: FiFlag },
+        { label: 'Đợt thi', href: '/examiner/examination-session', icon: FiFlag },
         { label: 'Sinh viên', href: '/examiner/student', icon: FiUsers },
     ],
   },
