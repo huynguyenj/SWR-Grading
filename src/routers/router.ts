@@ -5,6 +5,7 @@ import { ROLE } from './const/role_route'
 import { guestLoader } from './loader/guest_route'
 import MonitorLayout from '@/layouts/monitor/MonitorLayout'
 import ExaminerLayout from '@/layouts/examiner/ExaminerLayout'
+import ManagerLayout from '@/layouts/manager/ManagerLayout'
 export const router = createBrowserRouter([
       {
             path: '/',
@@ -96,6 +97,38 @@ export const router = createBrowserRouter([
                         path: '/examiner/examination-session',
                         lazy: {
                               Component: async() => (await import('@/pages/examiner/ExaminationSessionManagement')).default
+                        }
+                  }
+            ]
+      },
+      {
+            path: '/manager',
+            Component: ManagerLayout,
+            loader: protectedRole(ROLE.manager),
+            children: [             
+                  {
+                        index: true,
+                        path: '/manager/examination-session',
+                        lazy: {
+                              Component: async() => (await import('@/pages/manager/ManagerExamSessionPage')).default
+                        }
+                  },
+                  {
+                        path:'/manager/grading-session',
+                        lazy: {
+                              Component: async() => (await import('@/pages/manager/ManagerGradingSessionPage')).default
+                        }
+                  },
+                  {
+                        path: '/manager/application',
+                        lazy: {
+                              Component: async() => (await import('@/pages/manager/ManagerApplicationPage')).default
+                        }
+                  },
+                                    {
+                        path: '/manager/report',
+                        lazy: {
+                              Component: async() => (await import('@/pages/manager/ManagerReportPage')).default
                         }
                   }
             ]
