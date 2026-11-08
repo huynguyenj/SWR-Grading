@@ -1,4 +1,4 @@
-import { FiCalendar, FiEdit2, FiTrash } from 'react-icons/fi'
+import { FiCalendar, FiEdit2, FiTrash, FiUpload } from 'react-icons/fi'
 import SemesterStatusBadge from './SemesterBadge'
 import Button from '@/components/ui/button'
 import { formatDate } from '@/utils/format'
@@ -8,10 +8,11 @@ interface SemestersTableProps {
   semesters?: SemesterType[]
   onSelected: (semester: SemesterType) => void
   onDeleted: (semester: SemesterType) => void
+  onUpload: (semester: SemesterType) => void
 }
 
 
-export default function SemestersTable({ semesters, onSelected, onDeleted }: SemestersTableProps) {
+export default function SemestersTable({ semesters, onSelected, onDeleted, onUpload }: SemestersTableProps) {
   if (!semesters) {
     return (
       <div className="rounded-lg border border-border-default bg-bg-primary py-16 text-center">
@@ -72,6 +73,14 @@ export default function SemestersTable({ semesters, onSelected, onDeleted }: Sem
                   >
                     <FiEye className="w-4 h-4" />
                   </Button> */}
+                  <Button
+                    aria-label='tải file sinh viên'
+                    onClick={() => onUpload(semester)}
+                    variant='basic'
+                    className='p-1.5'
+                  >
+                    <FiUpload className="w-4 h-4"/>
+                  </Button>
                   <Button
                     variant='basic'
                     onClick={() => onSelected(semester)}

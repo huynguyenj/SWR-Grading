@@ -5,6 +5,7 @@ import SemestersTable from '@/features/admin/management/semester/components/Seme
 import type { SortDirection, SortField } from '@/features/admin/management/semester/components/Semestertoolbar'
 import SemestersToolbar from '@/features/admin/management/semester/components/Semestertoolbar'
 import UpdateSemesterModal from '@/features/admin/management/semester/components/UpdateSemesterModal'
+import UploadStudentFileModal from '@/features/admin/management/semester/components/UploadStudentFileModal'
 import useGetSemester from '@/features/admin/management/semester/hooks/useGetSemester'
 import { type SemesterType, type SemesterStatus } from '@/features/admin/management/semester/types/semester'
 import { useMemo, useState } from 'react'
@@ -19,6 +20,7 @@ export default function SemestersManagementPage() {
   const [updateModalOpen, setUpdateModalOpen] = useState(false)
   const [selectedSemester, setSelectedSemester] = useState<SemesterType>()
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [uploadModalOpen, setUploadModalOpen] = useState(false)
   const filteredSemesters = useMemo(() => {
     if (!semesterDataList) return
     let result = semesterDataList.items.filter((semester) => {
@@ -48,6 +50,10 @@ export default function SemestersManagementPage() {
     setDeleteModalOpen(true)
     setSelectedSemester(semester)
   }
+  const handleUploadModal = (semester: SemesterType) => {
+    setUploadModalOpen(true)
+    setSelectedSemester(semester)
+  }
   return (
     <div className="space-y-5">
       <div>
@@ -75,7 +81,12 @@ export default function SemestersManagementPage() {
         {/* Hiển thị {semesterDataList? semesterDataList.item.length : 0} / {semesterDataList? semesterDataList.totalCount : 0} học kỳ */}
       </p>
 
-      <SemestersTable semesters={filteredSemesters} onSelected={handleOpenModalUpdate} onDeleted={handleDeleteModalUpdate}/>
+      <SemestersTable 
+        semesters={filteredSemesters} 
+        onSelected={handleOpenModalUpdate} 
+        onDeleted={handleDeleteModalUpdate}
+        onUpload={handleUploadModal}
+      />
       <Pagination
         currentPage={currentSemesterPage}
         onPageChange={setCurrentSemesterPage}
@@ -97,6 +108,12 @@ export default function SemestersManagementPage() {
       <ConfirmDeleteSemesterModal
         open={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
+        semester={selectedSemester}
+        onRefresh={refresh}
+      />
+      <UploadStudentFileModal
+        open={uploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
         semester={selectedSemester}
         onRefresh={refresh}
       />

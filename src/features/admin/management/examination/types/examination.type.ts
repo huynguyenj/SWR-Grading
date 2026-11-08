@@ -33,11 +33,11 @@ export const EXAMINATION_KIND_OPTIONS: { value: ExaminationKind; label: string }
 
 export interface ExaminationType {
   examinationId: string
-  /** BE tự sinh từ SemesterCode + loại exam (VD: SWR302_FA26_PE_658287) — không nhập tay */
   examinationCode: string
   name: string
   examinationType: ExaminationKind
   startDate: string // "YYYY-MM-DD"
+  endDate: string
   startTime: string // "HH:mm:ss"
   durationMinutes: number
   beforeTimeMinutes: number
@@ -48,7 +48,6 @@ export interface ExaminationType {
 }
 
 export interface ExaminationDetailType extends ExaminationType {
-  endDate?: string
   paperSets: PaperSetType[]
 }
 

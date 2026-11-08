@@ -91,6 +91,12 @@ export const router = createBrowserRouter([
                         lazy: {
                               Component: async() => (await import('@/pages/examiner/ExaminationManagement')).default
                         }
+                  },
+                                    {
+                        path: '/examiner/examination-session',
+                        lazy: {
+                              Component: async() => (await import('@/pages/examiner/ExaminationSessionManagement')).default
+                        }
                   }
             ]
       }

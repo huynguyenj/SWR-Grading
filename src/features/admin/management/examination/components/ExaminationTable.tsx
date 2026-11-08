@@ -4,6 +4,7 @@ import {
   FiEdit,
   FiEye,
   FiList,
+  FiPlus,
   FiTrash,
 } from 'react-icons/fi'
 
@@ -11,12 +12,12 @@ import {
   EXAMINATION_KIND_LABEL,
   type ExaminationType,
 } from '../types/examination.type'
-
 import type { SemesterType } from '../../semester/types/semester'
 import { formatDate } from '@/utils/format'
 import ExamSessionStatusBadge from './ExaminationBadge'
 import Button from '@/components/ui/button'
 import ExaminationSessionsModal from '@/features/examiner/management/examination/components/ExaminationSessionsModal'
+import CreateExaminationSessionModal from '@/features/examiner/management/examination/components/CreateExaminationSessionModal'
 
 interface ExamSessionsTableProps {
   sessions: ExaminationType[]
@@ -24,6 +25,7 @@ interface ExamSessionsTableProps {
   onView: (exam: ExaminationType) => void
   onEdit: (exam: ExaminationType) => void
   onDelete: (exam: ExaminationType) => void
+  onRefresh?: () => void
 }
 
 export default function ExamSessionsTable({
@@ -32,10 +34,12 @@ export default function ExamSessionsTable({
   onDelete,
   onEdit,
   onView,
+  onRefresh
 }: ExamSessionsTableProps) {
   const [selectedExamination, setSelectedExamination] =
     useState<ExaminationType | null>(null)
-
+  const [creatingExamination, setCreatingExamination] =
+  useState<ExaminationType | null>(null)
   function semesterName(id: string) {
     return semesters.find((s) => s.semesterId === id)?.name ?? '—'
   }
@@ -112,7 +116,15 @@ export default function ExamSessionsTable({
                 </td>
 
                 <td className="px-4 py-3">
-                  <div className="flex items-center justify-end gap-1">
+                  <div className="grid grid-cols-3 items-center justify-end gap-1">
+                    <button
+                      onClick={() => setCreatingExamination(session)}
+                      className="rounded-md p-1.5 text-text-muted hover:bg-bg-muted hover:text-success transition-colors"
+                      aria-label="Tạo đợt thi"
+                      title="Tạo đợt thi"
+                    >
+                      <FiPlus className="h-4 w-4" />
+                    </button>
                     {/* Xem chi tiết */}
                     <button
                       onClick={() => onView(session)}
@@ -145,7 +157,7 @@ export default function ExamSessionsTable({
                     <Button
                       onClick={() => onDelete(session)}
                       variant="danger"
-                      className="px-1.5 py-1"
+                      className="px-1.5 py-1 w-fit"
                       aria-label="Xóa"
                     >
                       <FiTrash className="h-4 w-4" />
@@ -165,6 +177,15 @@ export default function ExamSessionsTable({
           onClose={() => setSelectedExamination(null)}
         />
       )}
-    </>
+      {creatingExamination && (
+        <CreateExaminationSessionModal
+          examination={creatingExamination}
+          onClose={() => setCreatingExamination(null)}
+          onCreated={() => {
+            onRefresh?.()
+          }}
+        />
+      )}
+    </> 
   )
 }
