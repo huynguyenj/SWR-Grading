@@ -61,10 +61,16 @@ export const router = createBrowserRouter([
                               Component: async() => (await import('@/pages/monitor/ExaminationMaterialManagementPage')).default
                         }
                   },
-                                    {
+                  {
                         path: '/monitor/grading',
                         lazy: {
                               Component: async() => (await import('@/pages/monitor/GradingPage')).default
+                        }
+                  },
+                  {
+                        path: '/monitor/grading/submissions/:submissionId',
+                        lazy: {
+                              Component: async() => (await import('@/pages/monitor/SubmissionGradingPage')).default
                         }
                   },
             ]
