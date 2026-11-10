@@ -1,3 +1,4 @@
+export type EvaluationType = 0 | 1
 export interface GradingCriteriaType {
     criteria: string
     point: number
@@ -28,7 +29,7 @@ export interface GradingHistoryDetailType {
 export interface GradingHistoryType {
     historyId: string
     submissionId: string
-    evaluationType: number
+    evaluationType: EvaluationType
     gradingRound: number
     totalScore: number
     generalFeedback: string
