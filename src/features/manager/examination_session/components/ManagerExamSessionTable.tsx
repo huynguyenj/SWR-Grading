@@ -1,17 +1,21 @@
-
-import { FiCalendar, FiClock, FiBookOpen, FiLayers } from 'react-icons/fi'
-
-import { formatDate } from '@/utils/format'
-import Button from '@/components/ui/button'
-import { SESSION_STATUS_CLASS, SESSION_STATUS_LABEL, type ExaminationSessionType } from '@/features/examiner/management/examination/types/exam_session'
+import { FiCalendar, FiClock, FiBookOpen, FiLayers, FiEye } from 'react-icons/fi'
 import { FaPlus } from 'react-icons/fa'
+
+import Button from '@/components/ui/button'
+import { formatDate } from '@/utils/format'
+
+import {
+  SESSION_STATUS_CLASS,
+  SESSION_STATUS_LABEL,
+  type ExaminationSessionType,
+} from '@/features/examiner/management/examination/types/exam_session'
 
 interface ExaminationSessionTableProps {
   sessions?: ExaminationSessionType[]
   loading?: boolean
   onCreateGradingSession: (examSessionId: string) => void
+  onViewDetail: (examSessionId: string) => void
 }
-
 
 function formatTime(time?: string): string {
   if (!time) return 'Chưa xác định'
@@ -21,7 +25,8 @@ function formatTime(time?: string): string {
 export default function ManagerExamSessionTable({
   sessions,
   loading = false,
-  onCreateGradingSession
+  onCreateGradingSession,
+  onViewDetail,
 }: ExaminationSessionTableProps) {
   if (loading) {
     return (
@@ -48,7 +53,7 @@ export default function ManagerExamSessionTable({
       </div>
     )
   }
-  
+
   return (
     <div className="overflow-x-auto rounded-lg border border-border-default bg-bg-primary">
       <table className="w-full text-sm">
@@ -73,7 +78,8 @@ export default function ManagerExamSessionTable({
             <th className="px-4 py-3 font-medium text-text-secondary">
               Trạng thái
             </th>
-            <th className="px-4 py-3 font-medium text-text-secondary">
+
+            <th className="px-4 py-3 text-center font-medium text-text-secondary">
               Thao tác
             </th>
           </tr>
@@ -82,16 +88,17 @@ export default function ManagerExamSessionTable({
         <tbody>
           {sessions.map((session) => (
             <tr
-              key={`${session.examinationId}-${session.examinationCode}`}
-              className="border-b border-border-default last:border-0 transition-colors hover:bg-bg-muted/40"
+              key={session.examinationSessionId}
+              className="border-b border-border-default transition-colors last:border-0 hover:bg-bg-muted/40"
             >
               {/* Examination session */}
               <td className="px-4 py-3">
                 <p className="font-medium text-text-primary">
                   {session.examinationCode}
                 </p>
+
                 <p className="mt-1 text-xs text-text-muted">
-                  Đợt thi
+                  {session.totalSubmission} bài nộp
                 </p>
               </td>
 
@@ -106,13 +113,17 @@ export default function ManagerExamSessionTable({
                     </p>
 
                     <p className="mt-1 text-xs text-text-muted">
-                      {session.examination?.examinationCode || ''}
+                      Bắt đầu:{' '}
+                      {session.examination?.startDate
+                        ? formatDate(session.examination.startDate)
+                        : 'Chưa xác định'}
                     </p>
+
                     <p className="mt-1 text-xs text-text-muted">
-                       Bắt đầu: {formatDate(session.examination.startDate)}
-                    </p>
-                    <p className="mt-1 text-xs text-text-muted">
-                       Kết thúc: {formatDate(session.examination.endDate)}
+                      Kết thúc:{' '}
+                      {session.examination?.endDate
+                        ? formatDate(session.examination.endDate)
+                        : 'Chưa xác định'}
                     </p>
                   </div>
                 </div>
@@ -125,15 +136,21 @@ export default function ManagerExamSessionTable({
 
                   <div>
                     <p className="font-medium text-text-primary">
-                      {session.semester?.name || 'Chưa có thông tin'} ({session.semester?.semesterCode || ''})
+                      {session.semester?.name || 'Chưa có thông tin'}
                     </p>
+
                     <p className="mt-1 text-xs text-text-muted">
-                       Bắt đầu: {formatDate(session.semester.startDate)}
+                      {session.semester?.semesterCode || ''}
                     </p>
+
                     <p className="mt-1 text-xs text-text-muted">
-                       Kết thúc: {formatDate(session.semester.endDate)}
-                    </p>
-                    <p className="mt-1 text-xs text-text-muted">
+                      {session.semester?.startDate
+                        ? formatDate(session.semester.startDate)
+                        : 'Chưa xác định'}
+                      {' - '}
+                      {session.semester?.endDate
+                        ? formatDate(session.semester.endDate)
+                        : 'Chưa xác định'}
                     </p>
                   </div>
                 </div>
@@ -163,24 +180,39 @@ export default function ManagerExamSessionTable({
               {/* Status */}
               <td className="px-4 py-3">
                 <span
-                  className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
+                  className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
                     SESSION_STATUS_CLASS[session.status]
                   }`}
                 >
                   {SESSION_STATUS_LABEL[session.status]}
                 </span>
               </td>
-              {/* Thao tác */}
-            <td className="px-4 py-3">
-               <div>
+
+              {/* Actions */}
+              <td className="px-4 py-3">
+                <div className="flex items-center justify-center gap-2">
                   <Button
-                     onClick={() => onCreateGradingSession(session.examinationSessionId)}
-                     variant='basic'
-                     className='p-1.5'
+                    variant="basic"
+                    className="!p-2"
+                    onClick={() =>
+                      onViewDetail(session.examinationSessionId)
+                    }
+                    title="Xem chi tiết"
                   >
-                      <FaPlus/>  
+                    <FiEye className="h-4 w-4" />
                   </Button>
-               </div>
+
+                  <Button
+                    onClick={() =>
+                      onCreateGradingSession(session.examinationSessionId)
+                    }
+                    variant="basic"
+                    className="!p-2"
+                    title="Tạo phiên chấm thi"
+                  >
+                    <FaPlus className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </td>
             </tr>
           ))}

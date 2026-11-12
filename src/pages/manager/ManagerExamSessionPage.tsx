@@ -1,8 +1,13 @@
-import Pagination from "@/components/ui/pagination"
-import useGetExaminationSessionList from "@/features/admin/management/examination/hooks/useGetExaminationSessionList"
-import ManagerExamSessionTable from "@/features/manager/examination_session/components/ManagerExamSessionTable"
-import CreateGradingSessionModal from "@/features/manager/grading_session/components/CreateGradingSessionModal"
-import { useState } from "react"
+import { useState } from 'react'
+
+import Pagination from '@/components/ui/pagination'
+
+import useGetExaminationSessionList from '@/features/admin/management/examination/hooks/useGetExaminationSessionList'
+
+import ManagerExamSessionTable from '@/features/manager/examination_session/components/ManagerExamSessionTable'
+
+import CreateGradingSessionModal from '@/features/manager/grading_session/components/CreateGradingSessionModal'
+import ExaminationSessionDetailModal from '@/features/manager/examination_session/components/ManagerExamSessionDetailModal'
 
 export default function ManagerExamSessionPage() {
   const {
@@ -12,18 +17,51 @@ export default function ManagerExamSessionPage() {
     pageExaminationSessionSize,
     setCurrentExaminationSessionPage,
     setPageExaminationSessionSize,
-    refresh
+    refresh,
   } = useGetExaminationSessionList()
-  const [createSelectedSession, setCreateSelectedSession] = useState<string>('')  
-  const [createGradingSessionOpen, setCreateGradingSessionOpen] = useState(false)
+
+  // View examination session detail modal
+  const [viewDetailModalOpen, setViewDetailModalOpen] = useState(false)
+  const [viewDetailSessionSelected, setViewDetailSessionSelected] =
+    useState('')
+
+  // Create grading session modal
+  const [createGradingSessionOpen, setCreateGradingSessionOpen] =
+    useState(false)
+
+  const [createSelectedSession, setCreateSelectedSession] = useState('')
+
+  // Open detail modal
+  const handleOpenViewDetail = (examSessionId: string) => {
+    setViewDetailSessionSelected(examSessionId)
+    setViewDetailModalOpen(true)
+  }
+
+  // Close detail modal
+  const handleCloseViewDetail = () => {
+    setViewDetailModalOpen(false)
+    setViewDetailSessionSelected('')
+  }
+
+  // Open create grading session modal
   const handleOpenGradingSession = (examSessionId: string) => {
     setCreateSelectedSession(examSessionId)
     setCreateGradingSessionOpen(true)
   }
+
+  // Close create grading session modal
   const handleCloseGradingSession = () => {
     setCreateSelectedSession('')
     setCreateGradingSessionOpen(false)
   }
+
+  // Find selected examination session
+  const selectedExaminationSession =
+    examinationSessionDataList?.items.find(
+      (session) =>
+        session.examinationSessionId === viewDetailSessionSelected,
+    )
+
   return (
     <div className="space-y-5">
       {/* Header */}
@@ -41,6 +79,7 @@ export default function ManagerExamSessionPage() {
       <ManagerExamSessionTable
         sessions={examinationSessionDataList?.items}
         loading={loading}
+        onViewDetail={handleOpenViewDetail}
         onCreateGradingSession={handleOpenGradingSession}
       />
 
@@ -58,6 +97,15 @@ export default function ManagerExamSessionPage() {
             pageSize={pageExaminationSessionSize}
           />
         )}
+
+      {/* View examination session detail modal */}
+      <ExaminationSessionDetailModal
+        session={selectedExaminationSession}
+        isOpen={viewDetailModalOpen}
+        onClose={handleCloseViewDetail}
+      />
+
+      {/* Create grading session modal */}
       <CreateGradingSessionModal
         examinationSessionId={createSelectedSession}
         isOpen={createGradingSessionOpen}
