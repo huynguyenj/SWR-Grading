@@ -91,7 +91,7 @@ export default function ManagerGradingSessionPage() {
       {/* View assignments modal */}
         <ViewGradingSessionAssignments
           gradingSessionId={viewAssignmentGradingSessionSelected}
-          isOpen={viewAssignmentModalOpen}
+          open={viewAssignmentModalOpen}
           onClose={handleCloseViewAssignment}
         />
     {/* Assign modal */}
