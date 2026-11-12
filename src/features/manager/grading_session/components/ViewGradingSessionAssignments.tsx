@@ -1,96 +1,93 @@
+
+import { useMemo, useState } from 'react'
 import {
-  FiX,
-  FiUsers,
+  FiBookOpen,
   FiCalendar,
   FiClock,
+  FiFileText,
   FiLayers,
-  FiUser,
+  FiSearch,
+  FiUsers,
+  FiX,
 } from 'react-icons/fi'
 
-import Button from '@/components/ui/button'
 import useGetAssignmentGradingSession from '../hooks/useGetAssignmentGradingSession'
-import type { AssignmentType } from '../types/assignment_type'
-import { formatDate } from '@/utils/format'
+import AssignmentRow from './AssignmentRow'
+import Input from '@/components/ui/input'
+import Button from '@/components/ui/button'
 
 interface ViewGradingSessionAssignmentsProps {
-  gradingSessionId: string
-  isOpen: boolean
+  open: boolean
   onClose: () => void
+  gradingSessionId: string
 }
 
-function getAssignmentStatus(status: number): string {
-  // Cần điều chỉnh theo enum Status thực tế từ Backend.
-  return `Trạng thái ${status}`
-}
-
-interface AssignmentRowProps {
-  assignment: AssignmentType
-}
-
-function AssignmentRow({ assignment }: AssignmentRowProps) {
+function InfoItem({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode
+  label: string
+  value: string | number
+}) {
   return (
-    <tr className="border-b border-border-default last:border-0 transition-colors hover:bg-bg-muted/40">
-      {/* Staff */}
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bg-muted">
-            <FiUser className="h-4 w-4 text-text-secondary" />
-          </div>
+    <div className="flex items-start gap-3">
+      <div className="mt-0.5 rounded-lg bg-bg-muted p-2 text-text-secondary">
+        {icon}
+      </div>
 
-          <div>
-            <p className="font-medium text-text-primary">
-              Giảng viên
-            </p>
-
-            <p className="mt-0.5 text-xs text-text-muted">
-              ID: {assignment.staffId}
-            </p>
-          </div>
-        </div>
-      </td>
-
-      {/* Status */}
-      <td className="px-4 py-3">
-        <span className="inline-flex items-center rounded-full bg-bg-muted px-2.5 py-1 text-xs font-medium text-text-secondary">
-          {getAssignmentStatus(assignment.status)}
-        </span>
-      </td>
-
-      {/* Assigned date */}
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-1.5 text-text-secondary">
-          <FiCalendar className="h-3.5 w-3.5 shrink-0 text-text-muted" />
-
-          <span>
-            {formatDate(assignment.assignedDate)}
-          </span>
-        </div>
-      </td>
-
-      {/* Updated date */}
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-1.5 text-text-secondary">
-          <FiClock className="h-3.5 w-3.5 shrink-0 text-text-muted" />
-
-          <span>
-            {formatDate(assignment.updatedDate)}
-          </span>
-        </div>
-      </td>
-    </tr>
+      <div className="min-w-0">
+        <p className="text-xs text-text-muted">{label}</p>
+        <p className="mt-1 wrap-break-word text-sm font-semibold text-text-primary">
+          {value}
+        </p>
+      </div>
+    </div>
   )
 }
 
+
 export default function ViewGradingSessionAssignments({
-  gradingSessionId,
-  isOpen,
+  open,
   onClose,
+  gradingSessionId,
 }: ViewGradingSessionAssignmentsProps) {
   const { assignmentList, loading } = useGetAssignmentGradingSession({
     gradingSessionId,
   })
 
-  if (!isOpen) return null
+  const [searchName, setSearchName] = useState('')
+
+  // Thông tin chung của grading session.
+  const firstAssignment = assignmentList?.[0]
+  const examinationSession = firstAssignment?.examinationSession
+  const paperSet = firstAssignment?.paperSet
+
+  // Tìm kiếm theo tên giảng viên hoặc tên sinh viên.
+  const filteredAssignments = useMemo(() => {
+    if (!assignmentList) return []
+
+    const keyword = searchName.trim().toLocaleLowerCase('vi')
+
+    if (!keyword) return assignmentList
+
+    return assignmentList.filter((assignment) => {
+      const studentName = assignment.student.fullName
+        .toLocaleLowerCase('vi')
+
+      const lecturerName = assignment.staff.fullName
+        .toLocaleLowerCase('vi')
+
+      return (
+        studentName.includes(keyword) ||
+        lecturerName.includes(keyword)
+      )
+    })
+  }, [assignmentList, searchName])
+
+
+  if (!open) return null
 
   return (
     <div
@@ -98,127 +95,213 @@ export default function ViewGradingSessionAssignments({
       onClick={onClose}
     >
       <div
-        className="flex max-h-[85vh] w-full max-w-5xl flex-col overflow-hidden rounded-xl border border-border-default bg-bg-primary shadow-xl"
+        className="flex max-h-[90vh] w-full max-w-7xl flex-col overflow-hidden rounded-xl border border-border-default bg-bg-primary shadow-xl"
         onClick={(event) => event.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border-default px-6 py-4">
           <div>
-            <div className="flex items-center gap-2">
-              <FiUsers className="h-5 w-5 text-brand-orange" />
-
-              <h2 className="text-lg font-semibold text-text-primary">
-                Danh sách phân công
-              </h2>
-            </div>
-
+            <h2 className="text-lg font-semibold text-text-primary">
+              Danh sách phân công
+            </h2>
             <p className="mt-1 text-sm text-text-secondary">
-              Danh sách giảng viên được phân công trong phiên chấm này.
+              Thông tin giảng viên và sinh viên được phân công chấm bài
             </p>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md p-2 text-text-muted transition-colors hover:bg-bg-muted hover:text-text-primary"
+            className="rounded-lg p-2 text-text-secondary transition-colors hover:bg-bg-muted hover:text-text-primary"
             aria-label="Đóng"
           >
-            <FiX className="h-5 w-5" />
+            <FiX size={20} />
           </button>
         </div>
 
-        {/* Grading session information */}
-        <div className="border-b border-border-default bg-bg-surface px-6 py-3">
-          <div className="flex items-center gap-2 text-sm text-text-secondary">
-            <FiLayers className="h-4 w-4 text-text-muted" />
-
-            <span>Phiên chấm:</span>
-
-            <span className="font-medium text-text-primary">
-              {gradingSessionId}
-            </span>
-          </div>
-        </div>
-
         {/* Content */}
-        <div className="min-h-0 flex-1 overflow-auto p-6">
-          {/* Loading */}
-          {loading ? (
-            <div className="py-16 text-center">
-              <p className="text-sm text-text-muted">
-                Đang tải danh sách phân công...
-              </p>
+        <div className="overflow-y-auto p-6">
+          {/* Session information */}
+          <div className="mb-6 grid grid-cols-1 gap-4 rounded-xl border border-border-default bg-bg-surface p-5 md:grid-cols-2 lg:grid-cols-4">
+            <InfoItem
+              icon={<FiBookOpen size={18} />}
+              label="Tên kỳ thi"
+              value={examinationSession?.examinationName ?? '—'}
+            />
+
+            <InfoItem
+              icon={<FiCalendar size={18} />}
+              label="Mã kỳ thi"
+              value={examinationSession?.examinationCode ?? '—'}
+            />
+
+            <InfoItem
+              icon={<FiLayers size={18} />}
+              label="Học kỳ"
+              value={
+                examinationSession
+                  ? `${examinationSession.semesterName} (${examinationSession.semesterCode})`
+                  : '—'
+              }
+            />
+
+            <InfoItem
+              icon={<FiFileText size={18} />}
+              label="Paper Set"
+              value={paperSet?.paperSetCode ?? '—'}
+            />
+          </div>
+
+          {/* Paper set details and total assignments */}
+          <div className="mb-6 flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2 rounded-lg bg-bg-muted px-4 py-2.5">
+              <FiFileText className="text-text-secondary" />
+              <span className="text-sm text-text-secondary">
+                Số câu hỏi:
+              </span>
+              <span className="text-sm font-semibold text-text-primary">
+                {paperSet?.totalQuestions ?? 0}
+              </span>
             </div>
-          ) : !assignmentList?.length ? (
-            /* Empty state */
-            <div className="rounded-lg border border-border-default bg-bg-surface py-16 text-center">
-              <FiUsers className="mx-auto mb-3 h-9 w-9 text-text-muted" />
 
-              <p className="text-sm font-medium text-text-primary">
-                Chưa có giảng viên được phân công
-              </p>
-
-              <p className="mt-1 text-xs text-text-muted">
-                Danh sách giảng viên được phân công sẽ hiển thị tại đây.
-              </p>
+            <div className="flex items-center gap-2 rounded-lg bg-bg-muted px-4 py-2.5">
+              <FiUsers className="text-text-secondary" />
+              <span className="text-sm text-text-secondary">
+                Tổng phân công:
+              </span>
+              <span className="text-sm font-semibold text-text-primary">
+                {assignmentList?.length ?? 0}
+              </span>
             </div>
-          ) : (
-            <>
-              {/* Summary */}
-              <div className="mb-4 flex items-center gap-2">
-                <FiUsers className="h-4 w-4 text-text-muted" />
+          </div>
 
-                <p className="text-sm text-text-secondary">
-                  Tổng số giảng viên được phân công:
+          {/* Search */}
+          <div className="relative w-full sm:max-w-sm my-2">
+            <FiSearch
+              size={17}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
+            />
 
-                  <span className="ml-1 font-semibold text-text-primary">
-                    {assignmentList.length}
-                  </span>
-                </p>
-              </div>
+            <Input
+              type="text"
+              value={searchName}
+              size='basic'
+              onChange={(event) => setSearchName(event.target.value)}
+              placeholder="Tìm theo tên giảng viên hoặc sinh viên..."
+            />
 
-              {/* Assignment table */}
-              <div className="overflow-x-auto rounded-lg border border-border-default">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border-default bg-bg-muted/50 text-left">
-                      <th className="px-4 py-3 font-medium text-text-secondary">
-                        Giảng viên
-                      </th>
+            {searchName && (
+              <button
+                type="button"
+                onClick={() => setSearchName('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted transition-colors hover:text-text-primary"
+                aria-label="Xóa tìm kiếm"
+              >
+                <FiX size={16} />
+              </button>
+            )}
+          </div>
 
-                      <th className="px-4 py-3 font-medium text-text-secondary">
-                        Trạng thái
-                      </th>
+          {/* Assignment table */}
+          <div className="overflow-x-auto rounded-xl border border-border-default">
+            <table className="w-full min-w-[1000px] border-collapse text-left">
+              <thead className="bg-bg-muted">
+                <tr>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                    Giảng viên
+                  </th>
 
-                      <th className="px-4 py-3 font-medium text-text-secondary">
-                        Ngày phân công
-                      </th>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                    Sinh viên
+                  </th>
 
-                      <th className="px-4 py-3 font-medium text-text-secondary">
-                        Cập nhật lần cuối
-                      </th>
-                    </tr>
-                  </thead>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                    Trạng thái
+                  </th>
 
-                  <tbody>
-                    {assignmentList.map((assignment) => (
-                      <AssignmentRow
-                        key={assignment.assignmentId}
-                        assignment={assignment}
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                    Ngày phân công
+                  </th>
+
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                    Cập nhật gần nhất
+                  </th>
+                  <th className="px-2 py-3 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                    Thao tác
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="px-5 py-12 text-center text-sm text-text-muted"
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        <FiClock className="animate-spin" size={17} />
+                        Đang tải danh sách phân công...
+                      </div>
+                    </td>
+                  </tr>
+                ) : filteredAssignments.length > 0 ? (
+                  filteredAssignments.map((assignment) => (
+                    <AssignmentRow
+                      key={assignment.assignmentId}
+                      assignment={assignment}
+                    />
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="px-5 py-12 text-center"
+                    >
+                      <FiUsers
+                        size={28}
+                        className="mx-auto mb-3 text-text-muted"
                       />
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </>
+
+                      <p className="text-sm font-medium text-text-primary">
+                        {searchName.trim()
+                          ? 'Không tìm thấy sinh viên phù hợp.'
+                          : 'Chưa có dữ liệu phân công.'}
+                      </p>
+
+                      <p className="mt-1 text-xs text-text-muted">
+                        {searchName.trim()
+                          ? 'Thử tìm kiếm bằng tên sinh viên khác.'
+                          : 'Danh sách phân công hiện đang trống.'}
+                      </p>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Filter result count */}
+          {!loading && assignmentList && assignmentList.length > 0 && (
+            <div className="mt-3 flex justify-end">
+              <p className="text-xs text-text-muted">
+                Đang hiển thị{' '}
+                <span className="font-semibold text-text-primary">
+                  {filteredAssignments.length}
+                </span>
+                {' / '}
+                {assignmentList.length} phân công
+              </p>
+            </div>
           )}
         </div>
 
         {/* Footer */}
         <div className="flex justify-end border-t border-border-default px-6 py-4">
           <Button
-            variant="basic"
+            type="button"
             onClick={onClose}
+            variant='basic'
           >
             Đóng
           </Button>
