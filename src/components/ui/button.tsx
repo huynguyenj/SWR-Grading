@@ -1,37 +1,62 @@
+
 import { cn } from '@/utils/cn'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 const buttonVariants = cva(
-  'group flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors shrink-0 disabled:cursor-not-allowed disabled:pointer-events-none',
-  {
-    variants: {
-      variant: {
-        default:
-          'bg-brand-orange text-white hover:bg-brand-rust active:bg-brand-wine disabled:bg-bg-muted disabled:text-text-muted',
-        basic:
-          'border border-border-default text-text-secondary hover:bg-bg-muted disabled:border-border-default disabled:text-text-muted disabled:bg-bg-muted/50',
-        //   success: 'bg-green-accent text-white hover:bg-green-hover',
-        //   outline: 'border bg-white text-secondary border-secondary hover:bg-blue/90 hover:text-black',
-        danger:
-          'bg-[#FF5B5B] text-text-on-brand disabled:bg-[#FF5B5B]/35 disabled:text-white/70',
-      },
-      size: {
-        basic: 'p-2',
-        default: 'py-2 px-3',
-        sm: 'py-2 px-4',
-        lg: 'py-2.5 px-6',
-      },
+    'group flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed',
+    {
+        variants: {
+            variant: {
+                default:
+                    'bg-brand-orange text-white hover:bg-brand-rust active:bg-brand-wine disabled:bg-bg-muted disabled:text-text-muted',
+
+                basic:
+                    'border border-border-default text-text-secondary hover:bg-bg-muted disabled:border-border-default disabled:bg-bg-muted/50 disabled:text-text-muted',
+
+                brand:
+                    'border border-brand-orange/30 bg-brand-orange/10 text-brand-orange hover:bg-brand-orange/20 active:bg-brand-orange/30 disabled:border-border-default disabled:bg-bg-muted/50 disabled:text-text-muted',
+
+                success:
+                    'border border-success/30 bg-success/10 text-success hover:bg-success/20 active:bg-success/30 disabled:border-border-default disabled:bg-bg-muted/50 disabled:text-text-muted',
+
+                danger:
+                    'bg-[#FF5B5B] text-text-on-brand hover:bg-[#E94B4B] active:bg-[#D93D3D] disabled:bg-[#FF5B5B]/35 disabled:text-white/70',
+            },
+
+            size: {
+                basic: 'p-2',
+                default: 'px-3 py-2',
+                sm: 'px-4 py-2',
+                lg: 'px-6 py-2.5',
+            },
+        },
+
+        defaultVariants: {
+            variant: 'default',
+            size: 'default',
+        },
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  },
 )
 
-export default function Button({ className, variant = 'default', size = 'default', ...props }:
-      React.ComponentProps<'button'> & VariantProps<typeof buttonVariants>) {
-  return (
-    <button className={cn(buttonVariants({ variant, size }), className)} {...props} />
-  )
+interface ButtonProps
+    extends React.ComponentProps<'button'>,
+        VariantProps<typeof buttonVariants> {}
+
+export default function Button({
+    className,
+    variant = 'default',
+    size = 'default',
+    type = 'button',
+    ...props
+}: ButtonProps) {
+    return (
+        <button
+            type={type}
+            className={cn(
+                buttonVariants({ variant, size }),
+                className
+            )}
+            {...props}
+        />
+    )
 }

@@ -16,7 +16,7 @@ export const managerNavItem: NavSection[] = [
     title: 'Quản lý',
     items: [
         { label: 'Đợt thi', href: '/manager/examination-session', icon: FiFlag },
-        { label: 'Quản lí đợt chấm', href: '/manager/grading-session', icon: MdGrade },
+        { label: 'Quản lí phiên chấm', href: '/manager/grading-session', icon: MdGrade },
         { label: 'Quản lí đơn', href: '/manager/application', icon: FaWpforms },
         { label: 'Báo cáo', href: '/manager/report', icon: HiDocumentReport },
     ],

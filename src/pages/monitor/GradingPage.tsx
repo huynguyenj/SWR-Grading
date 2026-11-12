@@ -1,36 +1,76 @@
-import GradingLogDetailView from '@/features/lecturer/grading_exam/components/GradingLogDetailView'
-import GradingLogsTable from '@/features/lecturer/grading_exam/components/GradingLogsTable'
-import type { GradingDiaryType } from '@/features/lecturer/grading_exam/types/grading-diary.type'
+import Pagination from '@/components/ui/pagination'
+import MonitorGradingAssignmentsModal from '@/features/lecturer/grading_sessions/components/MonitorGradingAssignmentModal'
+import MonitorGradingSessionTable from '@/features/lecturer/grading_sessions/components/MonitorGradingSessionTable'
+import useGetMonitorGradingSession from '@/features/lecturer/grading_sessions/hooks/useGetMonitorGradingSession'
+import type { GradingSessionType } from '@/features/lecturer/grading_sessions/types/grading_session_monitor'
 import { useState } from 'react'
 
 export default function GradingPage() {
-  const [selectedDiary, setSelectedDiary] = useState<GradingDiaryType | null>(null)
+    const {
+        gradingSessionDataList,
+        loading,
+        currentGradingSessionPage,
+        pageGradingSessionSize,
+        setCurrentGradingSessionPage,
+        setPageGradingSessionSize
+    } = useGetMonitorGradingSession()
 
-  // ================= DETAIL VIEW =================
-  if (selectedDiary) {
+    const [selectedGradingSession, setSelectedGradingSession] =
+        useState<GradingSessionType | null>(null)
+
+    const [assignmentModalOpen, setAssignmentModalOpen] = useState(false)
+
+    const handleOpenAssignments = (session: GradingSessionType) => {
+        setSelectedGradingSession(session)
+        setAssignmentModalOpen(true)
+    }
+
+    const handleCloseAssignments = () => {
+        setSelectedGradingSession(null)
+        setAssignmentModalOpen(false)
+    }
+
     return (
-      <GradingLogDetailView
-        diaryId={selectedDiary.gradingDiaryId}
-        diaryName={selectedDiary.name}
-        onBack={() => setSelectedDiary(null)}
-      />
-    )
-  }
-  // ================= LIST VIEW =================
-  return (
-    <div className="space-y-5">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-text-primary">Chấm điểm</h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Quản lý bài kiểm tra và nhật ký chấm điểm bằng AI.
-          </p>
-        </div>
-      </div>
+        <div className="space-y-5">
+            {/* Header */}
+            <div>
+                <h1 className="text-xl font-semibold text-text-primary">
+                    Các phiên chấm bài
+                </h1>
 
-        <GradingLogsTable 
-          onSelected={setSelectedDiary}
-        />
-    </div>
-  )
+                <p className="mt-1 text-sm text-text-secondary">
+                    Theo dõi các phiên chấm và danh sách bài thi được phân công.
+                </p>
+            </div>
+
+            {/* Grading session table */}
+            <MonitorGradingSessionTable
+                sessions={gradingSessionDataList?.items}
+                loading={loading}
+                onViewAssignments={handleOpenAssignments}
+            />
+
+            {/* Pagination */}
+            {gradingSessionDataList &&
+                gradingSessionDataList.totalPages > 0 && (
+                    <Pagination
+                        currentPage={currentGradingSessionPage}
+                        onPageChange={setCurrentGradingSessionPage}
+                        totalPages={gradingSessionDataList.totalPages}
+                        onPageSizeChange={(size) => {
+                            setPageGradingSessionSize(size)
+                            setCurrentGradingSessionPage(1)
+                        }}
+                        pageSize={pageGradingSessionSize}
+                    />
+                )}
+
+            {/* Assignment detail modal */}
+            <MonitorGradingAssignmentsModal
+                session={selectedGradingSession}
+                isOpen={assignmentModalOpen}
+                onClose={handleCloseAssignments}
+            />
+        </div>
+    )
 }
