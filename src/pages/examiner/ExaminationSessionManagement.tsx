@@ -1,10 +1,10 @@
 
+import { useState } from 'react'
+
 import Pagination from '@/components/ui/pagination'
 import useGetExaminationSessionList from '@/features/admin/management/examination/hooks/useGetExaminationSessionList'
 import ExaminationSessionTable from '@/features/examiner/management/examination/components/ExaminationSessionTable'
 import UploadStudentSubmissionModal from '@/features/examiner/management/examination/components/UploadStudentSubmissionModal'
-import { useState } from 'react'
-
 
 export default function ExaminationSessionManagement() {
   const {
@@ -14,18 +14,24 @@ export default function ExaminationSessionManagement() {
     pageExaminationSessionSize,
     setCurrentExaminationSessionPage,
     setPageExaminationSessionSize,
-    refresh
+    refresh,
   } = useGetExaminationSessionList()
-  const [uploadSelectedSession, setUploadSelectedSession] = useState<string>('')  
+
+  // Upload submission modal state
+  const [uploadSelectedSession, setUploadSelectedSession] = useState('')
+
   const [uploadModalOpen, setUploadModalOpen] = useState(false)
+
   const handleSelectUploadSession = (examSessionId: string) => {
     setUploadSelectedSession(examSessionId)
     setUploadModalOpen(true)
   }
+
   const handleCloseUploadSession = () => {
-    setUploadSelectedSession('')
     setUploadModalOpen(false)
+    setUploadSelectedSession('')
   }
+
   return (
     <div className="space-y-5">
       {/* Header */}
@@ -60,12 +66,14 @@ export default function ExaminationSessionManagement() {
             pageSize={pageExaminationSessionSize}
           />
         )}
-        <UploadStudentSubmissionModal
-          examinationSessionId={uploadSelectedSession}
-          isOpen={uploadModalOpen}
-          onClose={handleCloseUploadSession}
-          refresh={refresh}
-        />
+
+      {/* Upload student submission modal */}
+      <UploadStudentSubmissionModal
+        examinationSessionId={uploadSelectedSession}
+        isOpen={uploadModalOpen}
+        onClose={handleCloseUploadSession}
+        refresh={refresh}
+      />
     </div>
   )
 }

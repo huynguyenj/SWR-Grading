@@ -1,16 +1,25 @@
 
-import { FiCalendar, FiClock, FiBookOpen, FiLayers, FiUpload } from 'react-icons/fi'
+import {
+  FiCalendar,
+  FiClock,
+  FiBookOpen,
+  FiLayers,
+  FiUpload,
+} from 'react-icons/fi'
 
-import { formatDate } from '@/utils/format'
-import { SESSION_STATUS_CLASS, SESSION_STATUS_LABEL, type ExaminationSessionType } from '../types/exam_session'
 import Button from '@/components/ui/button'
+import { formatDate } from '@/utils/format'
+import {
+  SESSION_STATUS_CLASS,
+  SESSION_STATUS_LABEL,
+  type ExaminationSessionType,
+} from '../types/exam_session'
 
 interface ExaminationSessionTableProps {
   sessions?: ExaminationSessionType[]
   loading?: boolean
   onUploadSelectedSession: (examSessionId: string) => void
 }
-
 
 function formatTime(time?: string): string {
   if (!time) return 'Chưa xác định'
@@ -20,7 +29,7 @@ function formatTime(time?: string): string {
 export default function ExaminationSessionTable({
   sessions,
   loading = false,
-  onUploadSelectedSession
+  onUploadSelectedSession,
 }: ExaminationSessionTableProps) {
   if (loading) {
     return (
@@ -47,7 +56,7 @@ export default function ExaminationSessionTable({
       </div>
     )
   }
-  
+
   return (
     <div className="overflow-x-auto rounded-lg border border-border-default bg-bg-primary">
       <table className="w-full text-sm">
@@ -72,7 +81,8 @@ export default function ExaminationSessionTable({
             <th className="px-4 py-3 font-medium text-text-secondary">
               Trạng thái
             </th>
-            <th className="px-4 py-3 font-medium text-text-secondary">
+
+            <th className="px-4 py-3 text-center font-medium text-text-secondary">
               Thao tác
             </th>
           </tr>
@@ -81,7 +91,7 @@ export default function ExaminationSessionTable({
         <tbody>
           {sessions.map((session) => (
             <tr
-              key={`${session.examinationId}-${session.examinationCode}`}
+              key={session.examinationSessionId}
               className="border-b border-border-default last:border-0 transition-colors hover:bg-bg-muted/40"
             >
               {/* Examination session */}
@@ -89,6 +99,7 @@ export default function ExaminationSessionTable({
                 <p className="font-medium text-text-primary">
                   {session.examinationCode}
                 </p>
+
                 <p className="mt-1 text-xs text-text-muted">
                   Đợt thi
                 </p>
@@ -105,13 +116,17 @@ export default function ExaminationSessionTable({
                     </p>
 
                     <p className="mt-1 text-xs text-text-muted">
-                      {session.examination?.examinationCode || ''}
+                      Bắt đầu:{' '}
+                      {session.examination?.startDate
+                        ? formatDate(session.examination.startDate)
+                        : 'Chưa xác định'}
                     </p>
+
                     <p className="mt-1 text-xs text-text-muted">
-                       Bắt đầu: {formatDate(session.examination.startDate)}
-                    </p>
-                    <p className="mt-1 text-xs text-text-muted">
-                       Kết thúc: {formatDate(session.examination.endDate)}
+                      Kết thúc:{' '}
+                      {session.examination?.endDate
+                        ? formatDate(session.examination.endDate)
+                        : 'Chưa xác định'}
                     </p>
                   </div>
                 </div>
@@ -124,15 +139,25 @@ export default function ExaminationSessionTable({
 
                   <div>
                     <p className="font-medium text-text-primary">
-                      {session.semester?.name || 'Chưa có thông tin'} ({session.semester?.semesterCode || ''})
+                      {session.semester?.name || 'Chưa có thông tin'}
                     </p>
+
                     <p className="mt-1 text-xs text-text-muted">
-                       Bắt đầu: {formatDate(session.semester.startDate)}
+                      Mã học kỳ: {session.semester?.semesterCode || '—'}
                     </p>
+
                     <p className="mt-1 text-xs text-text-muted">
-                       Kết thúc: {formatDate(session.semester.endDate)}
+                      Bắt đầu:{' '}
+                      {session.semester?.startDate
+                        ? formatDate(session.semester.startDate)
+                        : 'Chưa xác định'}
                     </p>
+
                     <p className="mt-1 text-xs text-text-muted">
+                      Kết thúc:{' '}
+                      {session.semester?.endDate
+                        ? formatDate(session.semester.endDate)
+                        : 'Chưa xác định'}
                     </p>
                   </div>
                 </div>
@@ -169,17 +194,24 @@ export default function ExaminationSessionTable({
                   {SESSION_STATUS_LABEL[session.status]}
                 </span>
               </td>
-              {/* Thao tác */}
-            <td className="px-4 py-3">
-               <div>
+
+              {/* Actions */}
+              <td className="px-4 py-3">
+                <div className="flex justify-center">
                   <Button
-                     onClick={() => onUploadSelectedSession(session.examinationSessionId)}
-                     variant='basic'
-                     className='p-1.5'
+                    type="button"
+                    variant="basic"
+                    size="basic"
+                    className="p-2"
+                    title="Tải bài nộp của sinh viên"
+                    aria-label={`Tải bài nộp cho ${session.examinationCode}`}
+                    onClick={() =>
+                      onUploadSelectedSession(session.examinationSessionId)
+                    }
                   >
-                      <FiUpload/>  
+                    <FiUpload className="h-4 w-4" />
                   </Button>
-               </div>
+                </div>
               </td>
             </tr>
           ))}
