@@ -28,7 +28,7 @@ interface ExamSessionsTableProps {
   onRefresh?: () => void
 }
 
-export default function ExamSessionsTable({
+export default function ExaminationTable({
   sessions,
   semesters,
   onDelete,
@@ -61,7 +61,7 @@ export default function ExamSessionsTable({
           <thead>
             <tr className="border-b border-border-default bg-bg-muted/50 text-left">
               <th className="px-4 py-3 font-medium text-text-secondary">
-                Đợt thi
+                Kì thi
               </th>
               <th className="px-4 py-3 font-medium text-text-secondary">
                 Học kỳ

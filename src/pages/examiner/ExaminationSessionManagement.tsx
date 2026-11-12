@@ -5,6 +5,7 @@ import Pagination from '@/components/ui/pagination'
 import useGetExaminationSessionList from '@/features/admin/management/examination/hooks/useGetExaminationSessionList'
 import ExaminationSessionTable from '@/features/examiner/management/examination/components/ExaminationSessionTable'
 import UploadStudentSubmissionModal from '@/features/examiner/management/examination/components/UploadStudentSubmissionModal'
+import ExaminationSessionDetailModal from '@/features/manager/examination_session/components/ManagerExamSessionDetailModal'
 
 export default function ExaminationSessionManagement() {
   const {
@@ -16,12 +17,20 @@ export default function ExaminationSessionManagement() {
     setPageExaminationSessionSize,
     refresh,
   } = useGetExaminationSessionList()
+    // View examination session detail modal
+  const [viewDetailModalOpen, setViewDetailModalOpen] = useState(false)
+  const [viewDetailSessionSelected, setViewDetailSessionSelected] = useState('')
 
   // Upload submission modal state
   const [uploadSelectedSession, setUploadSelectedSession] = useState('')
 
   const [uploadModalOpen, setUploadModalOpen] = useState(false)
 
+  const selectedExaminationSession =
+    examinationSessionDataList?.items.find(
+      (session) =>
+        session.examinationSessionId === viewDetailSessionSelected,
+    )
   const handleSelectUploadSession = (examSessionId: string) => {
     setUploadSelectedSession(examSessionId)
     setUploadModalOpen(true)
@@ -31,6 +40,16 @@ export default function ExaminationSessionManagement() {
     setUploadModalOpen(false)
     setUploadSelectedSession('')
   }
+
+  const handleOpenViewDetail = (examSessionId: string) => {
+    setViewDetailSessionSelected(examSessionId)
+    setViewDetailModalOpen(true)
+  }
+  const handleCloseViewDetail = () => {
+    setViewDetailModalOpen(false)
+    setViewDetailSessionSelected('')
+  }
+  
 
   return (
     <div className="space-y-5">
@@ -50,6 +69,7 @@ export default function ExaminationSessionManagement() {
         sessions={examinationSessionDataList?.items}
         loading={loading}
         onUploadSelectedSession={handleSelectUploadSession}
+        onViewDetail={handleOpenViewDetail}
       />
 
       {/* Pagination */}
@@ -73,6 +93,12 @@ export default function ExaminationSessionManagement() {
         isOpen={uploadModalOpen}
         onClose={handleCloseUploadSession}
         refresh={refresh}
+      />
+      {/* View examination session detail modal */}
+      <ExaminationSessionDetailModal
+         session={selectedExaminationSession}
+         isOpen={viewDetailModalOpen}
+         onClose={handleCloseViewDetail}
       />
     </div>
   )
