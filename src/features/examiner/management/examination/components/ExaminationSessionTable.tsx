@@ -5,6 +5,7 @@ import {
   FiBookOpen,
   FiLayers,
   FiUpload,
+  FiEye,
 } from 'react-icons/fi'
 
 import Button from '@/components/ui/button'
@@ -19,17 +20,16 @@ interface ExaminationSessionTableProps {
   sessions?: ExaminationSessionType[]
   loading?: boolean
   onUploadSelectedSession: (examSessionId: string) => void
+  onViewDetail: (examSessionId: string) => void
 }
 
-function formatTime(time?: string): string {
-  if (!time) return 'Chưa xác định'
-  return time.slice(0, 5)
-}
+
 
 export default function ExaminationSessionTable({
   sessions,
   loading = false,
   onUploadSelectedSession,
+  onViewDetail
 }: ExaminationSessionTableProps) {
   if (loading) {
     return (
@@ -179,7 +179,7 @@ export default function ExaminationSessionTable({
                   <div className="flex items-center gap-1.5">
                     <FiClock className="h-3.5 w-3.5 text-text-muted" />
 
-                    <span>{formatTime(session.startTime)}</span>
+                    <span>{(session.startTime)}</span>
                   </div>
                 </div>
               </td>
@@ -197,10 +197,20 @@ export default function ExaminationSessionTable({
 
               {/* Actions */}
               <td className="px-4 py-3">
-                <div className="flex justify-center">
+                <div className="flex justify-center gap-2">
+                  <Button
+                      variant="basic"
+                      className="!p-2"
+                      onClick={() =>
+                          onViewDetail(session.examinationSessionId)
+                      }
+                      title="Xem chi tiết"
+                  >
+                     <FiEye className="h-4 w-4" />
+                  </Button>
                   <Button
                     type="button"
-                    variant="basic"
+                    variant="brand"
                     size="basic"
                     className="p-2"
                     title="Tải bài nộp của sinh viên"

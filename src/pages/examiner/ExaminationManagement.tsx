@@ -1,7 +1,7 @@
 import Pagination from '@/components/ui/pagination'
 import ConfirmDeleteExamModal from '@/features/admin/management/examination/components/ConfirmDeleteExamModal'
 import CreateExamSessionModal from '@/features/admin/management/examination/components/CreateExamSessionModal'
-import ExamSessionsTable from '@/features/admin/management/examination/components/ExaminationTable'
+import ExaminationTable from '@/features/admin/management/examination/components/ExaminationTable'
 import type { SortDirection, SortField } from '@/features/admin/management/examination/components/Examinationtoolbar'
 import ExamSessionsToolbar from '@/features/admin/management/examination/components/Examinationtoolbar'
 import UpdateExamSessionModal from '@/features/admin/management/examination/components/UpdateExamSessionModal'
@@ -94,7 +94,7 @@ export default function ExaminationManagementPage() {
           </p>
 
           <div className={loading ? 'pointer-events-none opacity-60 transition-opacity' : ''}>
-            <ExamSessionsTable
+            <ExaminationTable
               sessions={filteredSessions}
               semesters={semesterDataList.items}
               onDelete={setDeleteExamSession}

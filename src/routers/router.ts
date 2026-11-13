@@ -6,6 +6,7 @@ import { guestLoader } from './loader/guest_route'
 import MonitorLayout from '@/layouts/monitor/MonitorLayout'
 import ExaminerLayout from '@/layouts/examiner/ExaminerLayout'
 import ManagerLayout from '@/layouts/manager/ManagerLayout'
+import StudentLayout from '@/layouts/student/StudentLayout'
 export const router = createBrowserRouter([
       {
             path: '/',
@@ -137,6 +138,32 @@ export const router = createBrowserRouter([
                               Component: async() => (await import('@/pages/manager/ManagerReportPage')).default
                         }
                   }
+            ]
+      },
+      {
+            path: '/student',
+            Component: StudentLayout,
+            loader: protectedRole(ROLE.student),
+            children: [             
+                  {
+                        index: true,
+                        path: '/student',
+                        lazy: {
+                              Component: async() => (await import('@/pages/student/StudentExamSessionPage')).default
+                        }
+                  },
+                  {
+                        path:'/student/submission',
+                        lazy: {
+                              Component: async() => (await import('@/pages/student/StudentSubmissionPage')).default
+                        }
+                  },
+                  {
+                        path: '/student/application',
+                        lazy: {
+                              Component: async() => (await import('@/pages/student/ApplicationPage')).default
+                        }
+                  },
             ]
       }
 ])
