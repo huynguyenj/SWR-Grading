@@ -1,6 +1,6 @@
 import type { NavSection } from "@/layouts/admin/constants/Nav.config";
 import { FiFlag } from "react-icons/fi";
-import { MdGrade } from "react-icons/md";
+import { MdDashboard, MdGrade } from "react-icons/md";
 import { FaWpforms } from "react-icons/fa";
 import { HiDocumentReport } from "react-icons/hi";
 
@@ -15,6 +15,7 @@ export const managerNavItem: NavSection[] = [
   {
     title: 'Quản lý',
     items: [
+        { label: 'Dashboard', href: '/manager', icon: MdDashboard },
         { label: 'Đợt thi', href: '/manager/examination-session', icon: FiFlag },
         { label: 'Quản lí phiên chấm', href: '/manager/grading-session', icon: MdGrade },
         { label: 'Quản lí đơn', href: '/manager/application', icon: FaWpforms },
