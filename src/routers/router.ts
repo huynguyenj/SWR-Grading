@@ -112,9 +112,15 @@ export const router = createBrowserRouter([
             path: '/manager',
             Component: ManagerLayout,
             loader: protectedRole(ROLE.manager),
-            children: [             
+            children: [   
                   {
                         index: true,
+                        path: '/manager',
+                        lazy: {
+                              Component: async() => (await import('@/pages/manager/ManagerDashboard')).default
+                        }
+                  },          
+                  {
                         path: '/manager/examination-session',
                         lazy: {
                               Component: async() => (await import('@/pages/manager/ManagerExamSessionPage')).default

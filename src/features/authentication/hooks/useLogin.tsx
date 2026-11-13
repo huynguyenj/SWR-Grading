@@ -42,7 +42,7 @@ export default function useLogin() {
           navigate('/monitor')
           break;
         case 'manager':
-          navigate('/manager/examination-session')
+          navigate('/manager')
           break;
         case 'student':
           navigate('/student')
