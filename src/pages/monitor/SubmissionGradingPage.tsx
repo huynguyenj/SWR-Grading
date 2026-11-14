@@ -3,7 +3,7 @@ import useGetSubmissionGrading from "@/features/lecturer/grading_sessions/hooks/
 import { AnswerGradingCard } from "@/features/manager/grading_session/components/AnswerGradingCard"
 import { HistoryGradingCard } from "@/features/manager/grading_session/components/GradingHistoryCard"
 import MonitorGradingHistoryCard from "@/features/manager/grading_session/components/MonitorGradingHistoryCard"
-import useReviewSubmission from "@/features/manager/grading_session/hooks/useReviewSubmision"
+import useReviewSubmission from "@/features/lecturer/grading_sessions/hooks/useReviewSubmision"
 import { FiArrowLeft } from "react-icons/fi"
 import { useNavigate, useParams } from "react-router"
 
