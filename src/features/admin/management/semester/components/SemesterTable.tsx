@@ -74,9 +74,9 @@ export default function SemestersTable({ semesters, onSelected, onDeleted, onUpl
                     <FiEye className="w-4 h-4" />
                   </Button> */}
                   <Button
-                    aria-label='tải file sinh viên'
+                    aria-label='Upload file sinh viên'
                     onClick={() => onUpload(semester)}
-                    variant='basic'
+                    variant='brand'
                     className='p-1.5'
                   >
                     <FiUpload className="w-4 h-4"/>

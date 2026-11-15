@@ -21,7 +21,7 @@ export default function UploadStudentSubmissionModal({ examinationSessionId, isO
       open={isOpen}
       onClose={onClose}
       maxWidth="md"
-      title="Tải file bài làm học sinh"
+      title="Upload file bài làm học sinh"
     >
       <div className="px-4 py-5">
         <ExamSessionUploadZone

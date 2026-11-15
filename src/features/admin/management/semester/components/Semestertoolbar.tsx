@@ -113,7 +113,7 @@ export default function SemestersToolbar({
           onClick={handleDownloadStudentFiles}
         >
                 <FiDownload/>
-          Tải file về
+          Tải file mẫu về
         </Button>
       </div>
     </div>

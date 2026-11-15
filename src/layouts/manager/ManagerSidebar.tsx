@@ -85,8 +85,8 @@ export default function ManagerSidebar() {
             </div>
             {!collapsed && (
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-text-primary truncate">Manager</p>
-                <p className="text-xs text-text-muted truncate">admin@omnichat.io</p>
+                <p className="text-sm font-medium text-text-primary truncate">{authInfo.role}</p>
+                <p className="text-xs text-text-muted truncate">{authInfo.userName}</p>
               </div>
             )}
             {!collapsed && (
