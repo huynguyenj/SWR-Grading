@@ -42,6 +42,18 @@ export const router = createBrowserRouter([
                         lazy: {
                               Component: async() => (await import('@/pages/admin/AdminAnalysisPage')).default
                         }
+                  },
+                  {
+                        path: '/admin/users',
+                        lazy: {
+                              Component: async() => (await import('@/pages/admin/AdminUserPage')).default
+                        }
+                  },
+                  {
+                        path: '/admin/ai-model',
+                        lazy: {
+                              Component: async() => (await import('@/pages/admin/AdminAiModelPage')).default
+                        }
                   }
             ]
       },
@@ -91,7 +103,7 @@ export const router = createBrowserRouter([
                   {
                         path:'/examiner/student',
                         lazy: {
-                              Component: async() => (await import('@/pages/examiner/StudentManagement')).default
+                              Component: async() => (await import('@/pages/examiner/ExaminerStudentPage')).default
                         }
                   },
                   {
