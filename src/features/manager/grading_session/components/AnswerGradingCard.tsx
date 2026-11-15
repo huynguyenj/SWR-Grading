@@ -1,12 +1,41 @@
+
 import type { ParsedAnswerType } from "@/features/lecturer/grading_sessions/types/grading_submisison_type"
 import { formatScore } from "@/utils/format"
-import { FiFileText } from "react-icons/fi"
+import { useState } from "react"
+import { FiFileText, FiEye, FiEyeOff } from "react-icons/fi"
+import useGetAnswerImage from "../hooks/useGetAnswerImage"
 
 interface AnswerCardProps {
     answer: ParsedAnswerType
 }
 
 export function AnswerGradingCard({ answer }: AnswerCardProps) {
+    const [showImage, setShowImage] = useState(false)
+
+    const {
+        image,
+        loading,
+        handleGetImage,
+    } = useGetAnswerImage()
+
+    const handleToggleImage = async () => {
+        if (showImage) {
+            setShowImage(false)
+            return
+        }
+
+        // Chỉ gọi API nếu ảnh chưa được tải
+        if (!image) {
+            try {
+                await handleGetImage(answer.parsedAnswerId)
+            } catch {
+                return
+            }
+        }
+
+        setShowImage(true)
+    }
+
     return (
         <div className="overflow-hidden rounded-lg border border-border-default bg-bg-primary">
             {/* Question header */}
@@ -36,18 +65,50 @@ export function AnswerGradingCard({ answer }: AnswerCardProps) {
 
                     <div className="min-h-24 rounded-md border border-border-default bg-bg-muted/30 p-4">
                         {answer.extractedText ? (
-                              <div>
-                                    <p className="whitespace-pre-wrap break-words text-sm leading-7 text-text-primary">
-                                          {answer.extractedText}
-                                    </p>
-                                    { answer.extractedImageUrl &&
-                                          <img src={answer.extractedImageUrl} alt="image" className="my-5 max-w-250 max-h-250"/>
-                                    }
-                              </div>
+                            <p className="whitespace-pre-wrap break-words text-sm leading-7 text-text-primary">
+                                {answer.extractedText}
+                            </p>
                         ) : (
                             <p className="text-sm italic text-text-muted">
                                 Không có nội dung văn bản được trích xuất.
                             </p>
+                        )}
+
+                        {/* Image toggle button */}
+                        {answer.extractedImageUrl && (
+                            <div className="mt-4">
+                                <button
+                                    type="button"
+                                    onClick={handleToggleImage}
+                                    disabled={loading}
+                                    className="inline-flex items-center gap-2 rounded-md border border-border-default px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    {loading ? (
+                                        "Đang tải ảnh..."
+                                    ) : showImage ? (
+                                        <>
+                                            <FiEyeOff size={16} />
+                                            Ẩn ảnh câu trả lời
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FiEye size={16} />
+                                            Xem ảnh câu trả lời
+                                        </>
+                                    )}
+                                </button>
+
+                                {/* Image display */}
+                                {showImage && image && (
+                                    <div className="mt-4 overflow-hidden rounded-md border border-border-default bg-bg-primary p-2">
+                                        <img
+                                            src={image}
+                                            alt={`Ảnh câu trả lời ${answer.questionTitle}`}
+                                            className="max-h-[500px] max-w-full rounded object-contain"
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         )}
                     </div>
                 </section>

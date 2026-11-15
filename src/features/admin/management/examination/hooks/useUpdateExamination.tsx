@@ -9,17 +9,10 @@ const examinationSchema = z.object({
 
   startDate: z.string().min(1, 'Ngày bắt đầu không được để trống'),
 
-  startTime: z.string().min(1, 'Thời gian bắt đầu không được để trống'),
-
-  durationMinutes: z.coerce.number().min(1, 'Thời lượng bài thi phải lớn hơn 0'),
-
-  beforeTimeMinutes: z.coerce.number().min(0, 'Thời gian trước giờ thi không được nhỏ hơn 0'),
-
   note: z.string().optional(),
 
   semesterId: z.string().min(1, 'Vui lòng chọn học kỳ'),
 
-  paperSetId: z.string().min(1, 'Vui lòng chọn bộ đề'),
 
   examinationType: z.string(),
 
@@ -44,28 +37,22 @@ export default function useUpdateExamination({ onRefresh, updateSelectedExaminat
     defaultValues: {
       name: '',
       startDate: '',
-      startTime: '',
-      durationMinutes: 90,
-      beforeTimeMinutes: 15,
       note: '',
       semesterId: '',
-      paperSetId: '',
     },
   })
-
+  
   const onSubmit = async (updateExaminationForm: UpdateExaminationType): Promise<boolean> => {
+    console.log(updateSelectedExaminationId);
+    
     if (!updateSelectedExaminationId) return false
     const body = {
       name: updateExaminationForm.name,
       examinationType: Number(updateExaminationForm.examinationType),
       startDate: updateExaminationForm.startDate,
-      startTime: updateExaminationForm.startTime,
-      durationMinutes: updateExaminationForm.durationMinutes,
-      beforeTimeMinutes: updateExaminationForm.beforeTimeMinutes,
       note: updateExaminationForm.note ?? '',
       status: Number(updateExaminationForm.status),
       semesterId: updateExaminationForm.semesterId,
-      paperSetId: updateExaminationForm.paperSetId,
     }
 
     const data = await execute({

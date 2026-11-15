@@ -141,7 +141,7 @@ export default function UploadMonitorInfoFileModal({
             type="submit"
             disabled={loading}
           >
-            {loading ? 'Đang upload...' : 'Upload sinh viên'}
+            {loading ? 'Đang upload...' : 'Upload giám khảo'}
           </Button>
         </div>
       </form>

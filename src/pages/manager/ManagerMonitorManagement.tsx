@@ -58,7 +58,7 @@ export default function ManagerMonitorManagement() {
           <div className="flex items-center gap-2">
             <FiUsers className="h-6 w-6 text-brand-orange" />
 
-            <h1 className="text-2xl font-semibold text-text-primary">
+            <h1 className="text-xl font-semibold text-text-primary">
               Quản lý giám khảo
             </h1>
           </div>
