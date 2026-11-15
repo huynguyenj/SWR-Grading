@@ -55,7 +55,7 @@ export default function UploadStudentFileModal({
     <Modal
       open={open}
       onClose={handleClose}
-      title="Import danh sách sinh viên"
+      title="Upload danh sách sinh viên"
       maxWidth="lg"
     >
       <form
