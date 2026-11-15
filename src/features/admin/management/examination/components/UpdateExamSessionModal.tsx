@@ -25,33 +25,27 @@ export default function UpdateExamSessionModal({
   // Bộ đề phụ thuộc vào học kỳ đang chọn -> theo dõi giá trị semesterId trong form
   const semesterId = watch('semesterId')
 
+  console.log(examination);
   
   // Đổi học kỳ -> bộ đề đã chọn trước đó (nếu có) không còn hợp lệ, reset lại
   useEffect(() => {
     if (!examination) return
-    setValue('paperSetId', examination.paperSetId)
   }, [semesterId, setValue, examination])
 
-  // Đóng modal thì reset sạch form, tránh giữ lại dữ liệu cũ cho lần mở sau
-  useEffect(() => {
-    if (!open) reset()
-  }, [open, reset])
   useEffect(() => {
     if (!examination) return
     reset({
       name: examination.name,
-      beforeTimeMinutes: examination.beforeTimeMinutes,
-      durationMinutes: examination.durationMinutes,
       note: examination.note,
-      paperSetId: examination.paperSetId,
       semesterId: examination.semesterId,
       startDate: examination.startDate,
-      startTime: examination.startTime,
       examinationType: examination.examinationType.toString(),
       status: examination.status.toString()
     })
   }, [examination, reset])
   async function handleFormSubmit(data: UpdateExaminationType) {
+    console.log(data);
+    
     const success = await onSubmit(data)
     if (success) {
       reset()
@@ -62,7 +56,12 @@ export default function UpdateExamSessionModal({
   return (
     <Modal open={examination != null} onClose={onClose} title="Cập nhật thông tin kì thi" maxWidth="xl">
       <form
-        onSubmit={handleSubmit(handleFormSubmit)}
+          onSubmit={handleSubmit(
+    handleFormSubmit,
+    (errors) => {
+      console.log('VALIDATION FAILED:', errors)
+    }
+  )}
         className="max-h-[75vh] overflow-y-auto px-5 py-4 space-y-6"
       >
         {/* ===== Thông tin chung ===== */}
@@ -151,7 +150,7 @@ export default function UpdateExamSessionModal({
                 <p className="mt-1 text-xs text-danger">{errors.startDate.message}</p>
               )}
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-text-primary mb-1.5">
                 Giờ bắt đầu
               </label>
@@ -163,10 +162,10 @@ export default function UpdateExamSessionModal({
               {errors.startTime && (
                 <p className="mt-1 text-xs text-danger">{errors.startTime.message}</p>
               )}
-            </div>
+            </div> */}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          {/* <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-text-primary mb-1.5">
                 Thời lượng làm bài (phút)
@@ -188,7 +187,7 @@ export default function UpdateExamSessionModal({
                 Thí sinh sẽ vào được phòng thi trước giờ bắt đầu này để chuẩn bị.
               </p>
             </div>
-          </div>
+          </div> */}
         </section>
 
         {/* ===== Ghi chú ===== */}

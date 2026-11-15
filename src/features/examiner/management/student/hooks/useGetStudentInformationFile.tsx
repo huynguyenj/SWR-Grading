@@ -4,7 +4,7 @@ import { toast } from "react-toastify"
 export default function useGetStudentInformationFile() {
   const handleDownloadStudentInformationFiles = async () => {
       const response: Blob = await apiPrivate.get(
-      'students/import-template',
+      'admin/students/import-template',
       {
             responseType: "blob",
       },

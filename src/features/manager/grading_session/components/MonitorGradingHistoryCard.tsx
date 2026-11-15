@@ -189,6 +189,34 @@ export default function MonitorGradingHistoryCard({
                         </div>
                     </div>
                 </div>
+                        {/* Edit actions */}
+                    <div className="flex justify-end pt-4">
+                        {isEditing && editingDetails.length > 0 ? (
+                            <Button
+                                variant="basic"
+                                onClick={handleFinishEditing}
+                                disabled={savingDetails.length > 0}
+                            >
+                                <FiX size={16} />
+                                Chỉnh sửa xong
+                            </Button>
+                        ) : !isEditing ? (
+                            <Button
+                                variant="basic"
+                                onClick={handleEdit}
+                            >
+                                <FiEdit2 size={16} />
+                                Sửa
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="basic"
+                                onClick={handleFinishEditing}
+                            >
+                               Xong
+                            </Button>
+                        )}
+                    </div>
 
                 <div className="mt-1 shrink-0 text-text-secondary">
                     {expanded ? (
@@ -355,34 +383,7 @@ export default function MonitorGradingHistoryCard({
                         )}
                     </section>
 
-                    {/* Edit actions */}
-                    <div className="flex justify-end border-t border-border-default pt-4">
-                        {isEditing && editingDetails.length > 0 ? (
-                            <Button
-                                variant="basic"
-                                onClick={handleFinishEditing}
-                                disabled={savingDetails.length > 0}
-                            >
-                                <FiX size={16} />
-                                Chỉnh sửa xong
-                            </Button>
-                        ) : !isEditing ? (
-                            <Button
-                                variant="basic"
-                                onClick={handleEdit}
-                            >
-                                <FiEdit2 size={16} />
-                                Sửa
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="basic"
-                                onClick={handleFinishEditing}
-                            >
-                               Xong
-                            </Button>
-                        )}
-                    </div>
+
                 </div>
             )}
         </div>

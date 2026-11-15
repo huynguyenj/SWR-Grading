@@ -4,7 +4,7 @@ import { toast } from "react-toastify"
 export default function useGetMonitorInformationFile() {
   const handleDownloadMonitorInformationFiles = async () => {
       const response: Blob = await apiPrivate.get(
-      'manager/import-template',
+      'manager/monitors/import-template',
       {
             responseType: "blob",
       },

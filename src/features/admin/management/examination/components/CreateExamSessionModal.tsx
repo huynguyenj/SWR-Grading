@@ -21,7 +21,7 @@ export default function CreateExamSessionModal({
   const { register, handleSubmit, reset, errors, loading, onSubmit } =
     useCreateExamination({ onRefresh })
 
-
+  
 
   // Đóng modal thì reset sạch form, tránh giữ lại dữ liệu cũ cho lần mở sau
   useEffect(() => {
@@ -94,7 +94,7 @@ export default function CreateExamSessionModal({
                 <p className="mt-1 text-xs text-danger">{errors.startDate.message}</p>
               )}
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-text-primary mb-1.5">
                 Giờ bắt đầu
               </label>
@@ -106,10 +106,10 @@ export default function CreateExamSessionModal({
               {errors.startTime && (
                 <p className="mt-1 text-xs text-danger">{errors.startTime.message}</p>
               )}
-            </div>
+            </div> */}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          {/* <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-text-primary mb-1.5">
                 Thời lượng làm bài (phút)
@@ -131,7 +131,7 @@ export default function CreateExamSessionModal({
                 Thí sinh sẽ vào được phòng thi trước giờ bắt đầu này để chuẩn bị.
               </p>
             </div>
-          </div>
+          </div> */}
         </section>
 
         {/* ===== Ghi chú ===== */}
