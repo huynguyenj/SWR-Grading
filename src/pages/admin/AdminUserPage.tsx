@@ -1,145 +1,156 @@
+import { useMemo, useState } from 'react'
+import { FiUsers, FiUserPlus } from 'react-icons/fi'
 
-// import { useState } from 'react'
-// import { FiRefreshCw, FiSearch } from 'react-icons/fi'
+import Button from '@/components/ui/button'
 
-// import Pagination from '@/components/ui/pagination'
+import Pagination from '@/components/ui/pagination'
 
-// import LecturerTable from '@/features/admin/management/lecturer/components/LecturerTable'
-// import UpdateLecturerModal from '@/features/admin/management/lecturer/components/UpdateLecturerModal'
+import useGetAdminUsers from '@/features/admin/management/user/hooks/useGetAdminUsers'
 
-// import useGetLecturerList from '@/features/admin/management/lecturer/hooks/useGetLecturerList'
+import AdminUsersToolbar from '@/features/admin/management/user/components/AdminUsersToolbar'
+import AdminUserTable from '@/features/admin/management/user/components/AdminUserTable'
+import CreateAdminUserModal from '@/features/admin/management/user/components/CreateAdminUserModal'
 
-// import type { LecturerType } from '@/features/admin/management/lecturer/types/lecturer.type'
-// import Input from '@/components/ui/input'
+export default function AdminUserManagementPage() {
+    const {
+        adminUserDataList,
+        loading,
+        currentUserPage,
+        pageUserSize,
+        setCurrentUserPage,
+        setPageUserSize,
+        search,
+        setSearch,
+        role,
+        setRole,
+        refresh,
+    } = useGetAdminUsers()
 
-// export default function AdminUserPage() {
-//   const {
-//     lecturerDataList,
-//     loading,
-//     search,
-//     setSearch,
-//     currentLecturerPage,
-//     pageLecturerSize,
-//     setCurrentLecturerPage,
-//     setPageLecturerSize,
-//     refresh,
-//   } = useGetLecturerList()
+    const [createModalOpen, setCreateModalOpen] = useState(false)
 
-//   const [editLecturer, setEditLecturer] = useState<LecturerType | null>(null)
+    const users = adminUserDataList?.items ?? []
 
-//   const handleEditLecturer = (lecturer: LecturerType) => {
-//     setEditLecturer(lecturer)
-//   }
+    const handlePageSizeChange = (size: number) => {
+        setPageUserSize(size)
+        setCurrentUserPage(1)
+    }
 
-//   const handleCloseUpdateModal = () => {
-//     setEditLecturer(null)
-//   }
+    const statistics = useMemo(() => {
+        const totalUsers = adminUserDataList?.totalCount ?? 0
 
-//   const handleRefresh = () => {
-//     refresh()
-//   }
+        const activeUsers = users.filter((user) => user.isActive).length
+        const inactiveUsers = users.filter((user) => !user.isActive).length
 
+        return {
+            totalUsers,
+            activeUsers,
+            inactiveUsers,
+        }
+    }, [adminUserDataList?.totalCount, users])
 
-//   return (
-//     <div className="space-y-5">
-//       {/* PAGE HEADER */}
-//       <div>
-//         <h1 className="text-xl font-semibold text-text-primary">
-//           Quản lý giảng viên
-//         </h1>
+    return (
+        <div className="space-y-6">
+            {/* Page Header */}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <div className="flex items-center gap-2">
+                        <FiUsers className="h-6 w-6 text-brand-orange" />
 
-//         <p className="mt-1 text-sm text-text-secondary">
-//           Quản lý thông tin và theo dõi hoạt động của giảng viên trong hệ thống.
-//         </p>
-//       </div>
+                        <h1 className="text-2xl font-semibold text-text-primary">
+                            Quản lý người dùng
+                        </h1>
+                    </div>
 
-//       {/* TOOLBAR */}
-//       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-//         {/* SEARCH */}
-//         <div className="relative w-full sm:max-w-sm">
-//           <Input
-//             type="text"
-//             icon={FiSearch}
-//             value={search}
-//             onChange={(event) => {
-//               setSearch(event.target.value)
-//               setCurrentLecturerPage(1)
-//             }}
-//             placeholder="Tìm kiếm giảng viên..."
-//           />
-//         </div>
+                    <p className="mt-1 text-sm text-text-secondary">
+                        Quản lý tài khoản người dùng trong hệ thống.
+                    </p>
+                </div>
 
-//         {/* REFRESH */}
-//         <button
-//           type="button"
-//           onClick={handleRefresh}
-//           disabled={loading}
-//           className="inline-flex items-center justify-center gap-2 rounded-md border border-border-default bg-bg-primary px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-bg-muted disabled:cursor-not-allowed disabled:opacity-50"
-//         >
-//           <FiRefreshCw
-//             className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`}
-//           />
-//           Làm mới
-//         </button>
-//       </div>
+                {/* Create User Button */}
+                <Button
+                    variant="default"
+                    size="basic"
+                    onClick={() => setCreateModalOpen(true)}
+                >
+                    <FiUserPlus className="h-4 w-4" />
+                    Tạo tài khoản
+                </Button>
+            </div>
 
-//       {/* TABLE INFORMATION */}
-//       <div className="flex flex-wrap items-center justify-between gap-2">
-//         <p className="text-xs text-text-muted">
-//           Hiển thị{' '}
-//           <span className="font-medium text-text-primary">
-//             {lecturerDataList?.items.length ?? 0}
-//           </span>{' '}
-//           giảng viên ở trang này (tổng{' '}
-//           <span className="font-medium text-text-primary">
-//             {lecturerDataList?.totalCount ?? 0}
-//           </span>
-//           )
-//         </p>
-//       </div>
+            {/* Statistics */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="rounded-lg border border-border-default bg-bg-primary p-4">
+                    <p className="text-sm text-text-secondary">
+                        Tổng người dùng
+                    </p>
 
-//       {/* LECTURER TABLE */}
-//       <div
-//         className={
-//           loading
-//             ? 'pointer-events-none opacity-60 transition-opacity'
-//             : 'transition-opacity'
-//         }
-//       >
-//         {loading && !lecturerDataList ? (
-//           <div className="rounded-lg border border-border-default bg-bg-primary py-16 text-center">
-//             <p className="text-sm text-text-secondary">
-//               Đang tải danh sách giảng viên...
-//             </p>
-//           </div>
-//         ) : (
-//           <LecturerTable
-//             lecturers={lecturerDataList?.items ?? []}
-//             onEdit={handleEditLecturer}
-//           />
-//         )}
-//       </div>
+                    <p className="mt-2 text-2xl font-semibold text-text-primary">
+                        {statistics.totalUsers}
+                    </p>
+                </div>
 
-//       {/* PAGINATION */}
-//       {lecturerDataList && lecturerDataList.totalPages > 0 && (
-//         <Pagination
-//           currentPage={currentLecturerPage}
-//           onPageChange={setCurrentLecturerPage}
-//           totalPages={lecturerDataList.totalPages}
-//           onPageSizeChange={(size) => {
-//             setPageLecturerSize(size)
-//             setCurrentLecturerPage(1)
-//           }}
-//           pageSize={pageLecturerSize}
-//         />
-//       )}
+                <div className="rounded-lg border border-border-default bg-bg-primary p-4">
+                    <p className="text-sm text-text-secondary">
+                        Đang hoạt động
+                    </p>
 
-//       {/* UPDATE LECTURER MODAL */}
-//       <UpdateLecturerModal
-//         lecturer={editLecturer}
-//         onClose={handleCloseUpdateModal}
-//         onRefresh={refresh}
-//       />
-//     </div>
-//   )
-// }
+                    <p className="mt-2 text-2xl font-semibold text-emerald-600">
+                        {statistics.activeUsers}
+                    </p>
+
+                    <p className="mt-1 text-xs text-text-muted">
+                        Trong trang hiện tại
+                    </p>
+                </div>
+
+                <div className="rounded-lg border border-border-default bg-bg-primary p-4">
+                    <p className="text-sm text-text-secondary">
+                        Đã khóa
+                    </p>
+
+                    <p className="mt-2 text-2xl font-semibold text-danger">
+                        {statistics.inactiveUsers}
+                    </p>
+
+                    <p className="mt-1 text-xs text-text-muted">
+                        Trong trang hiện tại
+                    </p>
+                </div>
+            </div>
+
+            {/* Toolbar */}
+            <AdminUsersToolbar
+                search={search}
+                onSearchChange={setSearch}
+                role={role}
+                onRoleChange={setRole}
+                onRefresh={refresh}
+                loading={loading}
+            />
+
+            {/* User Table */}
+            <AdminUserTable
+                users={users}
+                loading={loading}
+            />
+
+            {/* Pagination */}
+            {adminUserDataList && adminUserDataList.totalPages > 0 && (
+                <Pagination
+                    currentPage={currentUserPage}
+                    onPageChange={setCurrentUserPage}
+                    totalPages={adminUserDataList.totalPages}
+                    pageSize={pageUserSize}
+                    onPageSizeChange={handlePageSizeChange}
+                />
+            )}
+
+            {/* Create User Modal */}
+            <CreateAdminUserModal
+                open={createModalOpen}
+                onClose={() => setCreateModalOpen(false)}
+                onRefresh={refresh}
+            />
+        </div>
+    )
+}

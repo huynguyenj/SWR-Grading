@@ -1,11 +1,8 @@
 import {
-  FiHome,
   FiUsers,
-  FiMessageSquare,
-  FiFlag,
-  FiBarChart2,
 } from 'react-icons/fi'
 import type { IconType } from 'react-icons'
+import { FaRobot } from 'react-icons/fa'
 
 export interface NavItem {
   label: string
@@ -25,20 +22,19 @@ export interface NavSection {
  * không cần đụng vào component Sidebar.
  */
 export const navSections: NavSection[] = [
-  {
-    title: 'Tổng quan',
-    items: [
-      { label: 'Dashboard', href: '/admin', icon: FiHome },
-      { label: 'Thống kê', href: '/admin/analytics', icon: FiBarChart2 },
-    ],
-  },
+  // {
+  //   title: 'Tổng quan',
+  //   items: [
+  //     { label: 'Dashboard', href: '/admin', icon: FiHome },
+  //     { label: 'Thống kê', href: '/admin/analytics', icon: FiBarChart2 },
+  //   ],
+  // },
   {
     title: 'Quản lý',
     items: [
-      { label: 'Giảng viên', href: '/admin/users', icon: FiUsers },
-      { label: 'Sinh viên', href: '/admin/student', icon: FiUsers },
-      { label: 'Học kì', href: '/admin/semester', icon: FiMessageSquare },
-      { label: 'Tổ chức thi', href: '/admin/examination', icon: FiFlag },
+      { label: 'Người dùng', href: '/admin/users', icon: FiUsers },
+      // { label: 'Sinh viên', href: '/admin/student', icon: FiUsers },
+      { label: 'AI model', href: '/admin/ai-model', icon: FaRobot },
     ],
   },
   // {
