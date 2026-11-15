@@ -150,7 +150,13 @@ export const router = createBrowserRouter([
                               Component: async() => (await import('@/pages/manager/ManagerApplicationPage')).default
                         }
                   },
-                                    {
+                  {
+                        path: '/manager/monitor',
+                        lazy: {
+                              Component: async() => (await import('@/pages/manager/ManagerMonitorManagement')).default
+                        }
+                  },
+                  {
                         path: '/manager/report',
                         lazy: {
                               Component: async() => (await import('@/pages/manager/ManagerReportPage')).default
