@@ -28,7 +28,7 @@ export default function useGetApplicationList() {
             })
 
             const data = await execute({
-                apiUrl: `applications?${params.toString()}`,
+                apiUrl: `applications/my?${params.toString()}`,
                 method: 'get',
                 type: 'private',
             })

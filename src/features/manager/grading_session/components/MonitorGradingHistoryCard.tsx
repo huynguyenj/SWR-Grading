@@ -7,7 +7,7 @@ import { FiChevronDown, FiChevronUp, FiClock, FiMessageSquare, FiEdit2, FiSave, 
 import Button from "@/components/ui/button"
 import Input from "@/components/ui/input"
 import TextArea from "@/components/ui/textarea"
-import useUpdateGradingDetail from "../hooks/useUpdateGradingDetail"
+import useUpdateGradingDetail from "../../../lecturer/grading_sessions/hooks/useUpdateGradingDetail"
 import { formatDate } from "@/utils/format"
 import { getStatusClass, getStatusLabel } from "../const/grading_status"
 
