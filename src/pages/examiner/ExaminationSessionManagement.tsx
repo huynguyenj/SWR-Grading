@@ -1,13 +1,14 @@
-
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import Pagination from '@/components/ui/pagination'
 import useGetExaminationSessionList from '@/features/admin/management/examination/hooks/useGetExaminationSessionList'
+import type { ExaminationSessionType } from '@/features/examiner/management/examination/types/exam_session'
 import ExaminationSessionTable from '@/features/examiner/management/examination/components/ExaminationSessionTable'
-import UploadStudentSubmissionModal from '@/features/examiner/management/examination/components/UploadStudentSubmissionModal'
 import ExaminationSessionDetailModal from '@/features/manager/examination_session/components/ManagerExamSessionDetailModal'
+import UpdateExaminationSessionModal from '@/features/examiner/management/examination/components/UpdateExaminationSessionModal'
+import UploadStudentSubmissionModal from '@/features/examiner/management/examination/components/UploadStudentSubmissionModal'
 
-export default function ExaminationSessionManagement() {
+const ExaminationSessionManagement = () => {
   const {
     examinationSessionDataList,
     loading,
@@ -17,89 +18,122 @@ export default function ExaminationSessionManagement() {
     setPageExaminationSessionSize,
     refresh,
   } = useGetExaminationSessionList()
-    // View examination session detail modal
-  const [viewDetailModalOpen, setViewDetailModalOpen] = useState(false)
-  const [viewDetailSessionSelected, setViewDetailSessionSelected] = useState('')
 
-  // Upload submission modal state
-  const [uploadSelectedSession, setUploadSelectedSession] = useState('')
+  // Selected session
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
+    null,
+  )
 
-  const [uploadModalOpen, setUploadModalOpen] = useState(false)
+  // Detail modal
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
 
-  const selectedExaminationSession =
-    examinationSessionDataList?.items.find(
-      (session) =>
-        session.examinationSessionId === viewDetailSessionSelected,
-    )
-  const handleSelectUploadSession = (examSessionId: string) => {
-    setUploadSelectedSession(examSessionId)
-    setUploadModalOpen(true)
+  // Update modal
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+
+  // Upload modal
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+
+  const sessions = useMemo(
+    () => examinationSessionDataList?.items ?? [],
+    [examinationSessionDataList?.items],
+  )
+
+  const selectedSession = useMemo<ExaminationSessionType | undefined>(
+    () =>
+      sessions.find(
+        (session) =>
+          session.examinationSessionId === selectedSessionId,
+      ),
+    [sessions, selectedSessionId],
+  )
+
+  // Open detail modal
+  const handleViewDetail = (examinationSessionId: string) => {
+    setSelectedSessionId(examinationSessionId)
+    setIsDetailModalOpen(true)
   }
 
-  const handleCloseUploadSession = () => {
-    setUploadModalOpen(false)
-    setUploadSelectedSession('')
+  // Open update modal
+  const handleEditSession = (examinationSessionId: string) => {
+    setSelectedSessionId(examinationSessionId)
+    setIsUpdateModalOpen(true)
   }
 
-  const handleOpenViewDetail = (examSessionId: string) => {
-    setViewDetailSessionSelected(examSessionId)
-    setViewDetailModalOpen(true)
+  // Open upload modal
+  const handleUploadSession = (examinationSessionId: string) => {
+    setSelectedSessionId(examinationSessionId)
+    setIsUploadModalOpen(true)
   }
-  const handleCloseViewDetail = () => {
-    setViewDetailModalOpen(false)
-    setViewDetailSessionSelected('')
+
+  // Close all modals and clear selected session
+  const handleCloseModal = () => {
+    setIsDetailModalOpen(false)
+    setIsUpdateModalOpen(false)
+    setIsUploadModalOpen(false)
+    setSelectedSessionId(null)
   }
-  
 
   return (
-    <div className="space-y-5">
-      {/* Header */}
-      <div>
+    <div className="flex flex-col gap-5">
+      {/* Page header */}
+      <div className="flex flex-col gap-1">
         <h1 className="text-xl font-semibold text-text-primary">
-          Các đợt thi
+          Quản lý đợt thi
         </h1>
 
-        <p className="mt-1 text-sm text-text-secondary">
-          Theo dõi các đợt thi, kỳ thi và học kỳ tương ứng.
+        <p className="text-sm text-text-secondary">
+          Quản lý thông tin, trạng thái và bài nộp của các đợt thi.
         </p>
       </div>
 
-      {/* Examination session table */}
+      {/* Session table */}
       <ExaminationSessionTable
-        sessions={examinationSessionDataList?.items}
+        sessions={sessions}
         loading={loading}
-        onUploadSelectedSession={handleSelectUploadSession}
-        onViewDetail={handleOpenViewDetail}
+        onViewDetail={handleViewDetail}
+        onEditSession={handleEditSession}
+        onUploadSelectedSession={handleUploadSession}
       />
 
       {/* Pagination */}
-      {examinationSessionDataList &&
-        examinationSessionDataList.totalPages > 0 && (
+      {examinationSessionDataList && (
+        <div className="flex justify-end">
           <Pagination
             currentPage={currentExaminationSessionPage}
-            onPageChange={setCurrentExaminationSessionPage}
             totalPages={examinationSessionDataList.totalPages}
-            onPageSizeChange={(size) => {
-              setPageExaminationSessionSize(size)
-              setCurrentExaminationSessionPage(1)
-            }}
             pageSize={pageExaminationSessionSize}
+            onPageChange={setCurrentExaminationSessionPage}
+            onPageSizeChange={setPageExaminationSessionSize}
           />
-        )}
+        </div>
+      )}
 
-      {/* Upload student submission modal */}
-      <UploadStudentSubmissionModal
-        examinationSessionId={uploadSelectedSession}
-        isOpen={uploadModalOpen}
-        onClose={handleCloseUploadSession}
-        refresh={refresh}
-      />
-      {/* View examination session detail modal */}
+      {/* Detail modal */}
       <ExaminationSessionDetailModal
-         session={selectedExaminationSession}
-         isOpen={viewDetailModalOpen}
-         onClose={handleCloseViewDetail}
+        session={selectedSession}
+        isOpen={isDetailModalOpen}
+        onClose={handleCloseModal}
       />
+
+      {/* Update modal */}
+      <UpdateExaminationSessionModal
+        open={isUpdateModalOpen}
+        onClose={handleCloseModal}
+        onRefresh={refresh}
+        session={selectedSession}
+      />
+
+      {/* Upload submission modal */}
+      {selectedSessionId && (
+        <UploadStudentSubmissionModal
+          examinationSessionId={selectedSessionId}
+          isOpen={isUploadModalOpen}
+          onClose={handleCloseModal}
+          refresh={refresh}
+        />
+      )}
     </div>
   )
 }
+
+export default ExaminationSessionManagement

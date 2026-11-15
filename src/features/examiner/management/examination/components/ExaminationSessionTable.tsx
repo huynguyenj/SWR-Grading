@@ -1,57 +1,66 @@
-
-import {
-  FiCalendar,
-  FiClock,
-  FiBookOpen,
-  FiLayers,
-  FiUpload,
-  FiEye,
-} from 'react-icons/fi'
-
-import Button from '@/components/ui/button'
+import type { ExaminationSessionType } from '../types/exam_session'
 import { formatDate } from '@/utils/format'
 import {
-  SESSION_STATUS_CLASS,
-  SESSION_STATUS_LABEL,
-  type ExaminationSessionType,
-} from '../types/exam_session'
+  FiEdit2,
+  FiEye,
+  FiUpload,
+} from 'react-icons/fi'
 
 interface ExaminationSessionTableProps {
   sessions?: ExaminationSessionType[]
   loading?: boolean
-  onUploadSelectedSession: (examSessionId: string) => void
-  onViewDetail: (examSessionId: string) => void
+  onUploadSelectedSession: (examinationSessionId: string) => void
+  onViewDetail: (examinationSessionId: string) => void
+  onEditSession: (examinationSessionId: string) => void
 }
 
+const SESSION_STATUS_LABEL: Record<number, string> = {
+  0: 'Nháp',
+  1: 'Đang diễn ra',
+  2: 'Đã đóng',
+  3: 'Đã hoàn thành',
+  4: 'Đã hủy',
+}
 
+const getStatusClassName = (status: number): string => {
+  switch (status) {
+    case 0:
+      return 'bg-bg-muted text-text-secondary'
+    case 1:
+      return 'bg-green-100 text-green-700'
+    case 2:
+      return 'bg-orange-100 text-orange-700'
+    case 3:
+      return 'bg-blue-100 text-blue-700'
+    case 4:
+      return 'bg-red-100 text-red-700'
+    default:
+      return 'bg-bg-muted text-text-secondary'
+  }
+}
 
-export default function ExaminationSessionTable({
-  sessions,
+const ExaminationSessionTable = ({
+  sessions = [],
   loading = false,
   onUploadSelectedSession,
-  onViewDetail
-}: ExaminationSessionTableProps) {
+  onViewDetail,
+  onEditSession,
+}: ExaminationSessionTableProps) => {
   if (loading) {
     return (
-      <div className="rounded-lg border border-border-default bg-bg-primary py-16 text-center">
-        <p className="text-sm text-text-muted">
+      <div className="flex min-h-48 items-center justify-center rounded-lg border border-border-default bg-bg-primary">
+        <p className="text-sm text-text-secondary">
           Đang tải danh sách đợt thi...
         </p>
       </div>
     )
   }
 
-  if (!sessions?.length) {
+  if (sessions.length === 0) {
     return (
-      <div className="rounded-lg border border-border-default bg-bg-primary py-16 text-center">
-        <FiLayers className="mx-auto mb-3 h-8 w-8 text-text-muted" />
-
-        <p className="text-sm font-medium text-text-primary">
-          Chưa có đợt thi nào
-        </p>
-
-        <p className="mt-1 text-xs text-text-muted">
-          Danh sách các đợt thi sẽ được hiển thị tại đây.
+      <div className="flex min-h-48 items-center justify-center rounded-lg border border-border-default bg-bg-primary">
+        <p className="text-sm text-text-secondary">
+          Chưa có đợt thi nào.
         </p>
       </div>
     )
@@ -59,168 +68,127 @@ export default function ExaminationSessionTable({
 
   return (
     <div className="overflow-x-auto rounded-lg border border-border-default bg-bg-primary">
-      <table className="w-full text-sm">
+      <table className="w-full min-w-[1000px] border-collapse text-left">
         <thead>
-          <tr className="border-b border-border-default bg-bg-muted/50 text-left">
-            <th className="px-4 py-3 font-medium text-text-secondary">
-              Đợt thi
+          <tr className="border-b border-border-default bg-bg-muted">
+            <th className="px-4 py-3 text-sm font-semibold text-text-primary">
+              STT
             </th>
 
-            <th className="px-4 py-3 font-medium text-text-secondary">
-              Kỳ thi
+            <th className="px-4 py-3 text-sm font-semibold text-text-primary">
+              Mã đợt thi
             </th>
 
-            <th className="px-4 py-3 font-medium text-text-secondary">
+            <th className="px-4 py-3 text-sm font-semibold text-text-primary">
+              Tên kỳ thi
+            </th>
+
+            <th className="px-4 py-3 text-sm font-semibold text-text-primary">
               Học kỳ
             </th>
 
-            <th className="px-4 py-3 font-medium text-text-secondary">
-              Thời gian
+            <th className="px-4 py-3 text-sm font-semibold text-text-primary">
+              Ngày thi
             </th>
 
-            <th className="px-4 py-3 font-medium text-text-secondary">
+            <th className="px-4 py-3 text-sm font-semibold text-text-primary">
+              Giờ bắt đầu
+            </th>
+
+            <th className="px-4 py-3 text-sm font-semibold text-text-primary">
+              Bài nộp
+            </th>
+
+            <th className="px-4 py-3 text-sm font-semibold text-text-primary">
               Trạng thái
             </th>
 
-            <th className="px-4 py-3 text-center font-medium text-text-secondary">
+            <th className="px-4 py-3 text-center text-sm font-semibold text-text-primary">
               Thao tác
             </th>
           </tr>
         </thead>
 
         <tbody>
-          {sessions.map((session) => (
+          {sessions.map((session, index) => (
             <tr
               key={session.examinationSessionId}
-              className="border-b border-border-default last:border-0 transition-colors hover:bg-bg-muted/40"
+              className="border-b border-border-default last:border-b-0 hover:bg-bg-muted/50"
             >
-              {/* Examination session */}
-              <td className="px-4 py-3">
-                <p className="font-medium text-text-primary">
-                  {session.examinationCode}
-                </p>
-
-                <p className="mt-1 text-xs text-text-muted">
-                  Đợt thi
-                </p>
+              <td className="px-4 py-3 text-sm text-text-secondary">
+                {index + 1}
               </td>
 
-              {/* Examination */}
-              <td className="px-4 py-3">
-                <div className="flex items-start gap-2">
-                  <FiBookOpen className="mt-0.5 h-4 w-4 shrink-0 text-text-muted" />
-
-                  <div>
-                    <p className="font-medium text-text-primary">
-                      {session.examination?.name || 'Chưa có thông tin'}
-                    </p>
-
-                    <p className="mt-1 text-xs text-text-muted">
-                      Bắt đầu:{' '}
-                      {session.examination?.startDate
-                        ? formatDate(session.examination.startDate)
-                        : 'Chưa xác định'}
-                    </p>
-
-                    <p className="mt-1 text-xs text-text-muted">
-                      Kết thúc:{' '}
-                      {session.examination?.endDate
-                        ? formatDate(session.examination.endDate)
-                        : 'Chưa xác định'}
-                    </p>
-                  </div>
-                </div>
+              <td className="px-4 py-3 text-sm font-medium text-text-primary">
+                {session.examinationCode || '-'}
               </td>
 
-              {/* Semester */}
-              <td className="px-4 py-3">
-                <div className="flex items-start gap-2">
-                  <FiLayers className="mt-0.5 h-4 w-4 shrink-0 text-text-muted" />
-
-                  <div>
-                    <p className="font-medium text-text-primary">
-                      {session.semester?.name || 'Chưa có thông tin'}
-                    </p>
-
-                    <p className="mt-1 text-xs text-text-muted">
-                      Mã học kỳ: {session.semester?.semesterCode || '—'}
-                    </p>
-
-                    <p className="mt-1 text-xs text-text-muted">
-                      Bắt đầu:{' '}
-                      {session.semester?.startDate
-                        ? formatDate(session.semester.startDate)
-                        : 'Chưa xác định'}
-                    </p>
-
-                    <p className="mt-1 text-xs text-text-muted">
-                      Kết thúc:{' '}
-                      {session.semester?.endDate
-                        ? formatDate(session.semester.endDate)
-                        : 'Chưa xác định'}
-                    </p>
-                  </div>
-                </div>
+              <td className="px-4 py-3 text-sm text-text-primary">
+                {session.examination?.name || '-'}
               </td>
 
-              {/* Date and time */}
-              <td className="px-4 py-3">
-                <div className="space-y-1.5 text-text-secondary">
-                  <div className="flex items-center gap-1.5">
-                    <FiCalendar className="h-3.5 w-3.5 text-text-muted" />
-
-                    <span>
-                      {session.startDate
-                        ? formatDate(session.startDate)
-                        : 'Chưa xác định'}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5">
-                    <FiClock className="h-3.5 w-3.5 text-text-muted" />
-
-                    <span>{(session.startTime)}</span>
-                  </div>
-                </div>
+              <td className="px-4 py-3 text-sm text-text-secondary">
+                {session.semester?.semesterCode ||
+                  session.semester?.name ||
+                  '-'}
               </td>
 
-              {/* Status */}
+              <td className="px-4 py-3 text-sm text-text-secondary">
+                {session.startDate
+                  ? formatDate(session.startDate)
+                  : '-'}
+              </td>
+
+              <td className="px-4 py-3 text-sm text-text-secondary">
+                {session.startTime || '-'}
+              </td>
+
+              <td className="px-4 py-3 text-sm text-text-secondary">
+                {session.totalSubmission ?? 0}
+              </td>
+
               <td className="px-4 py-3">
                 <span
-                  className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
-                    SESSION_STATUS_CLASS[session.status]
-                  }`}
+                  className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${getStatusClassName(session.status)}`}
                 >
-                  {SESSION_STATUS_LABEL[session.status]}
+                  {SESSION_STATUS_LABEL[session.status] ?? 'Không xác định'}
                 </span>
               </td>
 
-              {/* Actions */}
               <td className="px-4 py-3">
-                <div className="flex justify-center gap-2">
-                  <Button
-                      variant="basic"
-                      className="!p-2"
-                      onClick={() =>
-                          onViewDetail(session.examinationSessionId)
-                      }
-                      title="Xem chi tiết"
-                  >
-                     <FiEye className="h-4 w-4" />
-                  </Button>
-                  <Button
+                <div className="flex items-center justify-center gap-2">
+                  <button
                     type="button"
-                    variant="brand"
-                    size="basic"
-                    className="p-2"
-                    title="Tải bài nộp của sinh viên"
-                    aria-label={`Tải bài nộp cho ${session.examinationCode}`}
+                    title="Xem chi tiết"
+                    onClick={() =>
+                      onViewDetail(session.examinationSessionId)
+                    }
+                    className="rounded-md p-2 text-text-secondary transition-colors hover:bg-bg-muted hover:text-brand-orange"
+                  >
+                    <FiEye size={17} />
+                  </button>
+
+                  <button
+                    type="button"
+                    title="Chỉnh sửa đợt thi"
+                    onClick={() =>
+                      onEditSession(session.examinationSessionId)
+                    }
+                    className="rounded-md p-2 text-text-secondary transition-colors hover:bg-bg-muted hover:text-brand-orange"
+                  >
+                    <FiEdit2 size={17} />
+                  </button>
+
+                  <button
+                    type="button"
+                    title="Upload bài nộp"
                     onClick={() =>
                       onUploadSelectedSession(session.examinationSessionId)
                     }
+                    className="rounded-md p-2 text-text-secondary transition-colors hover:bg-bg-muted hover:text-brand-orange"
                   >
-                    <FiUpload className="h-4 w-4" />
-                  </Button>
+                    <FiUpload size={17} />
+                  </button>
                 </div>
               </td>
             </tr>
@@ -230,3 +198,5 @@ export default function ExaminationSessionTable({
     </div>
   )
 }
+
+export default ExaminationSessionTable
