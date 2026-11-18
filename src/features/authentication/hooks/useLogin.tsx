@@ -36,7 +36,7 @@ export default function useLogin() {
       authStore.setAuthInfo(data.data.accessToken, data.data.user.id, data.data.user.role, data.data.user.fullName, data.data.user.staffCode)
       switch (data.data.user.role.toLowerCase()) {
         case 'admin':
-          navigate('/admin')
+          navigate('/admin/users')
           break;
         case 'monitor':
           navigate('/monitor')

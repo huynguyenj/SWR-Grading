@@ -32,7 +32,6 @@ export const router = createBrowserRouter([
             loader: protectedRole(ROLE.admin),
             children: [
                   {
-                        index: true,
                         lazy: {
                               Component: async() => (await import('@/pages/admin/AdminDashboardPage')).default
                         }
@@ -44,6 +43,7 @@ export const router = createBrowserRouter([
                         }
                   },
                   {
+                        index: true,
                         path: '/admin/users',
                         lazy: {
                               Component: async() => (await import('@/pages/admin/AdminUserPage')).default
