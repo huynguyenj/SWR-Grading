@@ -6,6 +6,7 @@ import ExamSessionStatusBadge from '@/features/admin/management/examination/comp
 import Pagination from '@/components/ui/pagination'
 import { useState } from 'react'
 import ViewExamSessionModal from '@/features/admin/management/examination/components/ViewExamSessionModal'
+import Loading_Circle from '@/components/ui/loading_circle'
 
 interface ExaminationTableMonitorProps {
   onOpenUpload: (examination: ExaminationType) => void
@@ -19,6 +20,7 @@ export default function ExaminationTableMonitor({ onOpenUpload }: ExaminationTab
       pageExaminationSize,
       setCurrentExaminationPage,
       setPageExaminationSize,
+      loading,
       // refresh,
     } = useGetExaminationList()
 //     const { onAutoSubmitV2, loading: createLoading} = useCreateDiary({ onRefresh: refresh })
@@ -29,6 +31,9 @@ export default function ExaminationTableMonitor({ onOpenUpload }: ExaminationTab
 //             if (!semesterDataList) return
 //       return semesterDataList.items.find((s) => s.semesterId === id)?.name ?? '—'
 //    }
+  if (loading) {
+      return <Loading_Circle/>
+  }
 
   if (examinationDataList?.items.length === 0) {
     return (

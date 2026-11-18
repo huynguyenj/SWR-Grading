@@ -4,6 +4,7 @@ import { FiLayers, FiCalendar, FiClock, FiFileText, FiUser } from 'react-icons/f
 import { formatDate } from '@/utils/format'
 import type { ApplicationType } from '../types/application_type'
 import { applicationStatusConfig } from '../const/application_status'
+import Loading_Circle from '@/components/ui/loading_circle'
 
 interface StudentApplicationTableProps {
     applications?: ApplicationType[]
@@ -16,13 +17,7 @@ export default function StudentApplicationTable({
 }: StudentApplicationTableProps) {
     // Loading state
     if (loading) {
-        return (
-            <div className="rounded-lg border border-border-default bg-bg-primary py-16 text-center">
-                <p className="text-sm text-text-muted">
-                    Đang tải danh sách đơn phúc khảo...
-                </p>
-            </div>
-        )
+        return <Loading_Circle/>
     }
 
     // Empty state

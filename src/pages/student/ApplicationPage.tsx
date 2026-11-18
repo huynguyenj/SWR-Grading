@@ -23,11 +23,11 @@ export default function ApplicationPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h1 className="text-xl font-semibold text-text-primary">
-                        Applications
+                        Đơn phúc khảo
                     </h1>
 
                     <p className="mt-1 text-sm text-text-secondary">
-                        Manage and track your applications.
+                        Quản lí và theo dõi đơn phúc khảo của bạn.
                     </p>
                 </div>
 
@@ -36,7 +36,7 @@ export default function ApplicationPage() {
                     onClick={refresh}
                     disabled={loading}
                 >
-                    Refresh
+                    Làm mới
                 </Button>
             </div>
 

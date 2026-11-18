@@ -1,3 +1,4 @@
+import Loading_Circle from '@/components/ui/loading_circle'
 import type { ExaminationSessionType } from '../types/exam_session'
 import { formatDate } from '@/utils/format'
 import {
@@ -47,13 +48,7 @@ const ExaminationSessionTable = ({
   onEditSession,
 }: ExaminationSessionTableProps) => {
   if (loading) {
-    return (
-      <div className="flex min-h-48 items-center justify-center rounded-lg border border-border-default bg-bg-primary">
-        <p className="text-sm text-text-secondary">
-          Đang tải danh sách đợt thi...
-        </p>
-      </div>
-    )
+    return <Loading_Circle/>
   }
 
   if (sessions.length === 0) {

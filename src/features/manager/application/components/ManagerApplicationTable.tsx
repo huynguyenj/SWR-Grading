@@ -11,6 +11,7 @@ import { formatDate } from '@/utils/format'
 import type { ApplicationType } from '@/features/student/application/types/application_type'
 
 import ApplicationStatusCell from './ApplicationStatusCell'
+import Loading_Circle from '@/components/ui/loading_circle'
 
 interface ManagerApplicationTableProps {
     applications?: ApplicationType[]
@@ -25,13 +26,7 @@ export default function ManagerApplicationTable({
 }: ManagerApplicationTableProps) {
     // Loading state
     if (loading) {
-        return (
-            <div className="rounded-lg border border-border-default bg-bg-primary py-16 text-center">
-                <p className="text-sm text-text-muted">
-                    Đang tải danh sách đơn phúc khảo...
-                </p>
-            </div>
-        )
+        return <Loading_Circle/>
     }
 
     // Empty state

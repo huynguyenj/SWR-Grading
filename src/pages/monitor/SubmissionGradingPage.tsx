@@ -1,19 +1,34 @@
 
+import { useState } from "react"
+import { useNavigate, useParams } from "react-router"
+import {
+    FiArrowLeft,
+    FiAward,
+    FiCheckCircle,
+    FiEdit2,
+} from "react-icons/fi"
+
+import Button from "@/components/ui/button"
+import Loading_Circle from "@/components/ui/loading_circle"
+
 import useGetSubmissionGrading from "@/features/lecturer/grading_sessions/hooks/useGetSubmissionGrading"
 import useReviewSubmission from "@/features/lecturer/grading_sessions/hooks/useReviewSubmision"
+
 import { AnswerGradingCard } from "@/features/manager/grading_session/components/AnswerGradingCard"
 import { HistoryGradingCard } from "@/features/manager/grading_session/components/GradingHistoryCard"
 import MonitorGradingHistoryCard from "@/features/manager/grading_session/components/MonitorGradingHistoryCard"
 
+
 import type { GradingHistoryType } from "@/features/lecturer/grading_sessions/types/grading_submisison_type"
 
-import { FiArrowLeft, FiAward, FiCheckCircle } from "react-icons/fi"
-import { useNavigate, useParams } from "react-router"
 import useUpdateGradingHistoryStatus from "@/features/manager/grading_session/hooks/useUpdateGradingHistoryStatus"
+import ManualGradingModal from "@/features/manager/grading_session/components/ManualGradingModal"
 
 export default function MonitorSubmissionGradingPage() {
     const { submissionId } = useParams<{ submissionId: string }>()
     const navigate = useNavigate()
+
+    const [isManualGradingOpen, setIsManualGradingOpen] = useState(false)
 
     const {
         submissionGrading,
@@ -21,6 +36,7 @@ export default function MonitorSubmissionGradingPage() {
         refresh,
     } = useGetSubmissionGrading(submissionId ?? "")
 
+    // Chỉnh sửa kết quả chấm AI
     const {
         loading: reviewLoading,
         submitReview,
@@ -29,6 +45,7 @@ export default function MonitorSubmissionGradingPage() {
         onRefreshSubmissionDetail: refresh,
     })
 
+    // Cập nhật trạng thái bản chấm chính thức
     const {
         updateStatus,
         loadingHistoryId,
@@ -101,30 +118,41 @@ export default function MonitorSubmissionGradingPage() {
     return (
         <div className="space-y-5">
             {/* Header */}
-            <div className="flex items-center gap-3">
-                <button
-                    type="button"
-                    onClick={() => navigate(-1)}
-                    className="rounded-md border border-border-default p-2 text-text-secondary transition-colors hover:bg-bg-muted"
-                    title="Quay lại"
-                >
-                    <FiArrowLeft size={18} />
-                </button>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                    <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className="rounded-md border border-border-default p-2 text-text-secondary transition-colors hover:bg-bg-muted"
+                        title="Quay lại"
+                    >
+                        <FiArrowLeft size={18} />
+                    </button>
 
-                <div>
-                    <h1 className="text-xl font-semibold text-text-primary">
-                        Chi tiết bài chấm
-                    </h1>
+                    <div>
+                        <h1 className="text-xl font-semibold text-text-primary">
+                            Chi tiết bài chấm
+                        </h1>
 
-                    <p className="mt-1 text-sm text-text-secondary">
-                        Xem câu trả lời, tiêu chí đánh giá và so sánh lịch sử chấm bài.
-                    </p>
+                        <p className="mt-1 text-sm text-text-secondary">
+                            Xem câu trả lời, tiêu chí đánh giá và so sánh lịch sử chấm bài.
+                        </p>
+                    </div>
                 </div>
+
+                <Button
+                    type="button"
+                    onClick={() => setIsManualGradingOpen(true)}
+                    disabled={loading || !submissionGrading || answers.length === 0}
+                >
+                    <FiEdit2 size={16} />
+                    Chấm thủ công
+                </Button>
             </div>
 
             {loading ? (
                 <div className="rounded-lg border border-border-default bg-bg-primary py-16 text-center text-sm text-text-muted">
-                    Đang tải dữ liệu chấm bài...
+                    <Loading_Circle />
                 </div>
             ) : !submissionGrading ? (
                 <div className="rounded-lg border border-border-default bg-bg-primary py-16 text-center text-sm text-text-muted">
@@ -251,6 +279,15 @@ export default function MonitorSubmissionGradingPage() {
                     </aside>
                 </div>
             )}
+
+            {/* Manual Grading Modal */}
+            <ManualGradingModal
+                open={isManualGradingOpen}
+                submissionId={submissionId ?? ""}
+                answers={answers}
+                onClose={() => setIsManualGradingOpen(false)}
+                onRefresh={refresh}
+            />
         </div>
     )
 }

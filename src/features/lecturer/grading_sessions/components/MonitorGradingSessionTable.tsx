@@ -2,6 +2,7 @@ import { formatDate } from "@/utils/format"
 import type { GradingSessionType } from "../types/grading_session_monitor"
 import Button from "@/components/ui/button"
 import { FaEye } from "react-icons/fa"
+import Loading_Circle from "@/components/ui/loading_circle"
 
 interface MonitorGradingSessionTableProps {
     sessions?: GradingSessionType[]
@@ -43,7 +44,7 @@ export default function MonitorGradingSessionTable({
                                     colSpan={7}
                                     className="px-4 py-10 text-center text-text-muted"
                                 >
-                                    Đang tải danh sách phiên chấm...
+                                   <Loading_Circle/>
                                 </td>
                             </tr>
                         ) : !sessions || sessions.length === 0 ? (

@@ -9,6 +9,7 @@ import {
   SESSION_STATUS_LABEL,
   type ExaminationSessionType,
 } from '@/features/examiner/management/examination/types/exam_session'
+import Loading_Circle from '@/components/ui/loading_circle'
 
 interface ExaminationSessionTableProps {
   sessions?: ExaminationSessionType[]
@@ -29,13 +30,7 @@ export default function ManagerExamSessionTable({
   onViewDetail,
 }: ExaminationSessionTableProps) {
   if (loading) {
-    return (
-      <div className="rounded-lg border border-border-default bg-bg-primary py-16 text-center">
-        <p className="text-sm text-text-muted">
-          Đang tải danh sách đợt thi...
-        </p>
-      </div>
-    )
+    return <Loading_Circle/>
   }
 
   if (!sessions?.length) {

@@ -9,6 +9,7 @@ import {
 
 import { SESSION_STATUS_CLASS, SESSION_STATUS_LABEL, type ExaminationSessionType } from '@/features/examiner/management/examination/types/exam_session'
 import { formatDate } from '@/utils/format'
+import Loading_Circle from '@/components/ui/loading_circle'
 
 interface StudentExamSessionTableProps {
     examinationSessions?: ExaminationSessionType[]
@@ -20,14 +21,7 @@ export default function StudentExamSessionTable({
     loading,
 }: StudentExamSessionTableProps) {
     if (loading) {
-        return (
-            <div className="flex min-h-60 items-center justify-center rounded-lg border border-border-default bg-bg-primary">
-                <div className="flex flex-col items-center gap-3 text-text-secondary">
-                    <div className="h-7 w-7 animate-spin rounded-full border-2 border-brand-orange border-t-transparent" />
-                    <p className="text-sm">Loading...</p>
-                </div>
-            </div>
-        )
+        return <Loading_Circle/>
     }
 
     if (!examinationSessions?.length) {

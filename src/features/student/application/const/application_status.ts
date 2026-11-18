@@ -17,7 +17,7 @@ export const applicationStatusConfig: Record<
         className: 'bg-danger/10 text-danger',
     },
     3: {
-        label: 'Đang xử lí',
+        label: 'Đang chấm lại',
         className: 'bg-brand-orange/10 text-brand-orange',
     },
     4: {
