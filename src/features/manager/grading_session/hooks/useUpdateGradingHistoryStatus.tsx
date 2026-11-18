@@ -16,7 +16,7 @@ export default function useUpdateGradingHistoryStatus() {
         try {
             setLoadingHistoryId(historyId)
 
-            await apiPrivate.patch(
+            await apiPrivate.put(
                 `/grading-histories/${historyId}/status`,
                 { status },
             )

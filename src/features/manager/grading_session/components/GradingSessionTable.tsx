@@ -9,6 +9,7 @@ import type { GradingSessionType } from '../types/grading_session_type'
 import { formatDate } from '@/utils/format'
 import Button from '@/components/ui/button'
 import { FaEye, FaTasks } from 'react-icons/fa'
+import Loading_Circle from '@/components/ui/loading_circle'
 
 interface GradingSessionTableProps {
   sessions?: GradingSessionType[]
@@ -30,13 +31,7 @@ export default function GradingSessionTable({
 }: GradingSessionTableProps) {
   // Loading state
   if (loading) {
-    return (
-      <div className="rounded-lg border border-border-default bg-bg-primary py-16 text-center">
-        <p className="text-sm text-text-muted">
-          Đang tải danh sách phiên chấm...
-        </p>
-      </div>
-    )
+    return <Loading_Circle/>
   }
 
   // Empty state

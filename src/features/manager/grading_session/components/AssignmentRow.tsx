@@ -12,7 +12,7 @@ import { FaEdit } from 'react-icons/fa'
 
 import Button from '@/components/ui/button'
 import { formatDate } from '@/utils/format'
-import { getAssignmentStatus, ASSIGNMENT_STATUS_OPTIONS } from '@/features/lecturer/grading_sessions/const/assignment_status'
+import { getAssignmentStatus, ASSIGNMENT_STATUS_OPTIONS, getAssignmentStatusClass } from '@/features/lecturer/grading_sessions/const/assignment_status'
 
 import type { AssignmentType } from '../types/assignment_type'
 import useUpdateAssignmentStatus, { type AssignmentStatus } from '@/features/examiner/management/examination/hooks/useUpdateAssignmentStatus'
@@ -157,7 +157,7 @@ export default function AssignmentRow({
             </>
           ) : (
             <>
-              <span className="inline-flex items-center rounded-full bg-bg-muted px-2.5 py-1 text-xs font-medium text-text-secondary">
+              <span className={`inline-flex items-center rounded-full bg-bg-muted px-2.5 py-1 text-xs font-medium text-text-secondary ${getAssignmentStatusClass(assignment.status)}`}>
                 {getAssignmentStatus(
                   assignment.status as AssignmentStatus,
                 )}

@@ -22,11 +22,11 @@ export default function StudentExamSessionPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h1 className="text-xl font-semibold text-text-primary">
-                        Examination Sessions
+                        Đợt thi
                     </h1>
 
                     <p className="mt-1 text-sm text-text-secondary">
-                        View and track your examination sessions.
+                        Xem và theo dõi đợt thi của bạn
                     </p>
                 </div>
 
@@ -35,7 +35,7 @@ export default function StudentExamSessionPage() {
                     onClick={refresh}
                     disabled={loading}
                 >
-                    Refresh
+                    Làm mới
                 </Button>
             </div>
 

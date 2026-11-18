@@ -12,6 +12,7 @@ import AIModelConfirmDelete from './AIModelConfirmDelete'
 
 import type { AiModel, UpdateAiModelPayload } from '../types/ai_model_type'
 import type { EditFormValues } from './AiModelTableRow'
+import Loading_Circle from '@/components/ui/loading_circle'
 
 interface AiModelTableProps {
   items: AiModel[]
@@ -154,16 +155,7 @@ export default function AiModelTable({
 
   // Loading state.
   if (loading && items.length === 0) {
-    return (
-      <div className="flex min-h-64 items-center justify-center rounded-lg border border-border-default bg-bg-primary">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-7 w-7 animate-spin rounded-full border-2 border-brand-orange/20 border-t-brand-orange" />
-          <p className="text-sm text-text-secondary">
-            Loading AI models...
-          </p>
-        </div>
-      </div>
-    )
+    return <Loading_Circle/>
   }
 
   // Empty state.

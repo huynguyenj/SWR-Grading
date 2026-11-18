@@ -8,6 +8,7 @@ import {
 
 import { formatDate } from '@/utils/format'
 import type { ExaminerStudent } from '../types/examiner_student'
+import Loading_Circle from '@/components/ui/loading_circle'
 
 interface ExaminerStudentTableProps {
   students?: ExaminerStudent[]
@@ -20,17 +21,7 @@ export default function ExaminerStudentTable({
 }: ExaminerStudentTableProps) {
   // Loading state
   if (loading && students.length === 0) {
-    return (
-      <div className="flex min-h-64 items-center justify-center rounded-lg border border-border-default bg-bg-primary">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-orange border-t-transparent" />
-
-          <p className="text-sm text-text-secondary">
-            Đang tải danh sách sinh viên...
-          </p>
-        </div>
-      </div>
-    )
+    return <Loading_Circle/>
   }
 
   // Empty state

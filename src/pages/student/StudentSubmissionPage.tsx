@@ -45,11 +45,11 @@ export default function StudentSubmissionPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h1 className="text-xl font-semibold text-text-primary">
-                        My Submissions
+                        Bài nộp của tôi
                     </h1>
 
                     <p className="mt-1 text-sm text-text-secondary">
-                        View and track your examination submissions.
+                        Xem và theo dõi thông tin bài nộp của bạn
                     </p>
                 </div>
 
@@ -58,7 +58,7 @@ export default function StudentSubmissionPage() {
                     onClick={refresh}
                     disabled={loading}
                 >
-                    Refresh
+                    Làm mới
                 </Button>
             </div>
 

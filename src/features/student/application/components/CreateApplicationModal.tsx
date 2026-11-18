@@ -102,7 +102,7 @@ function CreateApplicationModalContent({
                             className="text-brand-orange"
                         />
                         <h3 className="text-sm font-semibold text-text-primary">
-                            Submission Information
+                            Thông tin bài nộp
                         </h3>
                     </div>
 
@@ -118,7 +118,7 @@ function CreateApplicationModalContent({
 
                         <div>
                             <p className="text-xs text-text-muted">
-                                Examination
+                                Kì thi
                             </p>
                             <p className="mt-1 text-sm text-text-primary">
                                 {submission.examination?.name || '—'}
@@ -127,10 +127,10 @@ function CreateApplicationModalContent({
 
                         <div>
                             <p className="text-xs text-text-muted">
-                                Submission ID
+                                Học kì
                             </p>
                             <p className="mt-1 break-all text-xs text-text-secondary">
-                                {submission.submissionId}
+                                {submission.semester.name} - {submission.semester.semesterCode}
                             </p>
                         </div>
                     </div>
@@ -142,13 +142,13 @@ function CreateApplicationModalContent({
                         htmlFor="application-reason"
                         className="text-sm font-medium text-text-primary"
                     >
-                        Reason <span className="text-brand-orange">*</span>
+                        Lí do <span className="text-brand-orange">*</span>
                     </label>
 
                     <textarea
                         id="application-reason"
                         {...register('reason')}
-                        placeholder="Enter the reason for creating this application..."
+                        placeholder="Điền lí do tạo đơn phúc khảo..."
                         rows={5}
                         disabled={loading}
                         className={`w-full resize-none rounded-lg border bg-bg-primary px-3 py-2.5 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-brand-orange ${
@@ -173,7 +173,7 @@ function CreateApplicationModalContent({
                         onClick={handleClose}
                         disabled={loading}
                     >
-                        Cancel
+                        Hủy
                     </Button>
 
                     <Button

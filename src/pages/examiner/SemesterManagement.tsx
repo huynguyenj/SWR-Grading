@@ -11,7 +11,7 @@ import { type SemesterType, type SemesterStatus } from '@/features/admin/managem
 import { useMemo, useState } from 'react'
 
 export default function SemestersManagementPage() {
-  const { semesterDataList, currentSemesterPage, pageSemesterSize, setCurrentSemesterPage, setPageSemesterSize, refresh } = useGetSemester()
+  const { semesterDataList, currentSemesterPage, pageSemesterSize, setCurrentSemesterPage, setPageSemesterSize, refresh, loading } = useGetSemester()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<SemesterStatus | 'all'>('all')
   const [sortField, setSortField] = useState<SortField>('startDate')
@@ -86,6 +86,7 @@ export default function SemestersManagementPage() {
         onSelected={handleOpenModalUpdate} 
         onDeleted={handleDeleteModalUpdate}
         onUpload={handleUploadModal}
+        loading={loading}
       />
       <Pagination
         currentPage={currentSemesterPage}
