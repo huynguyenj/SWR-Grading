@@ -19,10 +19,12 @@ import useUpdateAssignmentStatus, { type AssignmentStatus } from '@/features/exa
 
 interface AssignmentRowProps {
   assignment: AssignmentType
+  onRefresh: () => void
 }
 
 export default function AssignmentRow({
   assignment,
+  onRefresh
 }: AssignmentRowProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<AssignmentStatus>(
@@ -67,7 +69,7 @@ export default function AssignmentRow({
       setUpdateError('Không thể cập nhật trạng thái. Vui lòng thử lại.')
       return
     }
-
+    onRefresh()
     setIsEditing(false)
   }
 
@@ -105,6 +107,22 @@ export default function AssignmentRow({
 
           <p className="mt-0.5 text-xs text-text-muted">
             {assignment.student.studentCode}
+          </p>
+        </div>
+      </td>
+
+      {/* Paperset */}
+      <td className="px-4 py-3">
+        <div>
+          <p className="font-medium text-text-primary">
+            {assignment.paperSet.paperSetCode} ({assignment.paperSet.totalQuestions} câu hỏi)
+          </p>
+
+          <p className="mt-0.5 text-xs text-text-muted">
+            {assignment.examinationSession.examinationName}
+          </p>
+          <p className="mt-0.5 text-xs text-text-muted">
+            {assignment.examinationSession.examinationCode}
           </p>
         </div>
       </td>

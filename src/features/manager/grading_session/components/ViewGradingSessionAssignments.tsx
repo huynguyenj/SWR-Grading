@@ -53,7 +53,7 @@ export default function ViewGradingSessionAssignments({
   onClose,
   gradingSessionId,
 }: ViewGradingSessionAssignmentsProps) {
-  const { assignmentList, loading } = useGetAssignmentGradingSession({
+  const { assignmentList, loading, onRefresh } = useGetAssignmentGradingSession({
     gradingSessionId,
   })
 
@@ -214,6 +214,9 @@ export default function ViewGradingSessionAssignments({
                   <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-secondary">
                     Sinh viên
                   </th>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                    Đề thi
+                  </th>
 
                   <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-secondary">
                     Trạng thái
@@ -250,6 +253,7 @@ export default function ViewGradingSessionAssignments({
                     <AssignmentRow
                       key={assignment.assignmentId}
                       assignment={assignment}
+                      onRefresh={onRefresh}
                     />
                   ))
                 ) : (
