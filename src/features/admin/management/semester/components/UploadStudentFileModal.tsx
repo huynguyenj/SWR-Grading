@@ -80,7 +80,7 @@ export default function UploadStudentFileModal({
         {/* File upload */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-text-primary">
-            File danh sách sinh viên
+            File danh sách sinh viên - giảng viên
             <span className="ml-1 text-danger">*</span>
           </label>
 
