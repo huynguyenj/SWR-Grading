@@ -151,7 +151,7 @@ export default function CreateExamSessionModal({
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>
-            {loading ? 'Đang tạo...' : 'Tạo đợt thi'}
+            {loading ? 'Đang tạo...' : 'Tạo kì thi'}
           </Button>
         </div>
       </form>

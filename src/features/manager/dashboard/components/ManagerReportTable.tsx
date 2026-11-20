@@ -31,16 +31,16 @@ export default function ManagerReportTable({
       <div className="flex flex-col gap-2 border-b border-border-default p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-base font-semibold text-text-primary">
-            Chi tiết hiệu suất Monitor
+            Chi tiết hiệu suất giám khảo
           </h2>
 
           <p className="mt-1 text-xs text-text-muted">
-            Thống kê khối lượng công việc và tiến độ của từng Monitor.
+            Thống kê khối lượng công việc và tiến độ của từng giám khảo.
           </p>
         </div>
 
         <span className="text-xs text-text-muted">
-          {totalCount} Monitor
+          {totalCount} Giám khảo
         </span>
       </div>
 
@@ -65,7 +65,7 @@ export default function ManagerReportTable({
           <table className="w-full min-w-[1050px] text-left">
             <thead className="bg-bg-muted/60">
               <tr className="text-xs font-medium text-text-secondary">
-                <th className="px-5 py-3">Monitor</th>
+                <th className="px-5 py-3">Giám khảo</th>
 
                 <th className="px-4 py-3 text-center">
                   Tổng bài

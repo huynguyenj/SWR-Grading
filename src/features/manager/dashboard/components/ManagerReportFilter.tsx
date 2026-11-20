@@ -41,7 +41,7 @@ export default function ManagerReportFilter({
             htmlFor="monitor-search"
             className="mb-2 block text-sm font-medium text-text-primary"
           >
-            Tìm kiếm Monitor
+            Tìm kiếm giám khảo
           </label>
 
           <div className="relative">

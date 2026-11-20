@@ -76,14 +76,14 @@ export default function ManagerReportOverview({
   return (
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       <KpiCard
-        label="Tổng Monitor"
+        label="Tổng giám khảo"
         value={totalMonitors}
         icon={<FiUsers className="h-[18px] w-[18px]" />}
         iconClassName="bg-brand-orange/10 text-brand-orange"
       />
 
       <KpiCard
-        label="Tổng assignment"
+        label="Tổng công việc"
         value={totalAssignments}
         icon={<FiFileText className="h-[18px] w-[18px]" />}
         iconClassName="bg-brand-wine/10 text-brand-wine"
