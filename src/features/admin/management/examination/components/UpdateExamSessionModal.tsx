@@ -207,7 +207,7 @@ export default function UpdateExamSessionModal({
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>
-            {loading ? 'Đang cập nhật...' : 'Cập nhật đợt thi'}
+            {loading ? 'Đang cập nhật...' : 'Cập nhật kì thi'}
           </Button>
         </div>
       </form>

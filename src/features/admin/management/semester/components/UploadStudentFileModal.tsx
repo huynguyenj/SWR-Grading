@@ -161,7 +161,7 @@ export default function UploadStudentFileModal({
             type="submit"
             disabled={loading || !semester?.semesterId}
           >
-            {loading ? 'Đang import...' : 'Import sinh viên'}
+            {loading ? 'Đang upload...' : 'Upload file sinh viên - giảng viên'}
           </Button>
         </div>
       </form>

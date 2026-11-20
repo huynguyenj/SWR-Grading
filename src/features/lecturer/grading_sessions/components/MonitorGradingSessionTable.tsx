@@ -25,10 +25,7 @@ export default function MonitorGradingSessionTable({
                             <th className="px-4 py-3 font-semibold">Tên phiên chấm</th>
                             <th className="px-4 py-3 font-semibold">Hạn chấm</th>
                             <th className="px-4 py-3 text-center font-semibold">
-                                Tổng bài nộp
-                            </th>
-                            <th className="px-4 py-3 text-center font-semibold">
-                                Đã phân công
+                                Tổng số bài phân công
                             </th>
                             <th className="px-4 py-3 font-semibold">Ngày tạo</th>
                             <th className="px-4 py-3 text-center font-semibold">
@@ -74,16 +71,9 @@ export default function MonitorGradingSessionTable({
                                         {formatDate(session.deadline)}
                                     </td>
 
-                                    <td className="px-4 py-3 text-center text-text-primary">
-                                        {session.numberSubmissions}
-                                    </td>
-
                                     <td className="px-4 py-3 text-center">
                                         <span className="font-medium text-text-primary">
                                             {session.assignedCount}
-                                        </span>
-                                        <span className="text-text-muted">
-                                            {' '}/ {session.numberSubmissions}
                                         </span>
                                     </td>
 

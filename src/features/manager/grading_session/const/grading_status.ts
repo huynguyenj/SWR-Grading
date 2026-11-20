@@ -1,9 +1,9 @@
  export const getStatusLabel = (status: number): string => {
         switch (status) {
             case 0:
-                return "Pending"
+                return "DRAFT"
             case 1:
-                return "Completed"
+                return "OFFICIAL"
             case 2:
                 return "Failed"
             default:

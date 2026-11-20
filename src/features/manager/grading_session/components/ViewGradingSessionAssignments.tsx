@@ -147,7 +147,7 @@ export default function ViewGradingSessionAssignments({
 
             <InfoItem
               icon={<FiFileText size={18} />}
-              label="Paper Set"
+              label="Đề thi"
               value={paperSet?.paperSetCode ?? '—'}
             />
           </div>

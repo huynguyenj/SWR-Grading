@@ -176,7 +176,7 @@ export default function MonitorGradingHistoryCard({
                     <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
                         <div>
                             <p className="text-xs text-text-secondary">
-                                Total Score
+                                Tổng điểm
                             </p>
                             <p className="text-xl font-bold text-text-primary">
                                 {history.totalScore}
@@ -237,14 +237,14 @@ export default function MonitorGradingHistoryCard({
                                 size={15}
                             />
                             <h4 className="text-sm font-semibold text-text-primary">
-                                General Feedback
+                                Nhận xét chung
                             </h4>
                         </div>
 
                         <div className="rounded-lg bg-bg-muted p-3">
                             <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">
                                 {history.generalFeedback?.trim() ||
-                                    "No general feedback."}
+                                    "Không có nhận xét."}
                             </p>
                         </div>
                     </section>
@@ -252,7 +252,7 @@ export default function MonitorGradingHistoryCard({
                     {/* Question details */}
                     <section className="space-y-3">
                         <h4 className="text-sm font-semibold text-text-primary">
-                            Question Details ({history.details.length})
+                            Chi tiết câu hỏi ({history.details.length})
                         </h4>
 
                         {history.details.length === 0 ? (

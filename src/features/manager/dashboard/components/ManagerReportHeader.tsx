@@ -13,12 +13,12 @@ export default function ManagerReportHeader({
     <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
       <div>
         <h1 className="text-xl font-semibold text-text-primary">
-          Báo cáo hiệu suất Monitor
+          Báo cáo hiệu suất giám khảo
         </h1>
 
         <p className="mt-1 max-w-2xl text-sm text-text-secondary">
           Theo dõi khối lượng công việc, tiến độ chấm điểm và
-          hiệu suất hoàn thành assignment của từng Monitor.
+          hiệu suất hoàn thành công việc của từng giám khảo.
         </p>
       </div>
 
