@@ -14,6 +14,7 @@ import { formatDate } from '@/utils/format'
 import type { StudentSubmission } from '../types/student_submission'
 import { SubmissionStatusBadge } from './SubmissionStatusBadge'
 import Loading_Circle from '@/components/ui/loading_circle'
+import { getSubmissionFileName } from '../utils/file_extracted'
 
 interface StudentSubmissionTableProps {
     submissions?: StudentSubmission[]
@@ -38,11 +39,11 @@ export default function StudentSubmissionTable({
                 </div>
 
                 <h3 className="font-semibold text-text-primary">
-                    No submissions found
+                   Không có bài nộp nào
                 </h3>
 
                 <p className="mt-1 text-sm text-text-secondary">
-                    You have not submitted any examination files yet.
+                    Bạn chưa nộp bất kỳ bài nào
                 </p>
             </div>
         )
@@ -110,7 +111,7 @@ export default function StudentSubmissionTable({
                                             className="truncate text-sm font-medium text-text-primary"
                                             title={submission.submissionFile}
                                         >
-                                            {submission.submissionFile}
+                                            {getSubmissionFileName(submission.submissionFile)}
                                         </p>
 
                                         <p

@@ -6,6 +6,7 @@ import { FiClock, FiEdit2, FiX, FiSave } from "react-icons/fi"
 import Button from "@/components/ui/button"
 import Input from "@/components/ui/input"
 import TextArea from "@/components/ui/textarea"
+import { getStatusClass, getStatusLabel } from "../const/grading_status"
 
 interface HistoryCardProps {
     history: GradingHistoryType
@@ -137,6 +138,16 @@ export function HistoryGradingCard({
                         <FiClock size={13} />
                         {formatDate(history.createdAt)}
                     </p>
+                    <div className="flex gap-1 mt-2 items-center">
+                        <span className="rounded-md bg-bg-muted px-2.5 py-1 text-xs font-medium text-text-secondary">
+                                Lần {history.gradingRound}
+                        </span>
+                        <span
+                            className={`rounded-md px-2.5 py-1 text-xs font-semibold ${getStatusClass(history.status)}`}
+                        >
+                            {getStatusLabel(history.status)}
+                        </span>
+                    </div>
                 </div>
 
                 <div className="shrink-0 rounded-lg bg-brand-orange/10 px-3 py-2 text-center">

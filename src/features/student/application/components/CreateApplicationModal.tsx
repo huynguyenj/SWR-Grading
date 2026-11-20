@@ -10,6 +10,7 @@ import type { StudentSubmission } from
 
 import useCreateApplication from
     '../hooks/useCreateApplication'
+import { getSubmissionFileName } from '../../student_submission/utils/file_extracted'
 
 interface CreateApplicationModalProps {
     open: boolean
@@ -87,7 +88,7 @@ function CreateApplicationModalContent({
         <Modal
             open={open}
             onClose={handleClose}
-            title="Create Application"
+            title="Tạo đơn phúc khảo"
             maxWidth="xl"
         >
             <form
@@ -109,10 +110,10 @@ function CreateApplicationModalContent({
                     <div className="space-y-2">
                         <div>
                             <p className="text-xs text-text-muted">
-                                Submission File
+                               File
                             </p>
                             <p className="mt-1 break-all text-sm font-medium text-text-primary">
-                                {submission.submissionFile}
+                                {getSubmissionFileName(submission.submissionFile)}
                             </p>
                         </div>
 

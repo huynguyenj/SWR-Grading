@@ -1,16 +1,14 @@
 
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { FiFileText, FiCpu, FiEdit2, FiCheck, FiX } from 'react-icons/fi'
+import { FiFileText, FiCpu } from 'react-icons/fi'
 import { FaEye } from 'react-icons/fa'
 import Modal from '@/components/ui/modal'
 import Button from '@/components/ui/button'
 import { formatDate } from '@/utils/format'
 import type { GradingSessionType, MonitorAssignmentType } from '../types/grading_session_monitor'
 import useMonitorAiGrade from '../hooks/useMonitorAiGrade'
-import { ASSIGNMENT_STATUS_OPTIONS, getAssignmentStatus, getAssignmentStatusClass } from '../const/assignment_status'
-import type { AssignmentStatus } from '@/features/manager/grading_session/hooks/useMonitorUpdateAssignment'
-import useMonitorUpdateAssignment from '@/features/manager/grading_session/hooks/useMonitorUpdateAssignment'
+import { getAssignmentStatus, getAssignmentStatusClass } from '../const/assignment_status'
 
 interface MonitorGradingAssignmentsModalProps {
     session: GradingSessionType | null
@@ -25,17 +23,14 @@ export default function MonitorGradingAssignmentsModal({
 }: MonitorGradingAssignmentsModalProps) {
     const navigate = useNavigate()
     const { handleAIGrade, loading: aiGrading } = useMonitorAiGrade()
-    const { updateAssignmentStatus, isUpdating } = useMonitorUpdateAssignment()
     const [assignments, setAssignments] = useState<MonitorAssignmentType[]>([])
     const [editingAssignmentId, setEditingAssignmentId] = useState<string | null>(null)
-    const [editingStatus, setEditingStatus] = useState<AssignmentStatus | null>(null)
 
     // Sync assignments when session changes
     useEffect(() => {
         const initialLoad = () => {
             setAssignments(session?.assignments ?? [])
             setEditingAssignmentId(null)
-            setEditingStatus(null)
         }
         initialLoad()
     }, [session])
@@ -45,59 +40,6 @@ export default function MonitorGradingAssignmentsModal({
         navigate(`/monitor/grading/submissions/${submissionId}`)
     }
 
-    // Start editing
-    const handleStartEdit = (assignment: MonitorAssignmentType) => {
-        setEditingAssignmentId(assignment.assignmentId)
-        setEditingStatus(assignment.status as AssignmentStatus)
-    }
-
-    // Cancel editing
-    const handleCancelEdit = () => {
-        setEditingAssignmentId(null)
-        setEditingStatus(null)
-    }
-
-    // Save status
-    const handleSaveStatus = async () => {
-        if (!session || !editingAssignmentId || editingStatus === null) {
-            return
-        }
-
-        const currentAssignment = assignments.find(
-            (item) => item.assignmentId === editingAssignmentId
-        )
-
-        if (!currentAssignment) return
-
-        // Skip API if status has not changed
-        if (currentAssignment.status === editingStatus) {
-            handleCancelEdit()
-            return
-        }
-
-        const success = await updateAssignmentStatus({
-            gradingSessionId: session.gradingSessionId,
-            assignmentId: editingAssignmentId,
-            status: editingStatus
-        })
-
-        if (!success) return
-
-        setAssignments((prev) =>
-            prev.map((assignment) =>
-                assignment.assignmentId === editingAssignmentId
-                    ? {
-                        ...assignment,
-                        status: editingStatus
-                    }
-                    : assignment
-            )
-        )
-
-        setEditingAssignmentId(null)
-        setEditingStatus(null)
-    }
-
     if (!session) return null
 
     return (
@@ -105,7 +47,7 @@ export default function MonitorGradingAssignmentsModal({
             open={isOpen}
             onClose={onClose}
             title="Chi tiết bài được phân công"
-            maxWidth="xl"
+            maxWidth="full"
         >
             <div className="space-y-5 px-5 py-4">
 
@@ -192,7 +134,6 @@ export default function MonitorGradingAssignmentsModal({
                                         </tr>
                                     ) : (
                                         assignments.map((assignment, index) => {
-                                        const isEditing = editingAssignmentId === assignment.assignmentId
                                             return (
                                                 <tr
                                                     key={assignment.assignmentId}
@@ -205,7 +146,7 @@ export default function MonitorGradingAssignmentsModal({
 
                                                     {/* Status */}
                                                     <td className="px-4 py-3">
-                                                        {isEditing ? (
+                                                        {/* {isEditing ? (
                                                             <select
                                                                 value={
                                                                     editingStatus ?? assignment.status
@@ -236,7 +177,12 @@ export default function MonitorGradingAssignmentsModal({
                                                             >
                                                                 {getAssignmentStatus(assignment.status)}
                                                             </span>
-                                                        )}
+                                                        )} */}
+                                                            <span
+                                                                className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${getAssignmentStatusClass(assignment.status)}`}
+                                                            >
+                                                                {getAssignmentStatus(assignment.status)}
+                                                            </span>
                                                     </td>
 
                                                     {/* Assigned date */}
@@ -252,50 +198,9 @@ export default function MonitorGradingAssignmentsModal({
                                                     {/* Actions */}
                                                     <td className="px-4 py-3">
                                                         <div className="flex items-center justify-center gap-2">
+                                                            
 
-                                                            {isEditing ? (
-                                                                <>
-                                                                    {/* Save */}
-                                                                    <Button
-                                                                        variant="success"
-                                                                        size="basic"
-                                                                        title="Lưu trạng thái"
-                                                                        aria-label="Lưu trạng thái"
-                                                                        disabled={isUpdating}
-                                                                        onClick={handleSaveStatus}
-                                                                    >
-                                                                        <FiCheck className="h-4 w-4" />
-                                                                    </Button>
-
-                                                                    {/* Cancel */}
-                                                                    <Button
-                                                                        variant="basic"
-                                                                        size="basic"
-                                                                        title="Hủy chỉnh sửa"
-                                                                        aria-label="Hủy chỉnh sửa"
-                                                                        disabled={isUpdating}
-                                                                        onClick={handleCancelEdit}
-                                                                    >
-                                                                        <FiX className="h-4 w-4" />
-                                                                    </Button>
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    {/* Edit status */}
-                                                                    <Button
-                                                                        variant="brand"
-                                                                        size="basic"
-                                                                        title="Chỉnh sửa trạng thái"
-                                                                        aria-label={`Chỉnh sửa trạng thái bài ${index + 1}`}
-                                                                        disabled={editingAssignmentId !== null}
-                                                                        onClick={() =>
-                                                                            handleStartEdit(assignment)
-                                                                        }
-                                                                    >
-                                                                        <FiEdit2 className="h-4 w-4" />
-                                                                    </Button>
-
-                                                                    {/* AI Grading */}
+                                                            {/* AI Grading */}
                                                                     <Button
                                                                         variant="brand"
                                                                         size="basic"
@@ -328,8 +233,6 @@ export default function MonitorGradingAssignmentsModal({
                                                                     >
                                                                         <FaEye className="h-4 w-4" />
                                                                     </Button>
-                                                                </>
-                                                            )}
                                                         </div>
                                                     </td>
                                                 </tr>

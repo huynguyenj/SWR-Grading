@@ -4,7 +4,6 @@ import {
     FiClock,
     FiFileText,
     FiLayers,
-    FiUsers,
 } from 'react-icons/fi'
 
 import { SESSION_STATUS_CLASS, SESSION_STATUS_LABEL, type ExaminationSessionType } from '@/features/examiner/management/examination/types/exam_session'
@@ -67,9 +66,9 @@ export default function StudentExamSessionTable({
                             Ngày kết thúc
                         </th>
 
-                        <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                        {/* <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-text-secondary">
                             Bài làm
-                        </th>
+                        </th> */}
 
                         <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-text-secondary">
                             Trạng thái
@@ -171,7 +170,7 @@ export default function StudentExamSessionTable({
                             </td>
 
                             {/* Total Submission */}
-                            <td className="px-4 py-3 text-center">
+                            {/* <td className="px-4 py-3 text-center">
                                 <div className="inline-flex items-center gap-2 rounded-lg bg-bg-muted px-3 py-1.5">
                                     <FiUsers size={15} className="text-text-secondary" />
 
@@ -179,7 +178,7 @@ export default function StudentExamSessionTable({
                                         {session.totalSubmission}
                                     </span>
                                 </div>
-                            </td>
+                            </td> */}
 
                             {/* Status */}
                             <td className="px-4 py-3">
