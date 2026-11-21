@@ -6,4 +6,5 @@ export interface GradingSessionType {
       updatedDate: string
       deadline: string
       numberSubmissions: number
+      type: 0 | 1
 }

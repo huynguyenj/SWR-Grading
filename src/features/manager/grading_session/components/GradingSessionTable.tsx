@@ -10,6 +10,7 @@ import { formatDate } from '@/utils/format'
 import Button from '@/components/ui/button'
 import { FaEye, FaTasks } from 'react-icons/fa'
 import Loading_Circle from '@/components/ui/loading_circle'
+import { gradingSessionType } from '../const/grading_session_type'
 
 interface GradingSessionTableProps {
   sessions?: GradingSessionType[]
@@ -60,9 +61,9 @@ export default function GradingSessionTable({
               Phiên chấm
             </th>
 
-            {/* <th className="px-4 py-3 font-medium text-text-secondary">
-              Đợt thi
-            </th> */}
+             <th className="px-4 py-3 font-medium text-text-secondary">
+              Loại phiên
+            </th> 
 
             <th className="px-4 py-3 font-medium text-text-secondary">
               Hạn chấm
@@ -105,17 +106,17 @@ export default function GradingSessionTable({
               </td>
 
               {/* Examination session */}
-              {/* <td className="px-4 py-3">
+              <td className="px-4 py-3">
                 <div className="flex items-start gap-2">
                   <FiFileText className="mt-0.5 h-4 w-4 shrink-0 text-text-muted" />
 
                   <div>
                     <p className="font-medium text-text-primary">
-                      Đợt thi
+                      {gradingSessionType[session.type]}
                     </p>
                   </div>
                 </div>
-              </td> */}
+              </td>
 
               {/* Deadline */}
               <td className="px-4 py-3">
