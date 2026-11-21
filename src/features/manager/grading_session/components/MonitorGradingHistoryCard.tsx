@@ -159,7 +159,7 @@ export default function MonitorGradingHistoryCard({
                 <div className="min-w-0 flex-1 space-y-3">
                     <div className="flex flex-wrap items-center gap-2">
                         <span className="rounded-md bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-700">
-                            Bài chấm giảng viên
+                            Bài chấm giảng viên: {history.graderName}
                         </span>
 
                         <span className="rounded-md bg-bg-muted px-2.5 py-1 text-xs font-medium text-text-secondary">

@@ -161,6 +161,12 @@ export const router = createBrowserRouter([
                         lazy: {
                               Component: async() => (await import('@/pages/manager/ManagerReportPage')).default
                         }
+                  },
+                  {
+                        path: '/manager/submissions',
+                        lazy: {
+                              Component: async() => (await import('@/pages/manager/ManagerSubmissionResultPage')).default
+                        }
                   }
             ]
       },

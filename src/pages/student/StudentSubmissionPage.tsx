@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 
 import Button from '@/components/ui/button'
@@ -17,15 +16,12 @@ export default function StudentSubmissionPage() {
         refresh,
     } = useGetStudentSubmission()
 
-    // Selected submission for creating application
     const [selectedSubmission, setSelectedSubmission] =
         useState<StudentSubmission | null>(null)
 
-    // Application modal state
     const [isApplicationModalOpen, setIsApplicationModalOpen] =
         useState(false)
 
-    // Open application modal
     const handleCreateApplication = (
         submission: StudentSubmission,
     ) => {
@@ -33,7 +29,6 @@ export default function StudentSubmissionPage() {
         setIsApplicationModalOpen(true)
     }
 
-    // Close application modal
     const handleCloseApplicationModal = () => {
         setIsApplicationModalOpen(false)
         setSelectedSubmission(null)
@@ -62,14 +57,14 @@ export default function StudentSubmissionPage() {
                 </Button>
             </div>
 
-            {/* Submission Table */}
+            {/* Submission table */}
             <StudentSubmissionTable
                 submissions={studentSubmissionList}
                 loading={loading}
                 onCreateApplication={handleCreateApplication}
             />
 
-            {/* Create Application Modal */}
+            {/* Create regrade application modal */}
             {selectedSubmission && (
                 <CreateApplicationModal
                     open={isApplicationModalOpen}

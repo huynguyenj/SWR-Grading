@@ -35,6 +35,7 @@ export interface GradingHistoryType {
     generalFeedback: string
     status: number
     createdAt: string
+    graderName: string
     details: GradingHistoryDetailType[]
 }
 

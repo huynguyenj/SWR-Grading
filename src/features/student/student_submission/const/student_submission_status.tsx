@@ -5,19 +5,24 @@ export const submissionStatusConfig: Record<
     { label: string; className: string }
 > = {
     0: {
-        label: 'Submitted',
+        label: 'Đã nộp',
         className: 'bg-warning/10 text-warning',
     },
-    1: {
-        label: 'AI Graded',
+    1:{
+    
+        label: 'Đang chấm',
         className: 'bg-brand-orange/10 text-brand-orange',
     },
     2: {
-        label: 'Lecturer Reviewed',
-        className: 'bg-brand-wine/10 text-brand-wine',
+        label: 'AI chấm',
+        className: 'bg-brand-orange/10 text-brand-orange',
     },
     3: {
-        label: 'Final',
+        label: 'Giảng viên đã xem',
+        className: 'bg-brand-wine/10 text-brand-wine',
+    },
+    4: {
+        label: 'Bảng cuối',
         className: 'bg-success/10 text-success',
     },
 }
