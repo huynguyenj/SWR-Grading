@@ -1,7 +1,7 @@
-import { FiCalendar, FiClock, FiEye, FiUploadCloud } from 'react-icons/fi'
+import { FiCalendar, FiEye, FiUploadCloud } from 'react-icons/fi'
 import { formatDate } from '@/utils/format'
 import useGetExaminationList from '@/features/admin/management/examination/hooks/useGetExaminationList'
-import { EXAMINATION_KIND_LABEL, toShortTime, type ExaminationType } from '@/features/admin/management/examination/types/examination.type'
+import { EXAMINATION_KIND_LABEL, type ExaminationType } from '@/features/admin/management/examination/types/examination.type'
 import ExamSessionStatusBadge from '@/features/admin/management/examination/components/ExaminationBadge'
 import Pagination from '@/components/ui/pagination'
 import { useState } from 'react'
@@ -77,11 +77,11 @@ export default function ExaminationTableMonitor({ onOpenUpload }: ExaminationTab
                         <FiCalendar className="w-3.5 h-3.5 text-text-muted" />
                         {formatDate(session.startDate)}
                   </div>
-                  <div className="mt-0.5 flex items-center gap-1.5 text-xs text-text-muted">
+                  {/* <div className="mt-0.5 flex items-center gap-1.5 text-xs text-text-muted">
                         <FiClock className="w-3.5 h-3.5" />
                         {toShortTime(session.startTime)} · {session.durationMinutes} phút · mở trước{' '}
                         {session.beforeTimeMinutes} phút
-                  </div>
+                  </div> */}
                   </td>
                   <td className="px-4 py-3">
                   <ExamSessionStatusBadge status={session.status} />
