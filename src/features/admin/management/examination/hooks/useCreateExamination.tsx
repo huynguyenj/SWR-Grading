@@ -9,17 +9,11 @@ const examinationSchema = z.object({
 
   startDate: z.string().min(1, 'Ngày bắt đầu không được để trống'),
 
-  startTime: z.string().min(1, 'Thời gian bắt đầu không được để trống'),
-
-  durationMinutes: z.coerce.number().min(1, 'Thời lượng bài thi phải lớn hơn 0'),
-
-  beforeTimeMinutes: z.coerce.number().min(0, 'Thời gian trước giờ thi không được nhỏ hơn 0'),
-
   note: z.string().optional(),
 
   semesterId: z.string().min(1, 'Vui lòng chọn học kỳ'),
 
-  paperSetId: z.string().min(1, 'Vui lòng chọn bộ đề'),
+  paperSetIds: z.array(z.string()).default([]).nullable(),
 
   examinationType: z.number().default(0)
 })
@@ -42,12 +36,8 @@ export default function useCreateExamination({ onRefresh }: { onRefresh: () => v
     defaultValues: {
       name: '',
       startDate: '',
-      startTime: '',
-      durationMinutes: 90,
-      beforeTimeMinutes: 15,
       note: '',
       semesterId: '',
-      paperSetId: '',
     },
   })
 
@@ -56,13 +46,10 @@ export default function useCreateExamination({ onRefresh }: { onRefresh: () => v
       name: createExaminationForm.name,
       examinationType: Number(createExaminationForm.examinationType),
       startDate: createExaminationForm.startDate,
-      startTime: `${createExaminationForm.startTime}:00`,
-      durationMinutes: createExaminationForm.durationMinutes,
-      beforeTimeMinutes: createExaminationForm.beforeTimeMinutes,
       note: createExaminationForm.note ?? '',
       status: 0,
       semesterId: createExaminationForm.semesterId,
-      paperSetId: createExaminationForm.paperSetId,
+      paperSetId: [],
     }
     console.log(body);
     

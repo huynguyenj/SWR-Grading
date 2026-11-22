@@ -44,7 +44,7 @@ export default function UpdateSemesterModal({
 
   if (!open) return null
   return (
-    <Modal open={open} onClose={onClose} title="Tạo học kỳ mới">
+    <Modal open={open} onClose={onClose} title="Cập nhật học kỳ">
       <form onSubmit={handleSubmit(onSubmit)} className="px-5 py-4 space-y-4">
         <div>
           <label className="block text-sm font-medium text-text-primary mb-1.5">

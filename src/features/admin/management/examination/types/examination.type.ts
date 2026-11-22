@@ -1,3 +1,5 @@
+import type { PaperSetType } from "@/features/lecturer/examination_materials/types/exam_material.type"
+
 /** Exam Status từ BE: Draft=0, Ongoing=1, Closed=2, Completed=3, Cancelled=4 */
 export type ExaminationStatus = 0 | 1 | 2 | 3 | 4
 
@@ -31,11 +33,11 @@ export const EXAMINATION_KIND_OPTIONS: { value: ExaminationKind; label: string }
 
 export interface ExaminationType {
   examinationId: string
-  /** BE tự sinh từ SemesterCode + loại exam (VD: SWR302_FA26_PE_658287) — không nhập tay */
   examinationCode: string
   name: string
   examinationType: ExaminationKind
   startDate: string // "YYYY-MM-DD"
+  endDate: string
   startTime: string // "HH:mm:ss"
   durationMinutes: number
   beforeTimeMinutes: number
@@ -43,6 +45,10 @@ export interface ExaminationType {
   status: ExaminationStatus
   semesterId: string
   paperSetId: string
+}
+
+export interface ExaminationDetailType extends ExaminationType {
+  paperSets: PaperSetType[]
 }
 
 /** "08:00:00" -> "08:00" */

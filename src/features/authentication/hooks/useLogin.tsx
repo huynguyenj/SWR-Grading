@@ -34,14 +34,12 @@ export default function useLogin() {
       toast.success('Đăng nhập thành công')
       authStore.setAccessToken(data.data.accessToken)
       authStore.setAuthInfo(data.data.accessToken, data.data.user.id, data.data.user.role, data.data.user.fullName, data.data.user.staffCode)
-      if (data.data.user.role == 'Admin') navigate('/admin')
-      if (data.data.user.role == 'monitor') navigate('/monitor')
       switch (data.data.user.role.toLowerCase()) {
         case 'admin':
-          navigate('/admin')
+          navigate('/admin/users')
           break;
         case 'monitor':
-          navigate('/monitor')
+          navigate('/monitor/examination')
           break;
         case 'manager':
           navigate('/manager')
@@ -50,7 +48,7 @@ export default function useLogin() {
           navigate('/student')
           break;
         case 'examiner': 
-          navigate('examiner')
+          navigate('/examiner/semester')
           break;
         default:
           navigate('/')

@@ -56,7 +56,7 @@ export default function SemesterSelect({
   }
 
   return (
-    <div ref={wrapperRef} className="relative w-full sm:w-64">
+    <div ref={wrapperRef} className="relative w-full sm:w-72">
       <label className="mb-2 block text-sm font-medium text-text-primary">
         Học kỳ
       </label>
@@ -68,7 +68,7 @@ export default function SemesterSelect({
         onClick={() => setIsOpen((previous) => !previous)}
         className={[
           'flex w-full items-center justify-between gap-3 rounded-lg border',
-          'border-border-primary bg-bg-primary px-3 py-2.5 text-sm',
+          'border-border-default bg-bg-primary px-3 py-2.5 text-sm',
           'text-text-primary transition-colors',
           'hover:border-brand-orange focus:outline-none focus:ring-2',
           'focus:ring-brand-orange/30',
@@ -111,7 +111,7 @@ function SemesterDropdown({ onSelect }: SemesterDropdownProps) {
       aria-label="Danh sách học kỳ"
       className={[
         'absolute left-0 right-0 top-full z-50 mt-2',
-        'overflow-hidden rounded-lg border border-border-primary',
+        'overflow-hidden rounded-lg border border-border-default',
         'bg-bg-primary shadow-lg',
       ].join(' ')}
     >
