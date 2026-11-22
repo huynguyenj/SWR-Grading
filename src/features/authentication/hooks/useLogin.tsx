@@ -39,7 +39,7 @@ export default function useLogin() {
           navigate('/admin/users')
           break;
         case 'monitor':
-          navigate('/monitor')
+          navigate('/monitor/examination')
           break;
         case 'manager':
           navigate('/manager')
