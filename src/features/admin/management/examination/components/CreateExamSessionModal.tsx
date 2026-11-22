@@ -48,7 +48,7 @@ export default function CreateExamSessionModal({
 
           <div>
             <label className="block text-sm font-medium text-text-primary mb-1.5">
-              Tên đợt thi
+              Tên kì thi
             </label>
             <Input
               size="basic"

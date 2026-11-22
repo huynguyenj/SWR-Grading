@@ -63,12 +63,12 @@ export const router = createBrowserRouter([
             loader: protectedRole(ROLE.monitor),
             children: [
                   {
-                        index: true,
                         lazy: {
                               Component: async() => (await import('@/pages/monitor/MonitorMainPage')).default
                         }
                   },
-                                    {
+                  {
+                        index: true,
                         path: '/monitor/examination',
                         lazy: {
                               Component: async() => (await import('@/pages/monitor/ExaminationMaterialManagementPage')).default
@@ -160,6 +160,12 @@ export const router = createBrowserRouter([
                         path: '/manager/report',
                         lazy: {
                               Component: async() => (await import('@/pages/manager/ManagerReportPage')).default
+                        }
+                  },
+                  {
+                        path: '/manager/submissions',
+                        lazy: {
+                              Component: async() => (await import('@/pages/manager/ManagerSubmissionResultPage')).default
                         }
                   }
             ]

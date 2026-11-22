@@ -12,7 +12,7 @@ export default function useGetStudentSemesterFile() {
       const url = window.URL.createObjectURL(response)
       const link = document.createElement("a")
       link.href = url // gán link tạm thời dựa trên URL của web: http://localhost/... => <a href="http://localhost:5173/abc-123">
-      link.download = 'Student_template' // gán TEST.zip vào download="TEST.zip" của thẻ a => <a download="TEST.zip">
+      link.download = 'Student_monitor_template' // gán TEST.zip vào download="TEST.zip" của thẻ a => <a download="TEST.zip">
       document.body.appendChild(link) // cho thẻ vào DOM
       link.click() // khi có thẻ a thì dùng .click() để JS tự tải thay vì đưa user nhấn
       link.remove() // xóa thẻ a ra khỏi DOM
