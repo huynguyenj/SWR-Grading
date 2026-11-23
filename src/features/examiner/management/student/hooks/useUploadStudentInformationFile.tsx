@@ -59,11 +59,11 @@ export default function useUploadStudentInformationFile({
     })
 
     if (response.error) {
-      toast.error(response.error.message || 'Import sinh viên thất bại')
+      toast.error(response.error.message || 'Upload sinh viên thất bại')
       return false
     }
 
-    toast.success('Import danh sách sinh viên thành công')
+    toast.success('Upload danh sách sinh viên thành công')
     onRefresh?.()
     reset()
 

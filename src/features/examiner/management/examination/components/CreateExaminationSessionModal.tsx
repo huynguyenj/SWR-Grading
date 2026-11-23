@@ -174,7 +174,7 @@ const paperSets = examinationDetail?.paperSets ?? []
         {/* File upload */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-text-primary">
-            File sinh viên <span className="text-danger">*</span>
+            File sinh viên tham gia đợt thi <span className="text-danger">*</span>
           </label>
 
           <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border-default bg-bg-muted/30 px-4 py-6 transition-colors hover:border-brand-orange">
@@ -198,7 +198,7 @@ const paperSets = examinationDetail?.paperSets ?? []
                 </span>
 
                 <span className="mt-1 text-xs text-text-muted">
-                  Chọn file theo định dạng backend hỗ trợ
+                  Chọn file theo định dạng được hỗ trợ
                 </span>
               </>
             )}

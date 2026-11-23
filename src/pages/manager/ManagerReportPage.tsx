@@ -17,7 +17,6 @@ export default function ManagerReportPage() {
 
   const [semesterId, setSemesterId] = useState('all')
   const [examinationId, setExaminationId] = useState('')
-  const [search, setSearch] = useState('')
 
   // ============================================================
   // 2. API
@@ -31,10 +30,11 @@ export default function ManagerReportPage() {
     setCurrentPage,
     setPageSize,
     refresh,
+    search,
+    setSearch
   } = useGetManagerMonitorPerformance({
     semesterId: semesterId === 'all' ? null : semesterId,
     examinationId: examinationId || null,
-    search,
   })
 
   const pagedMonitors = monitorPerformance?.pagedMonitors
