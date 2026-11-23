@@ -1,15 +1,14 @@
-
 import type { GradingHistoryType } from "@/features/lecturer/grading_sessions/types/grading_submisison_type"
-
 import { useState } from "react"
 import { toast } from "react-toastify"
-import { FiChevronDown, FiChevronUp, FiClock, FiMessageSquare, FiEdit2, FiSave, FiX} from "react-icons/fi"
+import { FiChevronDown, FiChevronUp, FiClock, FiMessageSquare, FiEdit2, FiSave, FiX } from "react-icons/fi"
 import Button from "@/components/ui/button"
 import Input from "@/components/ui/input"
 import TextArea from "@/components/ui/textarea"
 import useUpdateGradingDetail from "../../../lecturer/grading_sessions/hooks/useUpdateGradingDetail"
 import { formatDate } from "@/utils/format"
 import { getStatusClass, getStatusLabel } from "../const/grading_status"
+import { useAuthStore } from "@/features/authentication/store/auth-store"
 
 interface MonitorGradingHistoryCardProps {
     history: GradingHistoryType
@@ -37,9 +36,20 @@ export default function MonitorGradingHistoryCard({
 
     const { updateGradingDetail } = useUpdateGradingDetail()
 
+    // Current logged-in user
+    const userName = useAuthStore((state) => state.userName)
+
+    // Only the grader who owns this history can edit it
+    const canEditHistory =
+        !!userName &&
+        !!history.graderName &&
+        userName.trim().toLowerCase() ===
+            history.graderName.trim().toLowerCase()
 
     // Enable edit mode for all details
     const handleEdit = () => {
+        if (!canEditHistory) return
+
         const initialDetails: Record<string, EditGradingDetailType> = {}
 
         history.details.forEach((detail) => {
@@ -92,6 +102,12 @@ export default function MonitorGradingHistoryCard({
 
     // Save one grading detail
     const handleSaveDetail = async (detailId: string) => {
+        // Prevent editing another grader's history
+        if (!canEditHistory) {
+            toast.error("You are not allowed to edit this grading history")
+            return
+        }
+
         const detail = history.details.find(
             (item) => item.detailId === detailId,
         )
@@ -151,46 +167,60 @@ export default function MonitorGradingHistoryCard({
     return (
         <div className="overflow-hidden rounded-xl border border-border-default bg-bg-primary">
             {/* Header */}
-            <button
-                type="button"
-                onClick={() => setExpanded((previous) => !previous)}
-                className="flex w-full items-start justify-between gap-3 p-4 text-left transition-colors hover:bg-bg-muted/50"
-            >
-                <div className="min-w-0 flex-1 space-y-3">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-md bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-700">
-                            Bài chấm giảng viên: {history.graderName}
-                        </span>
+            <div className="flex items-start justify-between gap-3 p-4">
+                {/* Toggle expand/collapse */}
+                <button
+                    type="button"
+                    onClick={() => setExpanded((previous) => !previous)}
+                    className="flex min-w-0 flex-1 items-start justify-between gap-3 text-left transition-colors hover:bg-bg-muted/50"
+                >
+                    <div className="min-w-0 flex-1 space-y-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="rounded-md bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-700">
+                                Bài chấm giảng viên: {history.graderName}
+                            </span>
 
-                        <span className="rounded-md bg-bg-muted px-2.5 py-1 text-xs font-medium text-text-secondary">
-                            Lần {history.gradingRound}
-                        </span>
+                            <span className="rounded-md bg-bg-muted px-2.5 py-1 text-xs font-medium text-text-secondary">
+                                Lần {history.gradingRound}
+                            </span>
 
-                        <span
-                            className={`rounded-md px-2.5 py-1 text-xs font-semibold ${getStatusClass(history.status)}`}
-                        >
-                            {getStatusLabel(history.status)}
-                        </span>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-                        <div>
-                            <p className="text-xs text-text-secondary">
-                                Tổng điểm
-                            </p>
-                            <p className="text-xl font-bold text-text-primary">
-                                {history.totalScore}
-                            </p>
+                            <span
+                                className={`rounded-md px-2.5 py-1 text-xs font-semibold ${getStatusClass(history.status)}`}
+                            >
+                                {getStatusLabel(history.status)}
+                            </span>
                         </div>
 
-                        <div className="flex items-center gap-1.5 text-xs text-text-secondary">
-                            <FiClock size={14} />
-                            <span>{formatDate(history.createdAt)}</span>
+                        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                            <div>
+                                <p className="text-xs text-text-secondary">
+                                    Tổng điểm
+                                </p>
+
+                                <p className="text-xl font-bold text-text-primary">
+                                    {history.totalScore}
+                                </p>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 text-xs text-text-secondary">
+                                <FiClock size={14} />
+                                <span>{formatDate(history.createdAt)}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                        {/* Edit actions */}
-                    <div className="flex justify-end pt-4">
+
+                    <div className="shrink-0 pt-1 text-text-secondary">
+                        {expanded ? (
+                            <FiChevronUp size={20} />
+                        ) : (
+                            <FiChevronDown size={20} />
+                        )}
+                    </div>
+                </button>
+
+                {/* Edit actions - only the owner can edit */}
+                {canEditHistory && (
+                    <div className="flex shrink-0 justify-end">
                         {isEditing && editingDetails.length > 0 ? (
                             <Button
                                 variant="basic"
@@ -213,20 +243,14 @@ export default function MonitorGradingHistoryCard({
                                 variant="basic"
                                 onClick={handleFinishEditing}
                             >
-                               Xong
+                                Xong
                             </Button>
                         )}
                     </div>
+                )}
+            </div>
 
-                <div className="mt-1 shrink-0 text-text-secondary">
-                    {expanded ? (
-                        <FiChevronUp size={20} />
-                    ) : (
-                        <FiChevronDown size={20} />
-                    )}
-                </div>
-            </button>
-
+            {/* Content */}
             {expanded && (
                 <div className="space-y-4 border-t border-border-default p-4">
                     {/* General feedback */}
@@ -236,6 +260,7 @@ export default function MonitorGradingHistoryCard({
                                 className="text-text-secondary"
                                 size={15}
                             />
+
                             <h4 className="text-sm font-semibold text-text-primary">
                                 Nhận xét chung
                             </h4>
@@ -262,7 +287,9 @@ export default function MonitorGradingHistoryCard({
                         ) : (
                             history.details.map((detail, index) => {
                                 const editData = editDetails[detail.detailId]
-                                const detailEditing = isDetailEditing(detail.detailId)
+                                const detailEditing = isDetailEditing(
+                                    detail.detailId,
+                                )
                                 const detailSaving = isSaving(detail.detailId)
 
                                 return (
@@ -292,28 +319,39 @@ export default function MonitorGradingHistoryCard({
                                                             max={detail.maxScore}
                                                             step="0.01"
                                                             disabled={detailSaving}
-                                                            value={editData?.score ?? detail.score}
+                                                            value={
+                                                                editData?.score ??
+                                                                detail.score
+                                                            }
                                                             onChange={(e) =>
                                                                 handleDetailChange(
                                                                     detail.detailId,
                                                                     "score",
-                                                                    e.target.value === ""
+                                                                    e.target
+                                                                        .value ===
+                                                                        ""
                                                                         ? 0
-                                                                        : Number(e.target.value),
+                                                                        : Number(
+                                                                              e.target
+                                                                                  .value,
+                                                                          ),
                                                                 )
                                                             }
                                                             className="w-20 text-center font-semibold"
                                                         />
 
                                                         <span className="text-xs text-text-secondary">
-                                                            / {detail.maxScore}
+                                                            /{" "}
+                                                            {detail.maxScore}
                                                         </span>
                                                     </>
                                                 ) : (
                                                     <p className="text-base font-bold text-text-primary">
                                                         {detail.score}
                                                         <span className="text-xs font-normal text-text-secondary">
-                                                            {" "}/ {detail.maxScore}
+                                                            {" "}
+                                                            /{" "}
+                                                            {detail.maxScore}
                                                         </span>
                                                     </p>
                                                 )}
@@ -331,7 +369,9 @@ export default function MonitorGradingHistoryCard({
                                                 <TextArea
                                                     rows={3}
                                                     disabled={detailSaving}
-                                                    value={editData?.comment ?? ""}
+                                                    value={
+                                                        editData?.comment ?? ""
+                                                    }
                                                     onChange={(e) =>
                                                         handleDetailChange(
                                                             detail.detailId,
@@ -358,7 +398,9 @@ export default function MonitorGradingHistoryCard({
                                                     size="sm"
                                                     disabled={detailSaving}
                                                     onClick={() =>
-                                                        handleCancelDetail(detail.detailId)
+                                                        handleCancelDetail(
+                                                            detail.detailId,
+                                                        )
                                                     }
                                                 >
                                                     <FiX size={14} />
@@ -369,11 +411,15 @@ export default function MonitorGradingHistoryCard({
                                                     size="sm"
                                                     disabled={detailSaving}
                                                     onClick={() =>
-                                                        handleSaveDetail(detail.detailId)
+                                                        handleSaveDetail(
+                                                            detail.detailId,
+                                                        )
                                                     }
                                                 >
                                                     <FiSave size={14} />
-                                                    {detailSaving ? "Saving..." : "Save"}
+                                                    {detailSaving
+                                                        ? "Đang lưu..."
+                                                        : "Lưu"}
                                                 </Button>
                                             </div>
                                         )}
@@ -382,8 +428,6 @@ export default function MonitorGradingHistoryCard({
                             })
                         )}
                     </section>
-
-
                 </div>
             )}
         </div>

@@ -8,7 +8,6 @@ import useDebounce from '@/hooks/useDebounce'
 interface UseGetManagerMonitorPerformanceProps {
   semesterId?: string | null
   examinationId?: string | null
-  search?: string
 }
 
 export default function useGetManagerMonitorPerformance({
@@ -31,19 +30,29 @@ export default function useGetManagerMonitorPerformance({
   // Fetch monitor performance
       useEffect(() => {
       const getMonitorPerformance = async () => {
+
+      const params = new URLSearchParams()
+
+      params.set('Page', String(currentPage))
+      params.set('PageSize', String(pageSize))
+
+      if (semesterId) {
+        params.set('semesterId', semesterId)
+      }
+
+      if (examinationId) {
+        params.set('examinationId', examinationId)
+      }
+
+      if (debouncedSearch.trim()) {
+        params.set('search', debouncedSearch.trim())
+      }
+
+      const queryString = params.toString()
       const data = await execute({
-            apiUrl: '/manager/reports/monitor-performance',
+            apiUrl: `/manager/reports/monitor-performance?${queryString}`,
             method: 'get',
             type: 'private',
-            body: {
-            Page: currentPage,
-            PageSize: pageSize,
-            ...(semesterId ? { semesterId } : {}),
-            ...(examinationId ? { examinationId } : {}),
-            ...(debouncedSearch.trim()
-            ? { search: debouncedSearch.trim() }
-            : {}),
-            },
       })
 
       setMonitorPerformance(data.data)
@@ -62,7 +71,7 @@ export default function useGetManagerMonitorPerformance({
 
     currentPage,
     pageSize,
-
+    search,
     setCurrentPage,
     setPageSize,
     setSearch,

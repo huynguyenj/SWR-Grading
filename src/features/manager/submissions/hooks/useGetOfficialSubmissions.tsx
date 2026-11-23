@@ -23,16 +23,24 @@ export default function useGetOfficialSubmissions() {
 
   useEffect(() => {
     const getOfficialSubmissionList = async () => {
+      const params = new URLSearchParams()
+
+      params.set('Page', String(currentOfficialSubmissionPage))
+      params.set('PageSize', String(pageOfficialSubmissionSize))
+
+      if (examinationId) {
+        params.set('examinationId', examinationId)
+      }
+
+      if (semesterId) {
+        params.set('semesterId', semesterId)
+      }
+
+      const queryString = params.toString()
       const data = await execute({
-        apiUrl: 'manager/reports/official-submissions',
+        apiUrl: `manager/reports/official-submissions?${queryString}`,
         method: 'get',
         type: 'private',
-        body: {
-          Page: currentOfficialSubmissionPage,
-          PageSize: pageOfficialSubmissionSize,
-          ...(examinationId && { examinationId }),
-          ...(semesterId && { semesterId }),
-        },
       })
 
       if (data?.data) {
