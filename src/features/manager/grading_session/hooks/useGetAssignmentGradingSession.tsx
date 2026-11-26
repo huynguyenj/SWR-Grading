@@ -8,6 +8,7 @@ export default function useGetAssignmentGradingSession({ gradingSessionId }: { g
   const [refreshKey, setRefreshKey] = useState(0)
   useEffect(() => {
     const getAssignmentList = async () =>  {
+      if (!gradingSessionId) return
       const response = await execute({
         apiUrl: `grading-sessions/${gradingSessionId}/assignments`,
         method: 'get',
