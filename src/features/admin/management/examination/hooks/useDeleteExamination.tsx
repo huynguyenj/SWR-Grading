@@ -10,7 +10,7 @@ export default function useDeleteExamination({ onRefresh, selectedDeleteExaminat
               type: 'private',
         })
         onRefresh()
-        toast.success('Xóa đợt thi thành công')
+        toast.success('Xóa kì thi thành công')
     }
     return { onDelete, loading }
 }
