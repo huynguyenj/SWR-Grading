@@ -66,7 +66,7 @@ export default function useCreateExamination({ onRefresh }: { onRefresh: () => v
     }
 
     onRefresh()
-    toast.success('Tạo bài thi thành công')
+    toast.success('Tạo kì thi thành công')
     return true
   }
 

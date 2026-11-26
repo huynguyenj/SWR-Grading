@@ -68,7 +68,7 @@ export default function useUpdateExamination({ onRefresh, updateSelectedExaminat
     }
 
     onRefresh()
-    toast.success('Tạo bài thi thành công')
+    toast.success('Cập nhật kì thi thành công')
     return true
   }
 
