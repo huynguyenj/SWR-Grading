@@ -70,7 +70,7 @@ export default function useCreateExamSession({
     }
 
     onRefresh?.()
-    toast.success('Tạo ca thi thành công')
+    toast.success('Tạo đợt thi thành công')
     return true
   }
 
